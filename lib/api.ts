@@ -64,11 +64,29 @@ export async function loginUser(email: string, password: string) {
 
 export async function getCurrentUser() {
   const token = localStorage.getItem('token');
-  if (!token) throw new Error('No token');
+  if (!token) throw new Error('not_authenticated');
   const res = await fetch('http://localhost:8000/auth/me', {
     headers: { 'Authorization': `Bearer ${token}` },
   });
-  if (!res.ok) throw new Error('Failed to fetch user');
+  if (!res.ok) {
+    if (res.status === 401 || res.status === 404) throw new Error('not_authenticated');
+    throw new Error('Failed to fetch user');
+  }
+  return res.json();
+}
+
+export async function updateUser({ password }: { password?: string }) {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('not_authenticated');
+  const res = await fetch('http://localhost:8000/auth/update', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify({ password }),
+  });
+  if (!res.ok) throw new Error('Failed to update user');
   return res.json();
 }
 
