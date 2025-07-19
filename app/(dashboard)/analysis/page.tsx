@@ -8,11 +8,37 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { DashboardHeader } from "@/components/dashboard-header"
-import { DataTable } from "@/components/data-table"
+import { DataTable, DataTableProps } from "@/components/data-table"
 import { CrossTabBuilder } from "@/components/cross-tab-builder"
+import { crosstab } from "@/lib/api"
 
 export default function AnalysisPage() {
   const [activeDataset, setActiveDataset] = useState("eicv6")
+  const [freqVar, setFreqVar] = useState("province")
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [tableData, setTableData] = useState<DataTableProps | null>(null)
+
+  const handleGenerateTable = async () => {
+    setLoading(true)
+    setError(null)
+    setTableData(null)
+    try {
+      // TODO: Replace with real file selection
+      const dummyFile = new File(["dummy"], "dummy.csv")
+      const result = await crosstab(dummyFile, [freqVar])
+      if (result && result.data && result.data.length > 0) {
+        const columns = Object.keys(result.data[0]).map((key) => ({ key, label: key.charAt(0).toUpperCase() + key.slice(1) }))
+        setTableData({ data: result.data, columns })
+      } else {
+        setError("No data returned from backend.")
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to generate table.")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -63,7 +89,7 @@ export default function AnalysisPage() {
                 <div className="flex flex-col md:flex-row gap-4">
                   <div className="flex-1">
                     <label className="text-sm font-medium mb-1 block">Variable</label>
-                    <Select defaultValue="province">
+                    <Select defaultValue={freqVar} onValueChange={setFreqVar}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select Variable" />
                       </SelectTrigger>
@@ -92,25 +118,33 @@ export default function AnalysisPage() {
                   </div>
 
                   <div className="flex items-end">
-                    <Button>Generate Table</Button>
+                    <Button onClick={handleGenerateTable} disabled={loading}>
+                      {loading ? "Generating..." : "Generate Table"}
+                    </Button>
                   </div>
                 </div>
 
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
-                  <Card>
-                    <CardHeader className="py-3">
-                      <div className="flex justify-between items-center">
-                        <CardTitle className="text-lg">Province Distribution</CardTitle>
-                        <Button variant="outline" size="sm">
-                          <Download className="h-4 w-4 mr-2" />
-                          Export
-                        </Button>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <DataTable />
-                    </CardContent>
-                  </Card>
+                  {loading ? (
+                    <div className="p-8 text-center">Loading...</div>
+                  ) : error ? (
+                    <div className="p-8 text-center text-red-500">{error}</div>
+                  ) : tableData ? (
+                    <Card>
+                      <CardHeader className="py-3">
+                        <div className="flex justify-between items-center">
+                          <CardTitle className="text-lg">{freqVar.charAt(0).toUpperCase() + freqVar.slice(1)} Distribution</CardTitle>
+                          <Button variant="outline" size="sm">
+                            <Download className="h-4 w-4 mr-2" />
+                            Export
+                          </Button>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <DataTable data={tableData.data} columns={tableData.columns} />
+                      </CardContent>
+                    </Card>
+                  ) : null}
                 </motion.div>
               </div>
             </CardContent>
