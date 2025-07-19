@@ -24,9 +24,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { getCurrentUser } from "@/lib/api"
+import { useEffect, useState } from "react"
 
 export function AppSidebar() {
   const pathname = usePathname()
+  const [user, setUser] = useState<any>(null)
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const userData = await getCurrentUser()
+        setUser(userData)
+      } catch {}
+    }
+    fetchUser()
+  }, [])
 
   const isActive = (path: string) => {
     return pathname === path
@@ -129,9 +141,9 @@ export function AppSidebar() {
                   <div className="flex items-center gap-2">
                     <Avatar className="h-6 w-6">
                       <AvatarImage src="/placeholder.svg?height=32&width=32" />
-                      <AvatarFallback>JD</AvatarFallback>
+                      <AvatarFallback>{user ? user.email[0].toUpperCase() : "U"}</AvatarFallback>
                     </Avatar>
-                    <span>John Doe</span>
+                    <span>{user ? (user.email.split("@")[0]) : "User"}</span>
                   </div>
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
