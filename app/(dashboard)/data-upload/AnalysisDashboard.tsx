@@ -3,6 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { groupedStats } from "@/lib/api";
 
 const COLORS = ["#6366f1", "#22d3ee", "#f59e42", "#f43f5e", "#10b981", "#eab308", "#a21caf", "#facc15"];
 
@@ -11,6 +12,17 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
   const provinces = useMemo(() => ["All", ...Array.from(new Set((data.province || []).map((d: any) => d.province)))], [data]);
   const genders = useMemo(() => ["All", ...Array.from(new Set((data.gender || []).map((d: any) => d.s1q1)))], [data]);
   const urbanRural = useMemo(() => ["All", ...Array.from(new Set((data.urbanRural || []).map((d: any) => d.ur2_2012)))], [data]);
+
+  // Frequency Table State
+  const categoricalVars = useMemo(() => {
+    // Guess categorical variables from data keys
+    const keys = ["province", "s1q1", "ur2_2012", "district", "education_level"];
+    return keys.filter(k => (data[k] && data[k].length > 0)) as string[];
+  }, [data]);
+  const [selectedFreqVar, setSelectedFreqVar] = useState<string>(categoricalVars[0] || "province");
+  const [freqTable, setFreqTable] = useState<any[]>([]);
+  const [freqLoading, setFreqLoading] = useState(false);
+  const [freqError, setFreqError] = useState<string | null>(null);
 
   // Filter state
   const [selectedProvince, setSelectedProvince] = useState("All");
@@ -35,6 +47,34 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
     [data, selectedProvince]
   );
 
+  // Fetch frequency table when variable changes
+  React.useEffect(() => {
+    if (!selectedFreqVar) return;
+    setFreqLoading(true);
+    setFreqError(null);
+    // Use the first available chart's data as a sample to get the file (assume file is available in window.uploadedFile)
+    // In production, pass the file or cleaned data context
+    const file = (window as any).uploadedFile;
+    if (!file) {
+      setFreqError("No uploaded file found for frequency table.");
+      setFreqLoading(false);
+      return;
+    }
+    groupedStats(file, selectedFreqVar, selectedFreqVar, "count")
+      .then(res => {
+        if (res.data && Array.isArray(res.data)) {
+          setFreqTable(res.data);
+        } else {
+          setFreqError(res.error || "No data returned.");
+        }
+        setFreqLoading(false);
+      })
+      .catch(err => {
+        setFreqError(err.message || "Failed to fetch frequency table.");
+        setFreqLoading(false);
+      });
+  }, [selectedFreqVar]);
+
   return (
     <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center animate-fade-in">
       <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-xl max-w-7xl w-full flex relative overflow-y-auto max-h-[95vh]">
@@ -46,7 +86,7 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
             <Select value={selectedProvince} onValueChange={setSelectedProvince}>
               <SelectTrigger><SelectValue placeholder="Select Province" /></SelectTrigger>
               <SelectContent>
-                {provinces.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+                {provinces.map(p => <SelectItem key={String(p)} value={String(p)}>{String(p)}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
@@ -55,7 +95,7 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
             <Select value={selectedGender} onValueChange={setSelectedGender}>
               <SelectTrigger><SelectValue placeholder="Select Gender" /></SelectTrigger>
               <SelectContent>
-                {genders.map(g => <SelectItem key={g} value={g}>{g}</SelectItem>)}
+                {genders.map(g => <SelectItem key={String(g)} value={String(g)}>{String(g)}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
@@ -64,13 +104,54 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
             <Select value={selectedUrbanRural} onValueChange={setSelectedUrbanRural}>
               <SelectTrigger><SelectValue placeholder="Select Type" /></SelectTrigger>
               <SelectContent>
-                {urbanRural.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
+                {urbanRural.map(u => <SelectItem key={String(u)} value={String(u)}>{String(u)}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
         </div>
         {/* Main Dashboard */}
         <div className="flex-1 p-8 grid grid-cols-1 md:grid-cols-2 gap-8 overflow-y-auto">
+          {/* Frequency Table */}
+          <Card className="md:col-span-2">
+            <CardHeader><CardTitle>Frequency Table</CardTitle></CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="font-medium">Variable:</div>
+                <Select value={selectedFreqVar} onValueChange={setSelectedFreqVar}>
+                  <SelectTrigger className="w-48"><SelectValue placeholder="Select Variable" /></SelectTrigger>
+                  <SelectContent>
+                    {categoricalVars.map(v => <SelectItem key={String(v)} value={String(v)}>{String(v)}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              {freqLoading ? (
+                <div className="text-muted-foreground text-center py-8">Loading frequency table...</div>
+              ) : freqError ? (
+                <div className="text-red-500 text-center py-8">{freqError}</div>
+              ) : freqTable && freqTable.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="min-w-[300px] border rounded">
+                    <thead>
+                      <tr>
+                        <th className="p-2 border-b">{selectedFreqVar}</th>
+                        <th className="p-2 border-b">Count</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {freqTable.map((row, i) => (
+                        <tr key={i}>
+                          <td className="p-2 border-b">{String(row[selectedFreqVar])}</td>
+                          <td className="p-2 border-b">{row.count ?? String(row[selectedFreqVar])}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="text-muted-foreground text-center py-8">No frequency data available.</div>
+              )}
+            </CardContent>
+          </Card>
           {/* Poverty by Province */}
           <Card>
             <CardHeader><CardTitle>Poverty by Province</CardTitle></CardHeader>
