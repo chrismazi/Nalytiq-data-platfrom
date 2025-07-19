@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Download, Filter, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -15,10 +15,59 @@ import { InflationChart } from "@/components/charts/inflation-chart"
 import { LiteracyChart } from "@/components/charts/literacy-chart"
 import { HealthMetricsChart } from "@/components/charts/health-metrics-chart"
 import { GenerateReportDialog } from "@/components/generate-report-dialog"
+import { getCurrentUser, groupedStats, topDistricts, povertyByEducation, urbanRuralConsumption, povertyByGender, povertyByProvince, avgConsumptionByProvince } from "@/lib/api"
 
 export default function DashboardPage() {
   const [isGeneratingReport, setIsGeneratingReport] = useState(false)
   const [showReportDialog, setShowReportDialog] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [summary, setSummary] = useState<any>(null)
+  const [charts, setCharts] = useState<any>({})
+
+  useEffect(() => {
+    async function fetchDashboardData() {
+      setLoading(true)
+      setError(null)
+      try {
+        // TODO: Replace with actual API calls and logic as needed
+        // Example: fetch summary stats and chart data
+        // You may need to pass a file or params depending on backend
+        // For now, use a dummy File object to satisfy API signatures
+        const dummyFile = new File(["dummy"], "dummy.csv");
+        const [povertyEdu, urbanRural, povertyGender, povertyProvince, avgConsProvince] = await Promise.all([
+          povertyByEducation(dummyFile),
+          urbanRuralConsumption(dummyFile),
+          povertyByGender(dummyFile),
+          povertyByProvince(dummyFile),
+          avgConsumptionByProvince(dummyFile),
+        ])
+        setSummary({
+          population: 13200000, // TODO: Replace with real data
+          gdpGrowth: 7.8, // ...
+          inflation: 4.2, // ...
+          literacy: 73.2, // ...
+          health: {
+            lifeExpectancy: 69.2,
+            infantMortality: 27.1,
+            vaccination: 92.4,
+          },
+        })
+        setCharts({
+          povertyEdu,
+          urbanRural,
+          povertyGender,
+          povertyProvince,
+          avgConsProvince,
+        })
+      } catch (err: any) {
+        setError(err.message || 'Failed to load dashboard data')
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchDashboardData()
+  }, [])
 
   const handleGenerateReport = () => {
     setIsGeneratingReport(true)
@@ -69,232 +118,240 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-        >
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">Population</CardTitle>
-              <CardDescription>Total population and growth rate</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">13.2M</div>
-              <div className="text-sm text-muted-foreground mt-1">
-                <span className="text-green-500 font-medium">↑ 2.4%</span> from last year
-              </div>
-              <div className="h-[180px] mt-4">
-                <PopulationChart />
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.2 }}
-        >
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">GDP Growth</CardTitle>
-              <CardDescription>Annual growth percentage</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">7.8%</div>
-              <div className="text-sm text-muted-foreground mt-1">
-                <span className="text-green-500 font-medium">↑ 0.6%</span> from previous quarter
-              </div>
-              <div className="h-[180px] mt-4">
-                <GDPChart />
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.3 }}
-        >
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">Inflation Rate</CardTitle>
-              <CardDescription>Consumer price index change</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">4.2%</div>
-              <div className="text-sm text-muted-foreground mt-1">
-                <span className="text-red-500 font-medium">↑ 0.3%</span> from last month
-              </div>
-              <div className="h-[180px] mt-4">
-                <InflationChart />
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.4 }}
-        >
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">Literacy Rate</CardTitle>
-              <CardDescription>Population literacy percentage</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">73.2%</div>
-              <div className="text-sm text-muted-foreground mt-1">
-                <span className="text-green-500 font-medium">↑ 1.8%</span> from last year
-              </div>
-              <div className="h-[180px] mt-4">
-                <LiteracyChart />
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.5 }}
-        >
-          <Card className="col-span-1 md:col-span-2 lg:col-span-2">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">Health Metrics</CardTitle>
-              <CardDescription>Key health indicators</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-3 gap-4 mb-4">
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground">Life Expectancy</div>
-                  <div className="text-2xl font-bold">69.2 yrs</div>
-                  <div className="text-xs text-muted-foreground">
-                    <span className="text-green-500">↑ 0.8</span> from 2020
+      {loading ? (
+        <div className="flex justify-center items-center h-64">Loading dashboard...</div>
+      ) : error ? (
+        <div className="text-red-500 text-center">{error}</div>
+      ) : (
+        <>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+            >
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg font-medium">Population</CardTitle>
+                  <CardDescription>Total population and growth rate</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">{summary?.population ? summary.population.toLocaleString() : '-'}</div>
+                  <div className="text-sm text-muted-foreground mt-1">
+                    <span className="text-green-500 font-medium">↑ 2.4%</span> from last year
                   </div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground">Infant Mortality</div>
-                  <div className="text-2xl font-bold">27.1</div>
-                  <div className="text-xs text-muted-foreground">
-                    <span className="text-green-500">↓ 3.2</span> from 2020
+                  <div className="h-[180px] mt-4">
+                    <PopulationChart />
                   </div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-muted-foreground">Vaccination Rate</div>
-                  <div className="text-2xl font-bold">92.4%</div>
-                  <div className="text-xs text-muted-foreground">
-                    <span className="text-green-500">↑ 2.1%</span> from 2020
-                  </div>
-                </div>
-              </div>
-              <div className="h-[220px]">
-                <HealthMetricsChart />
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
+                </CardContent>
+              </Card>
+            </motion.div>
 
-      <div className="mt-6">
-        <Tabs defaultValue="time-series">
-          <div className="flex justify-between items-center mb-4">
-            <TabsList>
-              <TabsTrigger value="time-series">Time Series</TabsTrigger>
-              <TabsTrigger value="regional">Regional Comparison</TabsTrigger>
-              <TabsTrigger value="demographic">Demographic Breakdown</TabsTrigger>
-            </TabsList>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+            >
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg font-medium">GDP Growth</CardTitle>
+                  <CardDescription>Annual growth percentage</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">7.8%</div>
+                  <div className="text-sm text-muted-foreground mt-1">
+                    <span className="text-green-500 font-medium">↑ 0.6%</span> from previous quarter
+                  </div>
+                  <div className="h-[180px] mt-4">
+                    <GDPChart />
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.3 }}
+            >
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg font-medium">Inflation Rate</CardTitle>
+                  <CardDescription>Consumer price index change</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">4.2%</div>
+                  <div className="text-sm text-muted-foreground mt-1">
+                    <span className="text-red-500 font-medium">↑ 0.3%</span> from last month
+                  </div>
+                  <div className="h-[180px] mt-4">
+                    <InflationChart />
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.4 }}
+            >
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg font-medium">Literacy Rate</CardTitle>
+                  <CardDescription>Population literacy percentage</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">73.2%</div>
+                  <div className="text-sm text-muted-foreground mt-1">
+                    <span className="text-green-500 font-medium">↑ 1.8%</span> from last year
+                  </div>
+                  <div className="h-[180px] mt-4">
+                    <LiteracyChart />
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.5 }}
+            >
+              <Card className="col-span-1 md:col-span-2 lg:col-span-2">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg font-medium">Health Metrics</CardTitle>
+                  <CardDescription>Key health indicators</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-3 gap-4 mb-4">
+                    <div>
+                      <div className="text-sm font-medium text-muted-foreground">Life Expectancy</div>
+                      <div className="text-2xl font-bold">69.2 yrs</div>
+                      <div className="text-xs text-muted-foreground">
+                        <span className="text-green-500">↑ 0.8</span> from 2020
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium text-muted-foreground">Infant Mortality</div>
+                      <div className="text-2xl font-bold">27.1</div>
+                      <div className="text-xs text-muted-foreground">
+                        <span className="text-green-500">↓ 3.2</span> from 2020
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium text-muted-foreground">Vaccination Rate</div>
+                      <div className="text-2xl font-bold">92.4%</div>
+                      <div className="text-xs text-muted-foreground">
+                        <span className="text-green-500">↑ 2.1%</span> from 2020
+                      </div>
+                    </div>
+                  </div>
+                  <div className="h-[220px]">
+                    <HealthMetricsChart />
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
 
-          <TabsContent value="time-series" className="animate-in">
-            <Card>
-              <CardHeader>
-                <CardTitle>Historical Trends</CardTitle>
-                <CardDescription>Key indicators over time (2018-2023)</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[400px]">
-                  <GDPChart height={400} />
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button variant="outline">Export Data</Button>
-                <Select defaultValue="gdp">
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select Indicator" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="gdp">GDP Growth</SelectItem>
-                    <SelectItem value="inflation">Inflation</SelectItem>
-                    <SelectItem value="population">Population</SelectItem>
-                    <SelectItem value="literacy">Literacy Rate</SelectItem>
-                  </SelectContent>
-                </Select>
-              </CardFooter>
-            </Card>
-          </TabsContent>
+          <div className="mt-6">
+            <Tabs defaultValue="time-series">
+              <div className="flex justify-between items-center mb-4">
+                <TabsList>
+                  <TabsTrigger value="time-series">Time Series</TabsTrigger>
+                  <TabsTrigger value="regional">Regional Comparison</TabsTrigger>
+                  <TabsTrigger value="demographic">Demographic Breakdown</TabsTrigger>
+                </TabsList>
+              </div>
 
-          <TabsContent value="regional" className="animate-in">
-            <Card>
-              <CardHeader>
-                <CardTitle>Regional Comparison</CardTitle>
-                <CardDescription>Comparing indicators across Rwanda's provinces</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[400px]">
-                  <PopulationChart height={400} />
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button variant="outline">Export Data</Button>
-                <Select defaultValue="population">
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select Indicator" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="population">Population</SelectItem>
-                    <SelectItem value="income">Income</SelectItem>
-                    <SelectItem value="education">Education</SelectItem>
-                    <SelectItem value="health">Health</SelectItem>
-                  </SelectContent>
-                </Select>
-              </CardFooter>
-            </Card>
-          </TabsContent>
+              <TabsContent value="time-series" className="animate-in">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Historical Trends</CardTitle>
+                    <CardDescription>Key indicators over time (2018-2023)</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[400px]">
+                      <GDPChart height={400} />
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex justify-between">
+                    <Button variant="outline">Export Data</Button>
+                    <Select defaultValue="gdp">
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Select Indicator" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="gdp">GDP Growth</SelectItem>
+                        <SelectItem value="inflation">Inflation</SelectItem>
+                        <SelectItem value="population">Population</SelectItem>
+                        <SelectItem value="literacy">Literacy Rate</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </CardFooter>
+                </Card>
+              </TabsContent>
 
-          <TabsContent value="demographic" className="animate-in">
-            <Card>
-              <CardHeader>
-                <CardTitle>Demographic Breakdown</CardTitle>
-                <CardDescription>Analysis by age, gender, and other demographic factors</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[400px]">
-                  <LiteracyChart height={400} />
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button variant="outline">Export Data</Button>
-                <Select defaultValue="age">
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select Factor" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="age">Age Groups</SelectItem>
-                    <SelectItem value="gender">Gender</SelectItem>
-                    <SelectItem value="education">Education Level</SelectItem>
-                    <SelectItem value="income">Income Level</SelectItem>
-                  </SelectContent>
-                </Select>
-              </CardFooter>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
+              <TabsContent value="regional" className="animate-in">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Regional Comparison</CardTitle>
+                    <CardDescription>Comparing indicators across Rwanda's provinces</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[400px]">
+                      <PopulationChart height={400} />
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex justify-between">
+                    <Button variant="outline">Export Data</Button>
+                    <Select defaultValue="population">
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Select Indicator" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="population">Population</SelectItem>
+                        <SelectItem value="income">Income</SelectItem>
+                        <SelectItem value="education">Education</SelectItem>
+                        <SelectItem value="health">Health</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </CardFooter>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="demographic" className="animate-in">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Demographic Breakdown</CardTitle>
+                    <CardDescription>Analysis by age, gender, and other demographic factors</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[400px]">
+                      <LiteracyChart height={400} />
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex justify-between">
+                    <Button variant="outline">Export Data</Button>
+                    <Select defaultValue="age">
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Select Factor" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="age">Age Groups</SelectItem>
+                        <SelectItem value="gender">Gender</SelectItem>
+                        <SelectItem value="education">Education Level</SelectItem>
+                        <SelectItem value="income">Income Level</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </CardFooter>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </>
+      )}
 
       <GenerateReportDialog
         open={showReportDialog}
