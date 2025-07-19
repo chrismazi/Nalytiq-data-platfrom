@@ -170,4 +170,16 @@ export async function avgConsumptionByProvince(file: File) {
   });
   if (!res.ok) throw new Error('Failed to get avg consumption by province');
   return res.json();
+}
+
+export async function crosstab(file: File, columns: string[]) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('columns', JSON.stringify(columns));
+  const res = await fetch('http://localhost:8000/crosstab/', {
+    method: 'POST',
+    body: formData,
+  });
+  if (!res.ok) throw new Error('Failed to get crosstab/frequency table');
+  return res.json();
 } 
