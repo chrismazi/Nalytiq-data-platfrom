@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+pandas
+ydata-profiling
+python-multipart
+passlib[bcrypt]
+python-jose
+# sqlite3 is included in Python stdlib 

@@ -1,0 +1,5 @@
+pandas
+numpy
+openpyxl
+pyreadstat # for .dta support
+# json is part of the Python standard library 
