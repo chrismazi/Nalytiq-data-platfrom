@@ -16,9 +16,10 @@ import { DataPreviewTable } from "@/components/data-preview-table"
 import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
 import { DocumentChatDialog } from "@/components/document-chat-dialog"
-import { uploadDataset, getProfileReport, cleanDataset } from "@/lib/api"
+import { uploadDataset, getProfileReport, cleanDataset, povertyByProvince, avgConsumptionByProvince, topDistricts, povertyByGender, urbanRuralConsumption, povertyByEducation } from "@/lib/api"
 import { useRouter } from "next/navigation"
 import SmartAnalysisPage from "../analysis/smart/page"
+import AnalysisDashboard from "./AnalysisDashboard";
 
 export default function DataUploadPage() {
   const [file, setFile] = useState<File | null>(null)
@@ -40,6 +41,8 @@ export default function DataUploadPage() {
   const [frequencyCandidates, setFrequencyCandidates] = useState<string[]>([])
   const [selectedFrequencies, setSelectedFrequencies] = useState<string[]>([])
   const router = useRouter();
+  const [dashboardData, setDashboardData] = useState<any>(null);
+  const [showDashboard, setShowDashboard] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -112,39 +115,83 @@ export default function DataUploadPage() {
   }
 
   const startAnalysis = async () => {
-    if (!file) return
-    
-    setAnalyzing(true)
-    setAnalysisProgress(0)
-    setError(null)
-
+    if (!file) return;
+    setAnalyzing(true);
+    setAnalysisProgress(0);
+    setError(null);
+    let progressInterval: NodeJS.Timeout | null = null;
     try {
-      // Simulate analysis progress
-      const progressInterval = setInterval(() => {
+      // Simulate progress updates
+      progressInterval = setInterval(() => {
         setAnalysisProgress((prev) => {
-          if (prev >= 90) {
-            clearInterval(progressInterval)
-            return 90
-          }
-          return prev + 5
-        })
-      }, 300)
-
-      // Get detailed profile report
-      const html = await getProfileReport(file)
-      setProfileHtml(html)
-      
-      clearInterval(progressInterval)
-      setAnalysisProgress(100)
-      setAnalyzing(false)
-      setAnalysisComplete(true)
-
+          if (prev >= 90) return 90;
+          return prev + 5;
+        });
+      }, 300);
+      // Call all analysis endpoints in parallel, with error handling
+      const results = await Promise.allSettled([
+        povertyByProvince(file),
+        avgConsumptionByProvince(file),
+        topDistricts(file),
+        povertyByGender(file),
+        urbanRuralConsumption(file),
+        povertyByEducation(file)
+      ]);
+      if (progressInterval) clearInterval(progressInterval);
+      // Log all results for debugging
+      console.log('Analysis results (allSettled):', results);
+      // Check for errors or empty data
+      const errors = results.filter(r => r.status === 'rejected');
+      if (errors.length > 0) {
+        setError("One or more analysis steps failed. Please check your dataset and try again. Details: " + errors.map(e => e.reason).join('; '));
+        setAnalyzing(false);
+        setAnalysisProgress(0);
+        setShowDashboard(false);
+        return;
+      }
+      const [province, avgCons, topDist, gender, urbanRural, education] = results.map(r => r.status === 'fulfilled' ? r.value : null);
+      if (
+        !province?.data?.length ||
+        !avgCons?.data?.length ||
+        !topDist?.data?.length ||
+        !gender?.data?.length ||
+        !urbanRural?.data?.length ||
+        !education?.data?.length
+      ) {
+        setError("Analysis succeeded but returned no data for one or more charts. Please check your dataset.");
+        setAnalyzing(false);
+        setAnalysisProgress(0);
+        setShowDashboard(false);
+        return;
+      }
+      setDashboardData({
+        province: province.data,
+        avgConsumption: avgCons.data,
+        topDistricts: topDist.data,
+        gender: gender.data,
+        urbanRural: urbanRural.data,
+        education: education.data
+      });
+      setAnalysisProgress(100);
+      setTimeout(() => {
+        setAnalyzing(false);
+        setShowDashboard(true);
+        setAnalysisComplete(true);
+      }, 500);
     } catch (err) {
-      setError("Failed to analyze dataset. Please try again.")
-      setAnalyzing(false)
-      setAnalysisProgress(0)
+      if (progressInterval) clearInterval(progressInterval);
+      let errorMsg = 'Failed to analyze dataset.';
+      if (err && typeof err === 'object' && 'message' in err) {
+        errorMsg += ' ' + (err as any).message;
+      } else if (typeof err === 'string') {
+        errorMsg += ' ' + err;
+      }
+      setError(errorMsg);
+      setAnalyzing(false);
+      setAnalysisProgress(0);
+      setShowDashboard(false);
     }
-  }
+  };
 
   const resetUpload = () => {
     setFile(null)
@@ -388,7 +435,7 @@ export default function DataUploadPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>AI Analysis in Progress</CardTitle>
-                  <CardDescription>Our AI is analyzing your data to extract insights and patterns</CardDescription>
+                  <CardDescription>Our system is analyzing your dataset to uncover patterns and insights.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
@@ -399,21 +446,20 @@ export default function DataUploadPage() {
                       </div>
                       <Progress value={analysisProgress} />
                     </div>
-
                     <div className="border rounded-lg p-4 bg-muted/50">
                       <div className="space-y-3">
                         <div className="flex items-start gap-3">
                           <div className="mt-1 h-2 w-2 rounded-full bg-primary animate-pulse" />
                           <p className="text-sm">
                             {analysisProgress < 20
-                              ? "Scanning dataset structure and identifying variable types..."
+                              ? "Scanning variables and identifying data types..."
                               : analysisProgress < 40
-                                ? "Performing statistical analysis on numerical variables..."
+                                ? "Detecting trends and relationships in your data..."
                                 : analysisProgress < 60
-                                  ? "Identifying correlations and patterns in the data..."
+                                  ? "Summarizing key statistics and distributions..."
                                   : analysisProgress < 80
-                                    ? "Generating visualizations and summary statistics..."
-                                    : "Preparing final analysis report and dashboard..."}
+                                    ? "Generating visualizations and insights..."
+                                    : "Finalizing your smart analysis dashboard..."}
                           </p>
                         </div>
                       </div>
@@ -442,7 +488,8 @@ export default function DataUploadPage() {
                       </AlertDescription>
                     </Alert>
 
-                    {profileHtml && (
+                    {/* Remove/demote the old HTML profile report iframe and related UI */}
+                    {/* {profileHtml && (
                       <div className="border rounded-lg">
                         <div className="p-4 border-b">
                           <h3 className="font-medium">Detailed Analysis Report</h3>
@@ -458,7 +505,7 @@ export default function DataUploadPage() {
                           className="w-full h-[600px] border-0"
                         />
                       </div>
-                    )}
+                    )} */}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <Card>
@@ -529,9 +576,11 @@ export default function DataUploadPage() {
                       <Bot className="h-4 w-4 mr-2" />
                       Chat with Data
                     </Button>
-                    <Button>
-                      <BarChart3 className="h-4 w-4 mr-2" />
-                      View Dashboard
+                    <Button
+                      onClick={() => setShowDashboard(true)}
+                      disabled={!dashboardData}
+                    >
+                      <BarChart3 className="h-4 w-4 mr-2" />View Dashboard
                     </Button>
                   </div>
                 </CardFooter>
@@ -618,6 +667,10 @@ export default function DataUploadPage() {
       </Tabs>
 
       <DocumentChatDialog open={showChatDialog} onOpenChange={setShowChatDialog} />
+      {/* Move AnalysisDashboard overlay here so it always appears above everything */}
+      {showDashboard && dashboardData && (
+        <AnalysisDashboard data={dashboardData} onClose={() => setShowDashboard(false)} />
+      )}
     </div>
   )
 }

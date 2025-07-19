@@ -10,6 +10,42 @@ class DataAnalyzer:
         self.file_path = None
         self.file_type = None
 
+    def _map_education_levels(self, df: pd.DataFrame) -> pd.DataFrame:
+        education_mapping = {
+            'Pre-primary': 'Nursery',
+            'Primary 1': 'Primary',
+            'Primary 2': 'Primary',
+            'Primary 3': 'Primary',
+            'Primary 4': 'Primary',
+            'Primary 5': 'Primary',
+            'Primary 6,7,8': 'Primary',
+            'Not complete P1': 'Primary Dropout',
+            'Secondary 1': 'Secondary',
+            'Secondary 2': 'Secondary',
+            'Secondary 3': 'Secondary',
+            'Secondary 4': 'Secondary',
+            'Secondary 5': 'Secondary',
+            'Post primary 1': 'Post-Secondary',
+            'Post primary 2': 'Post-Secondary',
+            'Post primary 3': 'Post-Secondary',
+            'Post primary 4': 'Post-Secondary',
+            'Post primary 5': 'Post-Secondary',
+            'Post primary 6,7,8': 'Post-Secondary',
+            'University 1': 'Bachelors',
+            'University 2': 'Bachelors',
+            'University 3': 'Bachelors',
+            'University 4': 'Masters',
+            'University 5': 'Masters',
+            'University 6': 'PhD',
+            'University 7': 'PhD',
+            'Missing': 'Unknown',
+            'nan': 'Unknown',
+            'Unknown': 'Unknown'
+        }
+        if 's4aq2' in df.columns:
+            df['education_level'] = df['s4aq2'].map(education_mapping).fillna('Unknown')
+        return df
+
     def read_file(self, file_path: str) -> Dict[str, Any]:
         self.file_path = file_path
         self.file_type = os.path.splitext(file_path)[-1].lower()
@@ -22,6 +58,17 @@ class DataAnalyzer:
                 self.df = self._read_stata(file_path)
             else:
                 raise ValueError(f"Unsupported file type: {self.file_type}")
+            # Standardize column names: lowercase and strip spaces
+            self.df.columns = [str(c).strip().lower() for c in self.df.columns]
+            # Apply education mapping and categorical cleaning
+            self.df = self._map_education_levels(self.df)
+            for col in self.df.columns:
+                if str(self.df[col].dtype).startswith('category'):
+                    if 'Unknown' not in self.df[col].cat.categories:
+                        self.df[col] = self.df[col].cat.add_categories(['Unknown'])
+                    self.df[col] = self.df[col].fillna('Unknown')
+                elif self.df[col].dtype == object:
+                    self.df[col] = self.df[col].fillna('Unknown')
             return self._get_basic_info()
         except Exception as e:
             return {"error": str(e)}
@@ -164,68 +211,102 @@ class DataAnalyzer:
     def get_grouped_stats(self, group_by: str, value: str, agg: str = 'mean') -> Dict[str, Any]:
         if self.df is None:
             return {"error": "No dataset loaded"}
+        if group_by not in self.df.columns or value not in self.df.columns:
+            return {"error": f"Column {group_by} or {value} not found in dataset"}
+        if self.df[group_by].dropna().empty or self.df[value].dropna().empty:
+            return {"error": f"No data in column {group_by} or {value}"}
         try:
-            grouped = self.df.groupby(group_by)[value].agg(agg).reset_index()
+            # Convert group_by to string to avoid pandas category issues
+            self.df[group_by] = self.df[group_by].astype(str)
+            grouped = self.df.groupby(group_by, observed=False)[value].agg(agg).reset_index()
             return {"group": group_by, "value": value, "agg": agg, "data": grouped.to_dict(orient="records")}
         except Exception as e:
-            return {"error": str(e)}
+            return {"error": f"Groupby failed: {e}"}
 
     def get_top_districts_by_consumption(self, top_n: int = 5) -> Dict[str, Any]:
         if self.df is None:
             return {"error": "No dataset loaded"}
+        if "district" not in self.df.columns or "consumption" not in self.df.columns:
+            return {"error": "Column district or consumption not found in dataset"}
+        if self.df["district"].dropna().empty or self.df["consumption"].dropna().empty:
+            return {"error": "No data in column district or consumption"}
         try:
-            top = self.df.groupby("district")["Consumption"].mean().nlargest(top_n).reset_index()
+            self.df["district"] = self.df["district"].astype(str)
+            top = self.df.groupby("district", observed=False)["consumption"].mean().nlargest(top_n).reset_index()
             return {"data": top.to_dict(orient="records")}
         except Exception as e:
-            return {"error": str(e)}
+            return {"error": f"Groupby failed: {e}"}
 
     def get_poverty_by_education(self) -> Dict[str, Any]:
         if self.df is None:
             return {"error": "No dataset loaded"}
+        if "education_level" not in self.df.columns or "poverty" not in self.df.columns:
+            return {"error": "Column education_level or poverty not found in dataset"}
+        if self.df["education_level"].dropna().empty or self.df["poverty"].dropna().empty:
+            return {"error": "No data in column education_level or poverty"}
         try:
-            if "education_level" not in self.df.columns:
-                return {"error": "education_level column missing"}
+            self.df["education_level"] = self.df["education_level"].astype(str)
             crosstab = pd.crosstab(self.df["education_level"], self.df["poverty"]).reset_index()
             melted = crosstab.melt(id_vars=["education_level"], var_name="poverty_level", value_name="count")
             return {"data": melted.to_dict(orient="records")}
         except Exception as e:
-            return {"error": str(e)}
+            return {"error": f"Crosstab failed: {e}"}
 
     def get_urban_rural_consumption(self) -> Dict[str, Any]:
         if self.df is None:
             return {"error": "No dataset loaded"}
+        if "ur2_2012" not in self.df.columns or "consumption" not in self.df.columns:
+            return {"error": "Column ur2_2012 or consumption not found in dataset"}
+        if self.df["ur2_2012"].dropna().empty or self.df["consumption"].dropna().empty:
+            return {"error": "No data in column ur2_2012 or consumption"}
         try:
-            grouped = self.df.groupby("ur2_2012")["Consumption"].mean().reset_index()
+            self.df["ur2_2012"] = self.df["ur2_2012"].astype(str)
+            grouped = self.df.groupby("ur2_2012", observed=False)["consumption"].mean().reset_index()
             return {"data": grouped.to_dict(orient="records")}
         except Exception as e:
-            return {"error": str(e)}
+            return {"error": f"Groupby failed: {e}"}
 
     def get_poverty_by_gender(self) -> Dict[str, Any]:
         if self.df is None:
             return {"error": "No dataset loaded"}
+        if "s1q1" not in self.df.columns or "poverty" not in self.df.columns:
+            return {"error": "Column s1q1 or poverty not found in dataset"}
+        if self.df["s1q1"].dropna().empty or self.df["poverty"].dropna().empty:
+            return {"error": "No data in column s1q1 or poverty"}
         try:
-            grouped = self.df.groupby("s1q1")["poverty"].mean().reset_index()
+            self.df["s1q1"] = self.df["s1q1"].astype(str)
+            grouped = self.df.groupby("s1q1", observed=False)["poverty"].mean().reset_index()
             return {"data": grouped.to_dict(orient="records")}
         except Exception as e:
-            return {"error": str(e)}
+            return {"error": f"Groupby failed: {e}"}
 
     def get_poverty_by_province(self) -> Dict[str, Any]:
         if self.df is None:
             return {"error": "No dataset loaded"}
+        if "province" not in self.df.columns or "poverty" not in self.df.columns:
+            return {"error": "Column province or poverty not found in dataset"}
+        if self.df["province"].dropna().empty or self.df["poverty"].dropna().empty:
+            return {"error": "No data in column province or poverty"}
         try:
-            grouped = self.df.groupby("province")["poverty"].mean().reset_index()
+            self.df["province"] = self.df["province"].astype(str)
+            grouped = self.df.groupby("province", observed=False)["poverty"].mean().reset_index()
             return {"data": grouped.to_dict(orient="records")}
         except Exception as e:
-            return {"error": str(e)}
+            return {"error": f"Groupby failed: {e}"}
 
     def get_avg_consumption_by_province(self) -> Dict[str, Any]:
         if self.df is None:
             return {"error": "No dataset loaded"}
+        if "province" not in self.df.columns or "consumption" not in self.df.columns:
+            return {"error": "Column province or consumption not found in dataset"}
+        if self.df["province"].dropna().empty or self.df["consumption"].dropna().empty:
+            return {"error": "No data in column province or consumption"}
         try:
-            grouped = self.df.groupby("province")["Consumption"].mean().reset_index()
+            self.df["province"] = self.df["province"].astype(str)
+            grouped = self.df.groupby("province", observed=False)["consumption"].mean().reset_index()
             return {"data": grouped.to_dict(orient="records")}
         except Exception as e:
-            return {"error": str(e)}
+            return {"error": f"Groupby failed: {e}"}
 
 if __name__ == "__main__":
     test_file = "test_data.csv"

@@ -89,4 +89,85 @@ export async function cleanDataset(file: File) {
   const result = await res.json();
   console.log('Clean successful:', result);
   return result;
+}
+
+export async function groupedStats(file: File, groupBy: string, value: string, agg: string = 'mean') {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('group_by', groupBy);
+  formData.append('value', value);
+  formData.append('agg', agg);
+  const res = await fetch('http://localhost:8000/grouped-stats/', {
+    method: 'POST',
+    body: formData,
+  });
+  if (!res.ok) throw new Error('Failed to get grouped stats');
+  return res.json();
+}
+
+export async function topDistricts(file: File, topN: number = 5) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('top_n', String(topN));
+  const res = await fetch('http://localhost:8000/top-districts/', {
+    method: 'POST',
+    body: formData,
+  });
+  if (!res.ok) throw new Error('Failed to get top districts');
+  return res.json();
+}
+
+export async function povertyByEducation(file: File) {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await fetch('http://localhost:8000/poverty-by-education/', {
+    method: 'POST',
+    body: formData,
+  });
+  if (!res.ok) throw new Error('Failed to get poverty by education');
+  return res.json();
+}
+
+export async function urbanRuralConsumption(file: File) {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await fetch('http://localhost:8000/urban-rural-consumption/', {
+    method: 'POST',
+    body: formData,
+  });
+  if (!res.ok) throw new Error('Failed to get urban/rural consumption');
+  return res.json();
+}
+
+export async function povertyByGender(file: File) {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await fetch('http://localhost:8000/poverty-by-gender/', {
+    method: 'POST',
+    body: formData,
+  });
+  if (!res.ok) throw new Error('Failed to get poverty by gender');
+  return res.json();
+}
+
+export async function povertyByProvince(file: File) {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await fetch('http://localhost:8000/poverty-by-province/', {
+    method: 'POST',
+    body: formData,
+  });
+  if (!res.ok) throw new Error('Failed to get poverty by province');
+  return res.json();
+}
+
+export async function avgConsumptionByProvince(file: File) {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await fetch('http://localhost:8000/avg-consumption-by-province/', {
+    method: 'POST',
+    body: formData,
+  });
+  if (!res.ok) throw new Error('Failed to get avg consumption by province');
+  return res.json();
 } 
