@@ -1,6 +1,7 @@
 "use client"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { BarChart3, FileSpreadsheet, FileText, LayoutDashboard, LogOut, Settings, User } from "lucide-react"
 import {
   Sidebar,
@@ -29,19 +30,31 @@ import { useEffect, useState } from "react"
 
 export function AppSidebar() {
   const pathname = usePathname()
+  const router = useRouter()
   const [user, setUser] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
   useEffect(() => {
     async function fetchUser() {
       try {
         const userData = await getCurrentUser()
         setUser(userData)
-      } catch {}
+      } catch (err: any) {
+        if (err.message === 'not_authenticated') {
+          router.push('/auth/login')
+        }
+      } finally {
+        setLoading(false)
+      }
     }
     fetchUser()
   }, [])
 
   const isActive = (path: string) => {
     return pathname === path
+  }
+
+  if (loading) {
+    return <div className="p-8 text-center">Loading...</div>
   }
 
   return (
