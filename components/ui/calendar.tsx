@@ -27,15 +27,14 @@ function Calendar({
         nav: "space-x-1 flex items-center",
         nav_button: cn(
           buttonVariants({ variant: "outline" }),
-          "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+          "h-7 w-7 bg-transparent p-0 opacity-50 hover:bg-gray-200"
         ),
         nav_button_previous: "absolute left-1",
         nav_button_next: "absolute right-1",
         table: "w-full border-collapse",
         weekdays: "",
         weekday: "text-muted-foreground w-9 font-bold text-[0.9rem] text-center p-0 border border-blue-300 bg-blue-100",
-        row: "",
-        cell: "h-9 w-9 text-center text-sm p-0 relative",
+        // row and cell intentionally omitted for default table layout
         day: cn(
           buttonVariants({ variant: "ghost" }),
           "h-9 w-9 p-0 font-normal aria-selected:opacity-100"
