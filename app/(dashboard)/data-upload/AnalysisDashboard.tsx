@@ -1,27 +1,87 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const COLORS = ["#6366f1", "#22d3ee", "#f59e42", "#f43f5e", "#10b981", "#eab308", "#a21caf", "#facc15"];
 
 export default function AnalysisDashboard({ data, onClose }: { data: any; onClose: () => void }) {
+  // Extract unique filter values
+  const provinces = useMemo(() => ["All", ...Array.from(new Set((data.province || []).map((d: any) => d.province)))], [data]);
+  const genders = useMemo(() => ["All", ...Array.from(new Set((data.gender || []).map((d: any) => d.s1q1)))], [data]);
+  const urbanRural = useMemo(() => ["All", ...Array.from(new Set((data.urbanRural || []).map((d: any) => d.ur2_2012)))], [data]);
+
+  // Filter state
+  const [selectedProvince, setSelectedProvince] = useState("All");
+  const [selectedGender, setSelectedGender] = useState("All");
+  const [selectedUrbanRural, setSelectedUrbanRural] = useState("All");
+
+  // Filtered data
+  const filteredProvince = useMemo(() =>
+    selectedProvince === "All" ? data.province : data.province.filter((d: any) => d.province === selectedProvince),
+    [data, selectedProvince]
+  );
+  const filteredGender = useMemo(() =>
+    selectedGender === "All" ? data.gender : data.gender.filter((d: any) => d.s1q1 === selectedGender),
+    [data, selectedGender]
+  );
+  const filteredUrbanRural = useMemo(() =>
+    selectedUrbanRural === "All" ? data.urbanRural : data.urbanRural.filter((d: any) => d.ur2_2012 === selectedUrbanRural),
+    [data, selectedUrbanRural]
+  );
+  const filteredTopDistricts = useMemo(() =>
+    selectedProvince === "All" ? data.topDistricts : data.topDistricts.filter((d: any) => d.district === selectedProvince),
+    [data, selectedProvince]
+  );
+
   return (
     <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center animate-fade-in">
-      <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-xl max-w-5xl w-full p-8 relative overflow-y-auto max-h-[90vh]">
-        <Button onClick={onClose} className="absolute top-4 right-4" variant="outline">Close</Button>
-        <h2 className="text-2xl font-bold mb-6">Smart Data Analysis Dashboard</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-xl max-w-7xl w-full flex relative overflow-y-auto max-h-[95vh]">
+        {/* Sidebar Filters */}
+        <div className="w-64 p-6 border-r bg-zinc-50 dark:bg-zinc-800 flex flex-col gap-6">
+          <Button onClick={onClose} variant="outline" className="mb-4">Close</Button>
+          <div>
+            <div className="font-semibold mb-2">Province</div>
+            <Select value={selectedProvince} onValueChange={setSelectedProvince}>
+              <SelectTrigger><SelectValue placeholder="Select Province" /></SelectTrigger>
+              <SelectContent>
+                {provinces.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <div className="font-semibold mb-2">Gender</div>
+            <Select value={selectedGender} onValueChange={setSelectedGender}>
+              <SelectTrigger><SelectValue placeholder="Select Gender" /></SelectTrigger>
+              <SelectContent>
+                {genders.map(g => <SelectItem key={g} value={g}>{g}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <div className="font-semibold mb-2">Urban/Rural</div>
+            <Select value={selectedUrbanRural} onValueChange={setSelectedUrbanRural}>
+              <SelectTrigger><SelectValue placeholder="Select Type" /></SelectTrigger>
+              <SelectContent>
+                {urbanRural.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        {/* Main Dashboard */}
+        <div className="flex-1 p-8 grid grid-cols-1 md:grid-cols-2 gap-8 overflow-y-auto">
           {/* Poverty by Province */}
           <Card>
             <CardHeader><CardTitle>Poverty by Province</CardTitle></CardHeader>
             <CardContent>
-              {data.province && data.province.length > 0 ? (
-                <ResponsiveContainer width="100%" height={220}>
-                  <BarChart data={data.province}>
-                    <XAxis dataKey="province" fontSize={12} />
-                    <YAxis fontSize={12} />
+              {filteredProvince && filteredProvince.length > 0 ? (
+                <ResponsiveContainer width="100%" height={240}>
+                  <BarChart data={filteredProvince} margin={{ left: 20, right: 20, top: 20, bottom: 20 }}>
+                    <XAxis dataKey="province" fontSize={13} label={{ value: "Province", position: "insideBottom", offset: -5 }} />
+                    <YAxis fontSize={13} label={{ value: "Poverty Rate", angle: -90, position: "insideLeft" }} />
                     <Tooltip />
+                    <Legend />
                     <Bar dataKey="poverty" fill={COLORS[0]} isAnimationActive />
                   </BarChart>
                 </ResponsiveContainer>
@@ -34,12 +94,13 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
           <Card>
             <CardHeader><CardTitle>Avg Consumption by Province</CardTitle></CardHeader>
             <CardContent>
-              {data.avgConsumption && data.avgConsumption.length > 0 ? (
-                <ResponsiveContainer width="100%" height={220}>
-                  <BarChart data={data.avgConsumption}>
-                    <XAxis dataKey="province" fontSize={12} />
-                    <YAxis fontSize={12} />
+              {filteredProvince && filteredProvince.length > 0 ? (
+                <ResponsiveContainer width="100%" height={240}>
+                  <BarChart data={filteredProvince} margin={{ left: 20, right: 20, top: 20, bottom: 20 }}>
+                    <XAxis dataKey="province" fontSize={13} label={{ value: "Province", position: "insideBottom", offset: -5 }} />
+                    <YAxis fontSize={13} label={{ value: "Avg Consumption", angle: -90, position: "insideLeft" }} />
                     <Tooltip />
+                    <Legend />
                     <Bar dataKey="Consumption" fill={COLORS[1]} isAnimationActive />
                   </BarChart>
                 </ResponsiveContainer>
@@ -52,12 +113,13 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
           <Card>
             <CardHeader><CardTitle>Top Districts by Consumption</CardTitle></CardHeader>
             <CardContent>
-              {data.topDistricts && data.topDistricts.length > 0 ? (
-                <ResponsiveContainer width="100%" height={220}>
-                  <BarChart data={data.topDistricts}>
-                    <XAxis dataKey="district" fontSize={12} />
-                    <YAxis fontSize={12} />
+              {filteredTopDistricts && filteredTopDistricts.length > 0 ? (
+                <ResponsiveContainer width="100%" height={240}>
+                  <BarChart data={filteredTopDistricts} margin={{ left: 20, right: 20, top: 20, bottom: 20 }}>
+                    <XAxis dataKey="district" fontSize={13} label={{ value: "District", position: "insideBottom", offset: -5 }} />
+                    <YAxis fontSize={13} label={{ value: "Avg Consumption", angle: -90, position: "insideLeft" }} />
                     <Tooltip />
+                    <Legend />
                     <Bar dataKey="Consumption" fill={COLORS[2]} isAnimationActive />
                   </BarChart>
                 </ResponsiveContainer>
@@ -70,12 +132,13 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
           <Card>
             <CardHeader><CardTitle>Poverty by Gender</CardTitle></CardHeader>
             <CardContent>
-              {data.gender && data.gender.length > 0 ? (
-                <ResponsiveContainer width="100%" height={220}>
-                  <BarChart data={data.gender} layout="vertical">
-                    <XAxis type="number" fontSize={12} />
-                    <YAxis dataKey="s1q1" type="category" fontSize={12} />
+              {filteredGender && filteredGender.length > 0 ? (
+                <ResponsiveContainer width="100%" height={240}>
+                  <BarChart data={filteredGender} layout="vertical" margin={{ left: 20, right: 20, top: 20, bottom: 20 }}>
+                    <XAxis type="number" fontSize={13} label={{ value: "Poverty Rate", position: "insideBottom", offset: -5 }} />
+                    <YAxis dataKey="s1q1" type="category" fontSize={13} label={{ value: "Gender", angle: -90, position: "insideLeft" }} />
                     <Tooltip />
+                    <Legend />
                     <Bar dataKey="poverty" fill={COLORS[3]} isAnimationActive />
                   </BarChart>
                 </ResponsiveContainer>
@@ -88,11 +151,11 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
           <Card>
             <CardHeader><CardTitle>Urban vs Rural Consumption</CardTitle></CardHeader>
             <CardContent>
-              {data.urbanRural && data.urbanRural.length > 0 ? (
-                <ResponsiveContainer width="100%" height={220}>
+              {filteredUrbanRural && filteredUrbanRural.length > 0 ? (
+                <ResponsiveContainer width="100%" height={240}>
                   <PieChart>
                     <Pie
-                      data={data.urbanRural}
+                      data={filteredUrbanRural}
                       dataKey="Consumption"
                       nameKey="ur2_2012"
                       cx="50%"
@@ -100,7 +163,7 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
                       outerRadius={80}
                       label
                     >
-                      {data.urbanRural.map((entry: any, i: number) => (
+                      {filteredUrbanRural.map((entry: any, i: number) => (
                         <Cell key={`cell-${i}`} fill={COLORS[i % COLORS.length]} />
                       ))}
                     </Pie>
@@ -119,10 +182,11 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
             <CardContent>
               {data.education && data.education.length > 0 ? (
                 <ResponsiveContainer width="100%" height={260}>
-                  <BarChart data={data.education} layout="vertical">
-                    <XAxis type="number" fontSize={12} />
-                    <YAxis dataKey="education_level" type="category" fontSize={12} width={120} />
+                  <BarChart data={data.education} layout="vertical" margin={{ left: 20, right: 20, top: 20, bottom: 20 }}>
+                    <XAxis type="number" fontSize={13} label={{ value: "Count", position: "insideBottom", offset: -5 }} />
+                    <YAxis dataKey="education_level" type="category" fontSize={13} width={120} label={{ value: "Education Level", angle: -90, position: "insideLeft" }} />
                     <Tooltip />
+                    <Legend />
                     <Bar dataKey="count" fill={COLORS[4]} isAnimationActive />
                   </BarChart>
                 </ResponsiveContainer>
