@@ -46,6 +46,9 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
+class UserUpdate(BaseModel):
+    password: str | None = None
+
 def get_password_hash(password):
     return pwd_context.hash(password)
 
@@ -97,6 +100,28 @@ def get_me(token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=401, detail="Invalid token")
     conn = get_db()
     cur = conn.cursor()
+    cur.execute("SELECT * FROM users WHERE email = ?", (email,))
+    user = cur.fetchone()
+    conn.close()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return UserOut(id=user["id"], email=user["email"], role=user["role"])
+
+@router.put("/update", response_model=UserOut)
+def update_user(update: UserUpdate, token: str = Depends(oauth2_scheme)):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email = payload.get("sub")
+        if email is None:
+            raise HTTPException(status_code=401, detail="Invalid token")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    conn = get_db()
+    cur = conn.cursor()
+    if update.password:
+        hashed_password = get_password_hash(update.password)
+        cur.execute("UPDATE users SET password = ? WHERE email = ?", (hashed_password, email))
+    conn.commit()
     cur.execute("SELECT * FROM users WHERE email = ?", (email,))
     user = cur.fetchone()
     conn.close()
