@@ -173,13 +173,13 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
               )}
             </CardContent>
           </Card>
-          {/* Avg Consumption by Province */}
+          {/* Avg Consumption by Province (NEW) */}
           <Card className="shadow-lg border-0">
             <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Avg Consumption by Province</CardTitle></CardHeader>
             <CardContent>
-              {filteredProvince && filteredProvince.length > 0 ? (
+              {data.avgConsumption && data.avgConsumption.length > 0 ? (
                 <ResponsiveContainer width="100%" height={220}>
-                  <BarChart data={filteredProvince} barCategoryGap={30}>
+                  <BarChart data={data.avgConsumption} barCategoryGap={30}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                     <XAxis dataKey="province" fontSize={14} tickLine={false} axisLine={false} dy={8} />
                     <YAxis fontSize={14} tickLine={false} axisLine={false} label={{ value: "Avg Consumption", angle: -90, position: "insideLeft", offset: 10 }} />
@@ -187,6 +187,37 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
                     <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
                     <Bar dataKey="Consumption" fill={COLORS[1]} radius={[8, 8, 0, 0]} maxBarSize={40} />
                   </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="text-muted-foreground text-center py-8">No data available for this chart.</div>
+              )}
+            </CardContent>
+          </Card>
+          {/* Education Breakdown Pie/Donut (NEW) */}
+          <Card className="shadow-lg border-0">
+            <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Education Breakdown</CardTitle></CardHeader>
+            <CardContent>
+              {data.education && data.education.length > 0 ? (
+                <ResponsiveContainer width="100%" height={220}>
+                  <PieChart>
+                    <Pie
+                      data={data.education}
+                      dataKey="count"
+                      nameKey="education_level"
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      labelLine={false}
+                    >
+                      {data.education.map((entry: any, i: number) => (
+                        <Cell key={`cell-edu-${i}`} fill={COLORS[i % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
+                  </PieChart>
                 </ResponsiveContainer>
               ) : (
                 <div className="text-muted-foreground text-center py-8">No data available for this chart.</div>
