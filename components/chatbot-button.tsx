@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import { Bot, X, Send, Loader2, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -25,6 +25,30 @@ export function ChatbotButton() {
   const [activeTab, setActiveTab] = useState("chat")
   const scrollAreaRef = useRef<HTMLDivElement>(null)
 
+  // Helper to send chat to backend
+  const sendToBackend = useCallback(async (question: string) => {
+    setIsTyping(true);
+    try {
+      const res = await fetch("/chatbot/", {
+        method: "POST",
+        headers: { "Accept": "application/json" },
+        body: (() => {
+          const form = new FormData();
+          form.append("question", question);
+          form.append("context", JSON.stringify({})); // Optionally pass global context/insights
+          return form;
+        })(),
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const json = await res.json();
+      return json.answer || "(No answer from backend)";
+    } catch (e: any) {
+      return `Error: ${e.message}`;
+    } finally {
+      setIsTyping(false);
+    }
+  }, []);
+
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -43,43 +67,16 @@ export function ChatbotButton() {
       }
     }, 100)
 
-    // Simulate AI response
-    setTimeout(() => {
-      let response = ""
-
-      if (input.toLowerCase().includes("inflation")) {
-        response =
-          "Rwanda's inflation rate was 4.2% as of the latest data from April 2023. This represents a slight increase from the previous month's 3.9%. The main contributors to this increase were food and non-alcoholic beverages, housing, and transportation costs."
-      } else if (input.toLowerCase().includes("eicv")) {
-        response =
-          "The EICV (Integrated Household Living Conditions Survey) is Rwanda's main survey for monitoring poverty and living conditions. The latest completed survey was EICV6, conducted in 2018-2019. It showed that the poverty rate decreased to 38.2% from 39.1% in the previous survey."
-      } else if (input.toLowerCase().includes("population")) {
-        response =
-          "According to the latest estimates, Rwanda's population is approximately 13.2 million people, with an annual growth rate of 2.4%. The population is relatively young, with about 40% under the age of 15."
-      } else if (input.toLowerCase().includes("gdp") || input.toLowerCase().includes("economic growth")) {
-        response =
-          "Rwanda's GDP growth rate was 7.8% in 2022, showing strong recovery after the pandemic slowdown. The services sector contributed 47% to GDP, followed by agriculture at 26% and industry at 18%. The government projects growth of 6.5-7.5% for 2023."
-      } else if (input.toLowerCase().includes("education") || input.toLowerCase().includes("literacy")) {
-        response =
-          "Rwanda's literacy rate stands at 73.2% for the population aged 15 and above. Primary school enrollment is at 98.5%, while secondary school enrollment is at 42.3%. The government has prioritized education with 15% of the national budget allocated to the sector."
-      } else if (input.toLowerCase().includes("health") || input.toLowerCase().includes("healthcare")) {
-        response =
-          "Rwanda has made significant progress in healthcare with life expectancy increasing to 69.2 years. Infant mortality has decreased to 27 per 1,000 live births. Over 90% of the population is covered by health insurance, primarily through the community-based health insurance scheme (Mutuelle de Santé)."
-      } else {
-        response =
-          "Thank you for your question. Based on NISR's latest data, I can provide you with detailed information on various national statistics including demographics, economic indicators, social metrics, and more. Could you please specify which area you're interested in?"
-      }
-
+    // Real backend AI response
+    sendToBackend(input).then((response) => {
       setMessages((prev) => [...prev, { role: "assistant", content: response }])
-      setIsTyping(false)
-
       // Auto scroll to bottom after response
       setTimeout(() => {
         if (scrollAreaRef.current) {
           scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
         }
       }, 100)
-    }, 1500)
+    })
   }
 
   // Auto scroll to bottom when chat opens
