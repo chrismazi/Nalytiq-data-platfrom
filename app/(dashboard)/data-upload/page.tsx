@@ -666,7 +666,7 @@ export default function DataUploadPage() {
         </TabsContent>
       </Tabs>
 
-      <DocumentChatDialog open={showChatDialog} onOpenChange={setShowChatDialog} />
+      <DocumentChatDialog open={showChatDialog} onOpenChange={setShowChatDialog} insights={dashboardData?.insights || datasetSummary?.insights} />
       {/* Move AnalysisDashboard overlay here so it always appears above everything */}
       {showDashboard && dashboardData && (
         <AnalysisDashboard data={dashboardData} onClose={() => setShowDashboard(false)} />

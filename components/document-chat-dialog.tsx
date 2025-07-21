@@ -14,9 +14,10 @@ import { Badge } from "@/components/ui/badge"
 interface DocumentChatDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  insights?: { warnings?: string[]; insights?: string[] }
 }
 
-export function DocumentChatDialog({ open, onOpenChange }: DocumentChatDialogProps) {
+export function DocumentChatDialog({ open, onOpenChange, insights }: DocumentChatDialogProps) {
   const [messages, setMessages] = useState<{ role: "user" | "assistant" | "system"; content: string }[]>([
     {
       role: "system",
@@ -116,6 +117,8 @@ export function DocumentChatDialog({ open, onOpenChange }: DocumentChatDialogPro
     "Generate a visualization of income distribution",
   ]
 
+  const warnings = insights?.warnings || [];
+  const highlights = insights?.insights || [];
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[800px] max-h-[80vh] flex flex-col p-0 gap-0">
@@ -240,110 +243,18 @@ export function DocumentChatDialog({ open, onOpenChange }: DocumentChatDialogPro
           <TabsContent value="insights" className="flex-1 p-4 overflow-auto data-[state=active]:flex-col">
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-medium mb-2">Key Findings</h3>
-                <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                  {[
-                    {
-                      title: "Poverty Reduction",
-                      description: "Poverty rate decreased to 38.2% from 39.1% in the previous survey.",
-                      change: "-0.9%",
-                      positive: true,
-                    },
-                    {
-                      title: "Education Access",
-                      description: "Secondary school enrollment increased by 12.3%.",
-                      change: "+12.3%",
-                      positive: true,
-                    },
-                    {
-                      title: "Electricity Access",
-                      description: "Households with electricity increased to 51.2% from 27.1%.",
-                      change: "+24.1%",
-                      positive: true,
-                    },
-                    {
-                      title: "Gender Gap",
-                      description:
-                        "Female-headed households have 5.8% higher poverty rates than male-headed households.",
-                      change: "-5.8%",
-                      positive: false,
-                    },
-                  ].map((insight, index) => (
-                    <div key={index} className="border rounded-lg p-4">
-                      <div className="flex justify-between items-start">
-                        <h4 className="font-medium">{insight.title}</h4>
-                        <Badge
-                          variant="outline"
-                          className={
-                            insight.positive
-                              ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
-                              : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-                          }
-                        >
-                          {insight.change}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-2">{insight.description}</p>
-                    </div>
+                <h3 className="text-lg font-medium mb-2">Automated Insights & Warnings</h3>
+                <ul className="space-y-2">
+                  {warnings.length === 0 && highlights.length === 0 && (
+                    <li className="text-muted-foreground">No insights or warnings detected for this dataset.</li>
+                  )}
+                  {warnings.map((w, i) => (
+                    <li key={"warn-"+i} className="text-yellow-800 dark:text-yellow-200 flex items-center gap-2"><span role="img" aria-label="warning">⚠️</span> {w}</li>
                   ))}
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-medium mb-2">Regional Disparities</h3>
-                <div className="border rounded-lg overflow-hidden">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="bg-muted/50">
-                        <th className="text-left p-3 text-sm font-medium">Province</th>
-                        <th className="text-left p-3 text-sm font-medium">Poverty Rate</th>
-                        <th className="text-left p-3 text-sm font-medium">Electricity Access</th>
-                        <th className="text-left p-3 text-sm font-medium">Clean Water Access</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {[
-                        {
-                          province: "Kigali City",
-                          poverty: "13.9%",
-                          electricity: "96.8%",
-                          water: "98.7%",
-                        },
-                        {
-                          province: "Southern",
-                          poverty: "41.4%",
-                          electricity: "42.3%",
-                          water: "85.6%",
-                        },
-                        {
-                          province: "Western",
-                          poverty: "41.6%",
-                          electricity: "38.7%",
-                          water: "82.3%",
-                        },
-                        {
-                          province: "Northern",
-                          poverty: "42.3%",
-                          electricity: "36.2%",
-                          water: "88.1%",
-                        },
-                        {
-                          province: "Eastern",
-                          poverty: "37.4%",
-                          electricity: "41.5%",
-                          water: "82.4%",
-                        },
-                      ].map((row, index) => (
-                        <tr key={index} className="border-t">
-                          <td className="p-3 text-sm">{row.province}</td>
-                          <td className="p-3 text-sm">{row.poverty}</td>
-                          <td className="p-3 text-sm">{row.electricity}</td>
-                          <td className="p-3 text-sm">{row.water}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                  {highlights.map((h, i) => (
+                    <li key={"insight-"+i} className="text-green-800 dark:text-green-200 flex items-center gap-2"><span role="img" aria-label="insight">✅</span> {h}</li>
+                  ))}
+                </ul>
               </div>
             </div>
           </TabsContent>
