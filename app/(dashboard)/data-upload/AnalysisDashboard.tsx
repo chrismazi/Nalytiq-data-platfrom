@@ -1,11 +1,12 @@
 import React, { useState, useMemo } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, CartesianGrid } from "recharts";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { groupedStats } from "@/lib/api";
+import { ArrowUpRight, ArrowDownRight } from "lucide-react";
 
-const COLORS = ["#6366f1", "#22d3ee", "#f59e42", "#f43f5e", "#10b981", "#eab308", "#a21caf", "#facc15"];
+const COLORS = ["#2563eb", "#22d3ee", "#f59e42", "#f43f5e", "#10b981", "#eab308", "#a21caf", "#facc15"];
 
 export default function AnalysisDashboard({ data, onClose }: { data: any; onClose: () => void }) {
   // Extract unique filter values
@@ -110,10 +111,10 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
           </div>
         </div>
         {/* Main Dashboard */}
-        <div className="flex-1 p-8 grid grid-cols-1 md:grid-cols-2 gap-8 overflow-y-auto">
+        <div className="flex-1 p-8 grid grid-cols-1 md:grid-cols-2 gap-8 overflow-y-auto bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800">
           {/* Frequency Table */}
-          <Card className="md:col-span-2">
-            <CardHeader><CardTitle>Frequency Table</CardTitle></CardHeader>
+          <Card className="md:col-span-2 shadow-lg border-0">
+            <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Frequency Table</CardTitle></CardHeader>
             <CardContent>
               <div className="flex items-center gap-4 mb-4">
                 <div className="font-medium">Variable:</div>
@@ -130,18 +131,18 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
                 <div className="text-red-500 text-center py-8">{freqError}</div>
               ) : freqTable && freqTable.length > 0 ? (
                 <div className="overflow-x-auto">
-                  <table className="min-w-[300px] border rounded">
+                  <table className="min-w-[300px] border rounded bg-white dark:bg-zinc-900">
                     <thead>
                       <tr>
-                        <th className="p-2 border-b">{selectedFreqVar}</th>
-                        <th className="p-2 border-b">Count</th>
+                        <th className="p-2 border-b font-semibold text-gray-700 dark:text-gray-200">{selectedFreqVar}</th>
+                        <th className="p-2 border-b font-semibold text-gray-700 dark:text-gray-200">Count</th>
                       </tr>
                     </thead>
                     <tbody>
                       {freqTable.map((row, i) => (
-                        <tr key={i}>
+                        <tr key={i} className="hover:bg-blue-50 dark:hover:bg-zinc-800">
                           <td className="p-2 border-b">{String(row[selectedFreqVar])}</td>
-                          <td className="p-2 border-b">{row.count ?? String(row[selectedFreqVar])}</td>
+                          <td className="p-2 border-b font-bold text-blue-700 dark:text-blue-300">{row.count ?? String(row[selectedFreqVar])}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -153,17 +154,18 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
             </CardContent>
           </Card>
           {/* Poverty by Province */}
-          <Card>
-            <CardHeader><CardTitle>Poverty by Province</CardTitle></CardHeader>
+          <Card className="shadow-lg border-0">
+            <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Poverty by Province</CardTitle></CardHeader>
             <CardContent>
               {filteredProvince && filteredProvince.length > 0 ? (
-                <ResponsiveContainer width="100%" height={240}>
-                  <BarChart data={filteredProvince} margin={{ left: 20, right: 20, top: 20, bottom: 20 }}>
-                    <XAxis dataKey="province" fontSize={13} label={{ value: "Province", position: "insideBottom", offset: -5 }} />
-                    <YAxis fontSize={13} label={{ value: "Poverty Rate", angle: -90, position: "insideLeft" }} />
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={filteredProvince} barCategoryGap={30}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                    <XAxis dataKey="province" fontSize={14} tickLine={false} axisLine={false} dy={8} />
+                    <YAxis fontSize={14} tickLine={false} axisLine={false} label={{ value: "Poverty Rate", angle: -90, position: "insideLeft", offset: 10 }} />
                     <Tooltip />
-                    <Legend />
-                    <Bar dataKey="poverty" fill={COLORS[0]} isAnimationActive />
+                    <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
+                    <Bar dataKey="poverty" fill={COLORS[0]} radius={[8, 8, 0, 0]} maxBarSize={40} />
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
@@ -172,17 +174,18 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
             </CardContent>
           </Card>
           {/* Avg Consumption by Province */}
-          <Card>
-            <CardHeader><CardTitle>Avg Consumption by Province</CardTitle></CardHeader>
+          <Card className="shadow-lg border-0">
+            <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Avg Consumption by Province</CardTitle></CardHeader>
             <CardContent>
               {filteredProvince && filteredProvince.length > 0 ? (
-                <ResponsiveContainer width="100%" height={240}>
-                  <BarChart data={filteredProvince} margin={{ left: 20, right: 20, top: 20, bottom: 20 }}>
-                    <XAxis dataKey="province" fontSize={13} label={{ value: "Province", position: "insideBottom", offset: -5 }} />
-                    <YAxis fontSize={13} label={{ value: "Avg Consumption", angle: -90, position: "insideLeft" }} />
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={filteredProvince} barCategoryGap={30}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                    <XAxis dataKey="province" fontSize={14} tickLine={false} axisLine={false} dy={8} />
+                    <YAxis fontSize={14} tickLine={false} axisLine={false} label={{ value: "Avg Consumption", angle: -90, position: "insideLeft", offset: 10 }} />
                     <Tooltip />
-                    <Legend />
-                    <Bar dataKey="Consumption" fill={COLORS[1]} isAnimationActive />
+                    <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
+                    <Bar dataKey="Consumption" fill={COLORS[1]} radius={[8, 8, 0, 0]} maxBarSize={40} />
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
@@ -191,17 +194,18 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
             </CardContent>
           </Card>
           {/* Top Districts by Consumption */}
-          <Card>
-            <CardHeader><CardTitle>Top Districts by Consumption</CardTitle></CardHeader>
+          <Card className="shadow-lg border-0">
+            <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Top Districts by Consumption</CardTitle></CardHeader>
             <CardContent>
               {filteredTopDistricts && filteredTopDistricts.length > 0 ? (
-                <ResponsiveContainer width="100%" height={240}>
-                  <BarChart data={filteredTopDistricts} margin={{ left: 20, right: 20, top: 20, bottom: 20 }}>
-                    <XAxis dataKey="district" fontSize={13} label={{ value: "District", position: "insideBottom", offset: -5 }} />
-                    <YAxis fontSize={13} label={{ value: "Avg Consumption", angle: -90, position: "insideLeft" }} />
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={filteredTopDistricts} barCategoryGap={30}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                    <XAxis dataKey="district" fontSize={14} tickLine={false} axisLine={false} dy={8} />
+                    <YAxis fontSize={14} tickLine={false} axisLine={false} label={{ value: "Avg Consumption", angle: -90, position: "insideLeft", offset: 10 }} />
                     <Tooltip />
-                    <Legend />
-                    <Bar dataKey="Consumption" fill={COLORS[2]} isAnimationActive />
+                    <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
+                    <Bar dataKey="Consumption" fill={COLORS[2]} radius={[8, 8, 0, 0]} maxBarSize={40} />
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
@@ -210,17 +214,18 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
             </CardContent>
           </Card>
           {/* Poverty by Gender */}
-          <Card>
-            <CardHeader><CardTitle>Poverty by Gender</CardTitle></CardHeader>
+          <Card className="shadow-lg border-0">
+            <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Poverty by Gender</CardTitle></CardHeader>
             <CardContent>
               {filteredGender && filteredGender.length > 0 ? (
-                <ResponsiveContainer width="100%" height={240}>
-                  <BarChart data={filteredGender} layout="vertical" margin={{ left: 20, right: 20, top: 20, bottom: 20 }}>
-                    <XAxis type="number" fontSize={13} label={{ value: "Poverty Rate", position: "insideBottom", offset: -5 }} />
-                    <YAxis dataKey="s1q1" type="category" fontSize={13} label={{ value: "Gender", angle: -90, position: "insideLeft" }} />
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={filteredGender} layout="vertical" barCategoryGap={30}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                    <XAxis type="number" fontSize={14} tickLine={false} axisLine={false} label={{ value: "Poverty Rate", position: "insideBottom", offset: -5 }} />
+                    <YAxis dataKey="s1q1" type="category" fontSize={14} label={{ value: "Gender", angle: -90, position: "insideLeft", offset: 10 }} />
                     <Tooltip />
-                    <Legend />
-                    <Bar dataKey="poverty" fill={COLORS[3]} isAnimationActive />
+                    <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
+                    <Bar dataKey="poverty" fill={COLORS[3]} radius={[8, 8, 0, 0]} maxBarSize={40} />
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
@@ -229,11 +234,11 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
             </CardContent>
           </Card>
           {/* Urban vs Rural Consumption */}
-          <Card>
-            <CardHeader><CardTitle>Urban vs Rural Consumption</CardTitle></CardHeader>
+          <Card className="shadow-lg border-0">
+            <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Urban vs Rural Consumption</CardTitle></CardHeader>
             <CardContent>
               {filteredUrbanRural && filteredUrbanRural.length > 0 ? (
-                <ResponsiveContainer width="100%" height={240}>
+                <ResponsiveContainer width="100%" height={220}>
                   <PieChart>
                     <Pie
                       data={filteredUrbanRural}
@@ -241,15 +246,17 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
                       nameKey="ur2_2012"
                       cx="50%"
                       cy="50%"
+                      innerRadius={60}
                       outerRadius={80}
-                      label
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      labelLine={false}
                     >
                       {filteredUrbanRural.map((entry: any, i: number) => (
                         <Cell key={`cell-${i}`} fill={COLORS[i % COLORS.length]} />
                       ))}
                     </Pie>
                     <Tooltip />
-                    <Legend />
+                    <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
                   </PieChart>
                 </ResponsiveContainer>
               ) : (
@@ -258,17 +265,18 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
             </CardContent>
           </Card>
           {/* Poverty by Education Level */}
-          <Card className="md:col-span-2">
-            <CardHeader><CardTitle>Poverty by Education Level</CardTitle></CardHeader>
+          <Card className="md:col-span-2 shadow-lg border-0">
+            <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Poverty by Education Level</CardTitle></CardHeader>
             <CardContent>
               {data.education && data.education.length > 0 ? (
-                <ResponsiveContainer width="100%" height={260}>
-                  <BarChart data={data.education} layout="vertical" margin={{ left: 20, right: 20, top: 20, bottom: 20 }}>
-                    <XAxis type="number" fontSize={13} label={{ value: "Count", position: "insideBottom", offset: -5 }} />
-                    <YAxis dataKey="education_level" type="category" fontSize={13} width={120} label={{ value: "Education Level", angle: -90, position: "insideLeft" }} />
+                <ResponsiveContainer width="100%" height={240}>
+                  <BarChart data={data.education} layout="vertical" barCategoryGap={30}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                    <XAxis type="number" fontSize={14} tickLine={false} axisLine={false} label={{ value: "Count", position: "insideBottom", offset: -5 }} />
+                    <YAxis dataKey="education_level" type="category" fontSize={14} width={120} label={{ value: "Education Level", angle: -90, position: "insideLeft", offset: 10 }} />
                     <Tooltip />
-                    <Legend />
-                    <Bar dataKey="count" fill={COLORS[4]} isAnimationActive />
+                    <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
+                    <Bar dataKey="count" fill={COLORS[4]} radius={[8, 8, 0, 0]} maxBarSize={40} />
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
