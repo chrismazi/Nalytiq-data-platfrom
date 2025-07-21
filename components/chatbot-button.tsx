@@ -131,82 +131,63 @@ export function ChatbotButton() {
 
       {isOpen && (
         <Card className="fixed bottom-10 right-6 w-80 md:w-[400px] h-[540px] shadow-xl flex flex-col animate-in z-50">
-          <CardHeader className="border-b px-4 py-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-md bg-primary/10">
-                  <Bot className="h-5 w-5 text-primary" />
-                </div>
-                <CardTitle className="text-lg font-medium">NISR AI Assistant</CardTitle>
+          <CardHeader className="border-b px-4 py-3 bg-white shadow-sm flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 rounded-md bg-primary/10">
+                <Bot className="h-5 w-5 text-primary" />
               </div>
-              <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} aria-label="Close">
-                <X className="h-4 w-4" />
-              </Button>
+              <CardTitle className="text-lg font-medium">NISR AI Assistant</CardTitle>
+              <span className="ml-2 flex items-center gap-1">
+                <span className="inline-block h-2 w-2 rounded-full bg-green-500 animate-pulse" title="Online" />
+                <span className="text-xs text-muted-foreground">Online</span>
+              </span>
             </div>
+            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} aria-label="Close">
+              <X className="h-4 w-4" />
+            </Button>
           </CardHeader>
 
           <Tabs defaultValue="chat" className="flex-1 flex flex-col" onValueChange={setActiveTab}>
-            <div className="border-b px-4">
+            <div className="border-b px-4 bg-white">
               <TabsList className="h-10">
-                <TabsTrigger value="chat" className="data-[state=active]:bg-muted">
-                  Chat
-                </TabsTrigger>
-                <TabsTrigger value="reports" className="data-[state=active]:bg-muted">
-                  Reports
-                </TabsTrigger>
-                <TabsTrigger value="datasets" className="data-[state=active]:bg-muted">
-                  Datasets
-                </TabsTrigger>
+                <TabsTrigger value="chat" className="data-[state=active]:bg-muted">Chat</TabsTrigger>
+                <TabsTrigger value="reports" className="data-[state=active]:bg-muted">Reports</TabsTrigger>
+                <TabsTrigger value="datasets" className="data-[state=active]:bg-muted">Datasets</TabsTrigger>
               </TabsList>
             </div>
 
-            <TabsContent value="chat" className="flex-1 flex flex-col p-0 m-0 data-[state=active]:flex">
-              <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
-                <div className="space-y-4">
+            <TabsContent value="chat" className="flex-1 flex flex-col p-0 m-0 data-[state=active]:flex bg-gradient-to-b from-white to-muted/40">
+              <ScrollArea className="flex-1 p-4" ref={scrollAreaRef} style={{paddingBottom: '0.5rem'}}>
+                <div className="space-y-3">
                   {messages.map((message, index) => (
-                    <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
-                      <div
-                        className={`rounded-lg px-4 py-2 max-w-[80%] ${
-                          message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
-                        }`}
-                      >
-                        {message.content}
-                      </div>
+                    <div key={index} className={`flex w-full ${message.role === "user" ? "justify-end" : "justify-start"} fade-in-message`}>
+                      {message.content.startsWith("Error: ") ? (
+                        <div className="mx-auto bg-red-100 text-red-700 text-xs px-3 py-2 rounded-lg border border-red-300 shadow-sm max-w-[80%] text-center animate-fade-in">
+                          <span className="font-semibold">{message.content.replace("Error: ", "")}</span>
+                        </div>
+                      ) : message.role === "user" ? (
+                        <div className="rounded-2xl px-4 py-2 max-w-[80%] bg-blue-600 text-white font-medium shadow-md border border-blue-700 animate-fade-in" style={{borderBottomRightRadius: '0.5rem'}}>
+                          {message.content}
+                        </div>
+                      ) : (
+                        <div className="rounded-2xl px-4 py-2 max-w-[80%] bg-blue-50 text-blue-900 font-normal shadow border border-blue-100 animate-fade-in" style={{borderBottomLeftRadius: '0.5rem'}}>
+                          {message.content}
+                        </div>
+                      )}
                     </div>
                   ))}
                   {isTyping && (
-                    <div className="flex justify-start">
-                      <div className="rounded-lg px-4 py-2 max-w-[80%] bg-muted">
+                    <div className="flex justify-start fade-in-message">
+                      <div className="rounded-2xl px-4 py-2 max-w-[80%] bg-blue-50 text-blue-900 font-normal shadow border border-blue-100">
                         <div className="flex space-x-1">
-                          <div className="h-2 w-2 rounded-full bg-muted-foreground animate-bounce" />
-                          <div className="h-2 w-2 rounded-full bg-muted-foreground animate-bounce delay-75" />
-                          <div className="h-2 w-2 rounded-full bg-muted-foreground animate-bounce delay-150" />
+                          <div className="h-2 w-2 rounded-full bg-blue-400 animate-bounce" />
+                          <div className="h-2 w-2 rounded-full bg-blue-400 animate-bounce delay-75" />
+                          <div className="h-2 w-2 rounded-full bg-blue-400 animate-bounce delay-150" />
                         </div>
                       </div>
                     </div>
                   )}
                 </div>
-
-                {messages.length <= 1 && (
-                  <div className="mt-6">
-                    <p className="text-sm text-muted-foreground mb-3">Try asking:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {suggestedQuestions.map((question, index) => (
-                        <Button
-                          key={index}
-                          variant="outline"
-                          size="sm"
-                          className="text-xs"
-                          onClick={() => {
-                            setInput(question)
-                          }}
-                        >
-                          {question}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </ScrollArea>
 
               <CardFooter className="border-t p-4 bg-muted/40 shadow-lg rounded-b-lg" style={{marginBottom: '8px', marginTop: '4px'}}>
@@ -378,6 +359,16 @@ export function ChatbotButton() {
           </Tabs>
         </Card>
       )}
+      {/* Add fade-in animation for messages */}
+      <style jsx global>{`
+        .fade-in-message {
+          animation: fadeIn 0.4s ease;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </>
   )
 }
