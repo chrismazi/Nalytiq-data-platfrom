@@ -136,6 +136,17 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
     }));
   }, [filteredUrbanRural]);
 
+  // Add debug logging for chart data
+  console.debug('Avg Consumption by Province:', data.avgConsumption);
+  console.debug('Top Districts by Consumption:', filteredTopDistricts);
+  console.debug('Urban vs Rural Consumption:', filteredUrbanRural);
+  console.debug('Grouped Education:', groupedEducation);
+
+  // Extract insights/warnings from backend
+  const insights = data.insights || {};
+  const warnings = insights.warnings || [];
+  const highlights = insights.insights || [];
+
   return (
     <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center animate-fade-in">
       <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-xl max-w-7xl w-full flex relative overflow-y-auto max-h-[95vh]">
@@ -170,8 +181,29 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
             </Select>
           </div>
         </div>
-        {/* Main Dashboard */}
-        <div className="flex-1 p-8 grid grid-cols-1 md:grid-cols-2 gap-8 overflow-y-auto bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800">
+        {/* Insights & Warnings Section */}
+        <div className="flex-1 flex flex-col">
+          <div className="p-6 pb-0">
+            {(warnings.length > 0 || highlights.length > 0) && (
+              <div className="mb-6 rounded-lg border border-yellow-300 bg-yellow-50 dark:bg-yellow-900/20 p-4">
+                <div className="font-bold text-lg mb-2 flex items-center gap-2">
+                  <span role="img" aria-label="insights">💡</span> Insights & Warnings
+                </div>
+                <ul className="space-y-1">
+                  {warnings.map((w: string, i: number) => (
+                    <li key={"warn-"+i} className="text-yellow-800 dark:text-yellow-200 flex items-center gap-2"><span role="img" aria-label="warning">⚠️</span> {w}</li>
+                  ))}
+                  {highlights.map((h: string, i: number) => (
+                    <li key={"insight-"+i} className="text-green-800 dark:text-green-200 flex items-center gap-2"><span role="img" aria-label="insight">✅</span> {h}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+          {/* Main Dashboard */}
+          <div className="flex-1 p-8 grid grid-cols-1 md:grid-cols-2 gap-8 overflow-y-auto bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800" style={{ maxHeight: '90vh' }}>
+          {/* Section: Economic Indicators */}
+          <div className="md:col-span-2"><h2 className="text-xl font-bold mb-2">Economic Indicators</h2></div>
           {/* Frequency Table */}
           <Card className="md:col-span-2 shadow-lg border-0">
             <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Frequency Table</CardTitle></CardHeader>
@@ -239,7 +271,8 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
           <Card className="shadow-lg border-0">
             <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Avg Consumption by Province</CardTitle></CardHeader>
             <CardContent>
-              {data.avgConsumption && data.avgConsumption.length > 0 ? (
+              <div className="text-xs text-muted-foreground mb-2">Data length: {Array.isArray(data.avgConsumption) ? data.avgConsumption.length : 'N/A'}</div>
+              {data.avgConsumption && Array.isArray(data.avgConsumption) && data.avgConsumption.length > 0 ? (
                 <ResponsiveContainer width="100%" height={220}>
                   <BarChart data={data.avgConsumption} barCategoryGap={30}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
@@ -253,15 +286,18 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="text-muted-foreground text-center py-8">No data available for this chart.</div>
+                <div className="text-red-500 text-center py-8">No data available for this chart. Please check your dataset or analysis results.</div>
               )}
             </CardContent>
           </Card>
+          {/* Section: Regional Comparison */}
+          <div className="md:col-span-2"><h2 className="text-xl font-bold mb-2">Regional Comparison</h2></div>
           {/* Top Districts by Consumption (Top 5, Horizontal Bar) */}
           <Card className="shadow-lg border-0">
             <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Top 5 Districts by Consumption</CardTitle></CardHeader>
             <CardContent>
-              {topDistrictsSorted && topDistrictsSorted.length > 0 ? (
+              <div className="text-xs text-muted-foreground mb-2">Data length: {Array.isArray(topDistrictsSorted) ? topDistrictsSorted.length : 'N/A'}</div>
+              {topDistrictsSorted && Array.isArray(topDistrictsSorted) && topDistrictsSorted.length > 0 ? (
                 <ResponsiveContainer width="100%" height={220}>
                   <BarChart data={topDistrictsSorted} layout="vertical" barCategoryGap={30}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
@@ -275,15 +311,18 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="text-muted-foreground text-center py-8">No data available for this chart.</div>
+                <div className="text-red-500 text-center py-8">No data available for this chart. Please check your dataset or analysis results.</div>
               )}
             </CardContent>
           </Card>
+          {/* Section: Urban/Rural Comparison */}
+          <div className="md:col-span-2"><h2 className="text-xl font-bold mb-2">Urban/Rural Comparison</h2></div>
           {/* Urban vs Rural Consumption (Side-by-Side Bar) */}
           <Card className="shadow-lg border-0">
             <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Urban vs Rural Consumption</CardTitle></CardHeader>
             <CardContent>
-              {urbanRuralBarData && urbanRuralBarData.length > 0 ? (
+              <div className="text-xs text-muted-foreground mb-2">Data length: {Array.isArray(urbanRuralBarData) ? urbanRuralBarData.length : 'N/A'}</div>
+              {urbanRuralBarData && Array.isArray(urbanRuralBarData) && urbanRuralBarData.length > 0 ? (
                 <ResponsiveContainer width="100%" height={220}>
                   <BarChart data={urbanRuralBarData} barCategoryGap={30}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
@@ -297,10 +336,12 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="text-muted-foreground text-center py-8">No data available for this chart.</div>
+                <div className="text-red-500 text-center py-8">No data available for this chart. Please check your dataset or analysis results.</div>
               )}
             </CardContent>
           </Card>
+          {/* Section: Education & Social */}
+          <div className="md:col-span-2"><h2 className="text-xl font-bold mb-2">Education & Social</h2></div>
           {/* Education Breakdown (Grouped Donut) */}
           <Card className="shadow-lg border-0">
             <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Education Breakdown</CardTitle></CardHeader>
@@ -333,11 +374,12 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
               )}
             </CardContent>
           </Card>
-          {/* Poverty by Education Level (Grouped, Vertical Bar) */}
+          {/* Poverty Rate by Education Level (Grouped, Vertical Bar) */}
           <Card className="md:col-span-2 shadow-lg border-0">
             <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Poverty Rate by Education Level</CardTitle></CardHeader>
             <CardContent>
-              {groupedEducation && groupedEducation.length > 0 ? (
+              <div className="text-xs text-muted-foreground mb-2">Data length: {Array.isArray(groupedEducation) ? groupedEducation.length : 'N/A'}</div>
+              {groupedEducation && Array.isArray(groupedEducation) && groupedEducation.length > 0 ? (
                 <ResponsiveContainer width="100%" height={240}>
                   <BarChart data={groupedEducation} barCategoryGap={30}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
@@ -351,7 +393,7 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="text-muted-foreground text-center py-8">No data available for this chart.</div>
+                <div className="text-red-500 text-center py-8">No data available for this chart. Please check your dataset or analysis results.</div>
               )}
             </CardContent>
           </Card>
@@ -399,6 +441,7 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
               )}
             </CardContent>
           </Card>
+        </div>
         </div>
       </div>
     </div>
