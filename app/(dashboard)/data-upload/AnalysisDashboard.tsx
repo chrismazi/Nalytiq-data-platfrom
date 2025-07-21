@@ -117,6 +117,25 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
 
   const groupedEducation = useMemo(() => data.education ? groupEducationLevels(data.education) : [], [data.education]);
 
+  // Top 5 districts by consumption, sorted descending
+  const topDistrictsSorted = useMemo(() => {
+    if (!filteredTopDistricts) return [];
+    return [...filteredTopDistricts]
+      .sort((a, b) => (b.Consumption || 0) - (a.Consumption || 0))
+      .slice(0, 5);
+  }, [filteredTopDistricts]);
+
+  // Prepare Urban vs Rural for side-by-side bar chart
+  const urbanRuralBarData = useMemo(() => {
+    if (!filteredUrbanRural) return [];
+    // If data is already in [{ ur2_2012: 'Urban', Consumption: ... }, ...] format, just return
+    // Otherwise, map to that format
+    return filteredUrbanRural.map((d: any) => ({
+      type: d.ur2_2012 || d.type || '',
+      Consumption: d.Consumption || 0,
+    }));
+  }, [filteredUrbanRural]);
+
   return (
     <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center animate-fade-in">
       <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-xl max-w-7xl w-full flex relative overflow-y-auto max-h-[95vh]">
@@ -238,20 +257,42 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
               )}
             </CardContent>
           </Card>
-          {/* Top Districts by Consumption (Horizontal Bar) */}
+          {/* Top Districts by Consumption (Top 5, Horizontal Bar) */}
           <Card className="shadow-lg border-0">
-            <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Top Districts by Consumption</CardTitle></CardHeader>
+            <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Top 5 Districts by Consumption</CardTitle></CardHeader>
             <CardContent>
-              {filteredTopDistricts && filteredTopDistricts.length > 0 ? (
+              {topDistrictsSorted && topDistrictsSorted.length > 0 ? (
                 <ResponsiveContainer width="100%" height={220}>
-                  <BarChart data={filteredTopDistricts} layout="vertical" barCategoryGap={30}>
+                  <BarChart data={topDistrictsSorted} layout="vertical" barCategoryGap={30}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                     <XAxis type="number" fontSize={14} tickLine={false} axisLine={false} label={{ value: "Avg Consumption", position: "insideBottom", offset: -5 }} />
                     <YAxis dataKey="district" type="category" fontSize={14} width={120} label={{ value: "District", angle: -90, position: "insideLeft", offset: 10 }} />
                     <Tooltip />
                     <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
                     <Bar dataKey="Consumption" fill={COLORS[2]} radius={[8, 8, 0, 0]} maxBarSize={40}>
-                      <LabelList dataKey="Consumption" position="right" formatter={(v: number) => v?.toLocaleString()} />
+                      <LabelList dataKey="Consumption" position="right" formatter={(v: number|string) => typeof v === 'number' ? v.toLocaleString() : v} />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="text-muted-foreground text-center py-8">No data available for this chart.</div>
+              )}
+            </CardContent>
+          </Card>
+          {/* Urban vs Rural Consumption (Side-by-Side Bar) */}
+          <Card className="shadow-lg border-0">
+            <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Urban vs Rural Consumption</CardTitle></CardHeader>
+            <CardContent>
+              {urbanRuralBarData && urbanRuralBarData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={urbanRuralBarData} barCategoryGap={30}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                    <XAxis dataKey="type" fontSize={14} tickLine={false} axisLine={false} />
+                    <YAxis fontSize={14} tickLine={false} axisLine={false} label={{ value: "Avg Consumption", angle: -90, position: "insideLeft", offset: 10 }} />
+                    <Tooltip />
+                    <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
+                    <Bar dataKey="Consumption" fill={COLORS[6]} radius={[8, 8, 0, 0]} maxBarSize={40}>
+                      <LabelList dataKey="Consumption" position="top" formatter={(v: number|string) => typeof v === 'number' ? v.toLocaleString() : v} />
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
@@ -330,38 +371,6 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
                       <LabelList dataKey="count" position="right" formatter={(v: number|string) => typeof v === 'number' ? v.toLocaleString() : v} />
                     </Bar>
                   </BarChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="text-muted-foreground text-center py-8">No data available for this chart.</div>
-              )}
-            </CardContent>
-          </Card>
-          {/* Urban vs Rural Consumption (Donut) */}
-          <Card className="shadow-lg border-0">
-            <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Urban vs Rural Consumption</CardTitle></CardHeader>
-            <CardContent>
-              {filteredUrbanRural && filteredUrbanRural.length > 0 ? (
-                <ResponsiveContainer width="100%" height={220}>
-                  <PieChart>
-                    <Pie
-                      data={filteredUrbanRural}
-                      dataKey="Consumption"
-                      nameKey="ur2_2012"
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={80}
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      labelLine={false}
-                    >
-                      {filteredUrbanRural.map((entry: any, i: number) => (
-                        <Cell key={`cell-${i}`} fill={COLORS[i % COLORS.length]} />
-                      ))}
-                      <LabelList dataKey="Consumption" position="outside" formatter={(v: number) => v?.toLocaleString()} />
-                    </Pie>
-                    <Tooltip />
-                    <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
-                  </PieChart>
                 </ResponsiveContainer>
               ) : (
                 <div className="text-muted-foreground text-center py-8">No data available for this chart.</div>
