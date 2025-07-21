@@ -193,13 +193,23 @@ export function ChatbotButton() {
               <CardFooter className="border-t p-4 bg-muted/40 shadow-lg rounded-b-lg" style={{marginBottom: '8px', marginTop: '4px'}}>
                 <form onSubmit={handleSendMessage} className="flex w-full gap-2 items-end">
                   <Textarea
-                    placeholder="Type your question here..."
+                    placeholder="Type your question…"
                     value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    className="flex-1 resize-none min-h-[48px] max-h-[120px] border-2 border-primary focus:border-primary focus:ring-2 focus:ring-primary/50 text-base px-4 py-2 rounded-lg bg-white shadow"
-                    rows={2}
+                    onChange={(e) => {
+                      setInput(e.target.value);
+                      const ta = e.target as HTMLTextAreaElement;
+                      ta.style.height = 'auto';
+                      ta.style.height = Math.min(ta.scrollHeight, 160) + 'px'; // max 160px
+                    }}
+                    onInput={e => {
+                      const ta = e.currentTarget;
+                      ta.style.height = 'auto';
+                      ta.style.height = Math.min(ta.scrollHeight, 160) + 'px';
+                    }}
+                    className="flex-1 resize-none min-h-[48px] max-h-[160px] border-2 border-primary focus:border-primary focus:ring-2 focus:ring-primary/50 text-base px-4 py-2 rounded-lg bg-white shadow transition-all"
+                    style={{overflowY: 'auto'}}
+                    rows={1}
                     disabled={isTyping}
-                    style={{marginBottom: '0'}}
                   />
                   <Button
                     type="submit"
