@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { useState, useRef, useEffect } from "react"
+import { useCallback } from "react"
 import { Bot, FileText, Loader2, Send } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -33,6 +34,32 @@ export function DocumentChatDialog({ open, onOpenChange, insights }: DocumentCha
   const [isTyping, setIsTyping] = useState(false)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
 
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+
+  // Helper to send chat to backend
+  const sendToBackend = useCallback(async (question: string) => {
+    setIsTyping(true);
+    try {
+      const res = await fetch(`${BACKEND_URL}/chatbot/`, {
+        method: "POST",
+        headers: { "Accept": "application/json" },
+        body: (() => {
+          const form = new FormData();
+          form.append("question", question);
+          form.append("context", JSON.stringify(insights || {}));
+          return form;
+        })(),
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const json = await res.json();
+      return json.answer || "(No answer from backend)";
+    } catch (e: any) {
+      return `Error: ${e.message}`;
+    } finally {
+      setIsTyping(false);
+    }
+  }, [insights]);
+
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -51,50 +78,16 @@ export function DocumentChatDialog({ open, onOpenChange, insights }: DocumentCha
       }
     }, 100)
 
-    // Simulate AI response
-    setTimeout(() => {
-      let response = ""
-
-      if (input.toLowerCase().includes("poverty")) {
-        response =
-          "Based on the EICV6 data, the poverty rate in Rwanda is 38.2%, which represents a decrease from 39.1% in the previous survey. Urban areas have a poverty rate of 15.8% while rural areas are at 43.1%. The Eastern Province showed the most significant reduction in poverty levels."
-      } else if (input.toLowerCase().includes("education") || input.toLowerCase().includes("literacy")) {
-        response =
-          "The EICV6 data shows that 73.2% of Rwanda's population aged 15 and above is literate. There's a gender gap with 77.6% literacy for males and 69.4% for females. Secondary school enrollment has increased by 12.3% compared to the previous survey period."
-      } else if (input.toLowerCase().includes("income") || input.toLowerCase().includes("economic")) {
-        response =
-          "According to the EICV6 data, the average monthly household income is 132,684 RWF. There's significant variation by province with Kigali City having the highest average at 372,648 RWF and the Eastern Province having the lowest at 89,456 RWF. Non-farm wage employment has increased by 8.2% since the last survey."
-      } else if (input.toLowerCase().includes("electricity") || input.toLowerCase().includes("water")) {
-        response =
-          "The EICV6 data indicates that 51.2% of households have access to electricity, up from 27.1% in the previous survey. For clean water access, 87.4% of households have access to an improved water source, though only 12.3% have piped water directly to their dwelling or yard."
-      } else if (input.toLowerCase().includes("gender") || input.toLowerCase().includes("women")) {
-        response =
-          "Gender analysis of the EICV6 data shows that female-headed households (23.1% of all households) have a higher poverty rate (42.6%) compared to male-headed households (36.8%). Women's participation in the labor force is 84.3%, slightly lower than men's at 87.6%."
-      } else if (
-        input.toLowerCase().includes("chart") ||
-        input.toLowerCase().includes("graph") ||
-        input.toLowerCase().includes("visualization")
-      ) {
-        response =
-          "I can create visualizations based on the EICV6 data. Here's a breakdown of poverty rates by province:\n\n- Kigali City: 13.9%\n- Southern Province: 41.4%\n- Western Province: 41.6%\n- Northern Province: 42.3%\n- Eastern Province: 37.4%\n\nWould you like me to generate a bar chart or another type of visualization for this data?"
-      } else if (input.toLowerCase().includes("compare") || input.toLowerCase().includes("correlation")) {
-        response =
-          "Analyzing correlations in the EICV6 data, I found a strong positive correlation (r=0.78) between education level and household income. There's also a notable correlation between access to electricity and internet usage (r=0.65), suggesting infrastructure dependencies. Would you like me to explore other correlations?"
-      } else {
-        response =
-          "Based on my analysis of the EICV6 data, I can provide insights on poverty rates, education levels, income distribution, access to utilities, gender disparities, and regional variations. What specific aspect would you like me to elaborate on?"
-      }
-
+    // Real backend AI response
+    sendToBackend(input).then((response) => {
       setMessages((prev) => [...prev, { role: "assistant", content: response }])
-      setIsTyping(false)
-
       // Auto scroll to bottom after response
       setTimeout(() => {
         if (scrollAreaRef.current) {
           scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
         }
       }, 100)
-    }, 2000)
+    })
   }
 
   // Auto scroll to bottom when dialog opens

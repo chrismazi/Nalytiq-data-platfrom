@@ -24,12 +24,13 @@ export function ChatbotButton() {
   const [isTyping, setIsTyping] = useState(false)
   const [activeTab, setActiveTab] = useState("chat")
   const scrollAreaRef = useRef<HTMLDivElement>(null)
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
 
   // Helper to send chat to backend
   const sendToBackend = useCallback(async (question: string) => {
     setIsTyping(true);
     try {
-      const res = await fetch("/chatbot/", {
+      const res = await fetch(`${BACKEND_URL}/chatbot/`, {
         method: "POST",
         headers: { "Accept": "application/json" },
         body: (() => {
