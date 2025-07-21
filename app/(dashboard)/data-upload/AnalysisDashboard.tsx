@@ -8,6 +8,45 @@ import { ArrowUpRight, ArrowDownRight } from "lucide-react";
 
 const COLORS = ["#2563eb", "#22d3ee", "#f59e42", "#f43f5e", "#10b981", "#eab308", "#a21caf", "#facc15"];
 
+// Utility to group education levels
+function groupEducationLevels(data: any[]) {
+  const mapping: { [key: string]: string } = {
+    'primary': 'Primary',
+    'primary school': 'Primary',
+    'elementary': 'Primary',
+    'secondary': 'Secondary',
+    'secondary school': 'Secondary',
+    'high school': 'Secondary',
+    'post-secondary': 'Tertiary',
+    'bachelor': 'Tertiary',
+    'bachelors': 'Tertiary',
+    'masters': 'Tertiary',
+    'phd': 'Tertiary',
+    'doctorate': 'Tertiary',
+    'tertiary': 'Tertiary',
+    'university': 'Tertiary',
+    'college': 'Tertiary',
+  };
+  const grouped: { [key: string]: any } = {};
+  data.forEach((row) => {
+    let key = (row.education_level || '').toLowerCase().trim();
+    let group = mapping[key] || (key === '' ? 'Unknown' : 'Other');
+    if (!grouped[group]) grouped[group] = { education_level: group, count: 0, poverty: 0, n: 0 };
+    grouped[group].count += row.count || 0;
+    if (row.poverty) {
+      grouped[group].poverty += row.poverty * (row.count || 1);
+      grouped[group].n += row.count || 1;
+    }
+  });
+  // Calculate average poverty rate for each group
+  Object.values(grouped).forEach((g) => {
+    if (g.n > 0) g.poverty = g.poverty / g.n;
+    else delete g.poverty;
+    delete g.n;
+  });
+  return Object.values(grouped);
+}
+
 export default function AnalysisDashboard({ data, onClose }: { data: any; onClose: () => void }) {
   // Extract unique filter values
   const provinces = useMemo(() => ["All", ...Array.from(new Set((data.province || []).map((d: any) => d.province)))], [data]);
@@ -75,6 +114,8 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
         setFreqLoading(false);
       });
   }, [selectedFreqVar]);
+
+  const groupedEducation = useMemo(() => data.education ? groupEducationLevels(data.education) : [], [data.education]);
 
   return (
     <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center animate-fade-in">
@@ -219,15 +260,15 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
               )}
             </CardContent>
           </Card>
-          {/* Education Breakdown Pie/Donut (NEW) */}
+          {/* Education Breakdown (Grouped Donut) */}
           <Card className="shadow-lg border-0">
             <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Education Breakdown</CardTitle></CardHeader>
             <CardContent>
-              {data.education && data.education.length > 0 ? (
+              {groupedEducation && groupedEducation.length > 0 ? (
                 <ResponsiveContainer width="100%" height={220}>
                   <PieChart>
                     <Pie
-                      data={data.education}
+                      data={groupedEducation}
                       dataKey="count"
                       nameKey="education_level"
                       cx="50%"
@@ -237,14 +278,58 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
                       label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                       labelLine={false}
                     >
-                      {data.education.map((entry: any, i: number) => (
+                      {groupedEducation.map((entry, i) => (
                         <Cell key={`cell-edu-${i}`} fill={COLORS[i % COLORS.length]} />
                       ))}
-                      <LabelList dataKey="count" position="outside" formatter={(v: number) => v?.toLocaleString()} />
+                      <LabelList dataKey="count" position="outside" formatter={(v: number|string) => typeof v === 'number' ? v.toLocaleString() : v} />
                     </Pie>
                     <Tooltip />
                     <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
                   </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="text-muted-foreground text-center py-8">No data available for this chart.</div>
+              )}
+            </CardContent>
+          </Card>
+          {/* Poverty by Education Level (Grouped, Vertical Bar) */}
+          <Card className="md:col-span-2 shadow-lg border-0">
+            <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Poverty Rate by Education Level</CardTitle></CardHeader>
+            <CardContent>
+              {groupedEducation && groupedEducation.length > 0 ? (
+                <ResponsiveContainer width="100%" height={240}>
+                  <BarChart data={groupedEducation} barCategoryGap={30}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                    <XAxis dataKey="education_level" fontSize={14} tickLine={false} axisLine={false} />
+                    <YAxis fontSize={14} tickLine={false} axisLine={false} label={{ value: "Poverty Rate (%)", angle: -90, position: "insideLeft", offset: 10 }} domain={[0, 'dataMax']} tickFormatter={(v: number|string) => typeof v === 'number' ? v.toFixed(1) : v} />
+                    <Tooltip formatter={(v: number|string) => typeof v === 'number' ? v.toFixed(1) + '%' : v} />
+                    <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
+                    <Bar dataKey="poverty" fill={COLORS[4]} radius={[8, 8, 0, 0]} maxBarSize={40}>
+                      <LabelList dataKey="poverty" position="top" formatter={(v: number|string) => typeof v === 'number' ? v.toFixed(1) + '%' : v} />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="text-muted-foreground text-center py-8">No data available for this chart.</div>
+              )}
+            </CardContent>
+          </Card>
+          {/* Population Count by Education Level (Grouped, Horizontal Bar) */}
+          <Card className="shadow-lg border-0">
+            <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Population by Education Level</CardTitle></CardHeader>
+            <CardContent>
+              {groupedEducation && groupedEducation.length > 0 ? (
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={groupedEducation} layout="vertical" barCategoryGap={30}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                    <XAxis type="number" fontSize={14} tickLine={false} axisLine={false} label={{ value: "Population", position: "insideBottom", offset: -5 }} />
+                    <YAxis dataKey="education_level" type="category" fontSize={14} width={120} label={{ value: "Education Level", angle: -90, position: "insideLeft", offset: 10 }} />
+                    <Tooltip />
+                    <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
+                    <Bar dataKey="count" fill={COLORS[5]} radius={[8, 8, 0, 0]} maxBarSize={40}>
+                      <LabelList dataKey="count" position="right" formatter={(v: number|string) => typeof v === 'number' ? v.toLocaleString() : v} />
+                    </Bar>
+                  </BarChart>
                 </ResponsiveContainer>
               ) : (
                 <div className="text-muted-foreground text-center py-8">No data available for this chart.</div>
@@ -297,28 +382,6 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
                     <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
                     <Bar dataKey="poverty" fill={COLORS[3]} radius={[8, 8, 0, 0]} maxBarSize={40}>
                       <LabelList dataKey="poverty" position="top" formatter={(v: number) => v?.toLocaleString()} />
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="text-muted-foreground text-center py-8">No data available for this chart.</div>
-              )}
-            </CardContent>
-          </Card>
-          {/* Poverty by Education Level */}
-          <Card className="md:col-span-2 shadow-lg border-0">
-            <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Poverty by Education Level</CardTitle></CardHeader>
-            <CardContent>
-              {data.education && data.education.length > 0 ? (
-                <ResponsiveContainer width="100%" height={240}>
-                  <BarChart data={data.education} layout="vertical" barCategoryGap={30}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                    <XAxis type="number" fontSize={14} tickLine={false} axisLine={false} label={{ value: "Count", position: "insideBottom", offset: -5 }} />
-                    <YAxis dataKey="education_level" type="category" fontSize={14} width={120} label={{ value: "Education Level", angle: -90, position: "insideLeft", offset: 10 }} />
-                    <Tooltip />
-                    <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
-                    <Bar dataKey="count" fill={COLORS[4]} radius={[8, 8, 0, 0]} maxBarSize={40}>
-                      <LabelList dataKey="count" position="top" formatter={(v: number) => v?.toLocaleString()} />
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
