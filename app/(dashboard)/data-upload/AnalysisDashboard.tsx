@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, CartesianGrid } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, CartesianGrid, LabelList } from "recharts";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { groupedStats } from "@/lib/api";
 import { ArrowUpRight, ArrowDownRight } from "lucide-react";
@@ -165,7 +165,9 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
                     <YAxis fontSize={14} tickLine={false} axisLine={false} label={{ value: "Poverty Rate", angle: -90, position: "insideLeft", offset: 10 }} />
                     <Tooltip />
                     <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
-                    <Bar dataKey="poverty" fill={COLORS[0]} radius={[8, 8, 0, 0]} maxBarSize={40} />
+                    <Bar dataKey="poverty" fill={COLORS[0]} radius={[8, 8, 0, 0]} maxBarSize={40}>
+                      <LabelList dataKey="poverty" position="top" formatter={(v: number) => v?.toLocaleString()} />
+                    </Bar>
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
@@ -173,7 +175,7 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
               )}
             </CardContent>
           </Card>
-          {/* Avg Consumption by Province (NEW) */}
+          {/* Avg Consumption by Province */}
           <Card className="shadow-lg border-0">
             <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Avg Consumption by Province</CardTitle></CardHeader>
             <CardContent>
@@ -185,7 +187,31 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
                     <YAxis fontSize={14} tickLine={false} axisLine={false} label={{ value: "Avg Consumption", angle: -90, position: "insideLeft", offset: 10 }} />
                     <Tooltip />
                     <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
-                    <Bar dataKey="Consumption" fill={COLORS[1]} radius={[8, 8, 0, 0]} maxBarSize={40} />
+                    <Bar dataKey="Consumption" fill={COLORS[1]} radius={[8, 8, 0, 0]} maxBarSize={40}>
+                      <LabelList dataKey="Consumption" position="top" formatter={(v: number) => v?.toLocaleString()} />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="text-muted-foreground text-center py-8">No data available for this chart.</div>
+              )}
+            </CardContent>
+          </Card>
+          {/* Top Districts by Consumption (Horizontal Bar) */}
+          <Card className="shadow-lg border-0">
+            <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Top Districts by Consumption</CardTitle></CardHeader>
+            <CardContent>
+              {filteredTopDistricts && filteredTopDistricts.length > 0 ? (
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={filteredTopDistricts} layout="vertical" barCategoryGap={30}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                    <XAxis type="number" fontSize={14} tickLine={false} axisLine={false} label={{ value: "Avg Consumption", position: "insideBottom", offset: -5 }} />
+                    <YAxis dataKey="district" type="category" fontSize={14} width={120} label={{ value: "District", angle: -90, position: "insideLeft", offset: 10 }} />
+                    <Tooltip />
+                    <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
+                    <Bar dataKey="Consumption" fill={COLORS[2]} radius={[8, 8, 0, 0]} maxBarSize={40}>
+                      <LabelList dataKey="Consumption" position="right" formatter={(v: number) => v?.toLocaleString()} />
+                    </Bar>
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
@@ -214,6 +240,7 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
                       {data.education.map((entry: any, i: number) => (
                         <Cell key={`cell-edu-${i}`} fill={COLORS[i % COLORS.length]} />
                       ))}
+                      <LabelList dataKey="count" position="outside" formatter={(v: number) => v?.toLocaleString()} />
                     </Pie>
                     <Tooltip />
                     <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
@@ -224,47 +251,7 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
               )}
             </CardContent>
           </Card>
-          {/* Top Districts by Consumption */}
-          <Card className="shadow-lg border-0">
-            <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Top Districts by Consumption</CardTitle></CardHeader>
-            <CardContent>
-              {filteredTopDistricts && filteredTopDistricts.length > 0 ? (
-                <ResponsiveContainer width="100%" height={220}>
-                  <BarChart data={filteredTopDistricts} barCategoryGap={30}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                    <XAxis dataKey="district" fontSize={14} tickLine={false} axisLine={false} dy={8} />
-                    <YAxis fontSize={14} tickLine={false} axisLine={false} label={{ value: "Avg Consumption", angle: -90, position: "insideLeft", offset: 10 }} />
-                    <Tooltip />
-                    <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
-                    <Bar dataKey="Consumption" fill={COLORS[2]} radius={[8, 8, 0, 0]} maxBarSize={40} />
-                  </BarChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="text-muted-foreground text-center py-8">No data available for this chart.</div>
-              )}
-            </CardContent>
-          </Card>
-          {/* Poverty by Gender */}
-          <Card className="shadow-lg border-0">
-            <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Poverty by Gender</CardTitle></CardHeader>
-            <CardContent>
-              {filteredGender && filteredGender.length > 0 ? (
-                <ResponsiveContainer width="100%" height={220}>
-                  <BarChart data={filteredGender} layout="vertical" barCategoryGap={30}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                    <XAxis type="number" fontSize={14} tickLine={false} axisLine={false} label={{ value: "Poverty Rate", position: "insideBottom", offset: -5 }} />
-                    <YAxis dataKey="s1q1" type="category" fontSize={14} label={{ value: "Gender", angle: -90, position: "insideLeft", offset: 10 }} />
-                    <Tooltip />
-                    <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
-                    <Bar dataKey="poverty" fill={COLORS[3]} radius={[8, 8, 0, 0]} maxBarSize={40} />
-                  </BarChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="text-muted-foreground text-center py-8">No data available for this chart.</div>
-              )}
-            </CardContent>
-          </Card>
-          {/* Urban vs Rural Consumption */}
+          {/* Urban vs Rural Consumption (Donut) */}
           <Card className="shadow-lg border-0">
             <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Urban vs Rural Consumption</CardTitle></CardHeader>
             <CardContent>
@@ -285,10 +272,33 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
                       {filteredUrbanRural.map((entry: any, i: number) => (
                         <Cell key={`cell-${i}`} fill={COLORS[i % COLORS.length]} />
                       ))}
+                      <LabelList dataKey="Consumption" position="outside" formatter={(v: number) => v?.toLocaleString()} />
                     </Pie>
                     <Tooltip />
                     <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
                   </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="text-muted-foreground text-center py-8">No data available for this chart.</div>
+              )}
+            </CardContent>
+          </Card>
+          {/* Poverty by Gender */}
+          <Card className="shadow-lg border-0">
+            <CardHeader className="pb-2"><CardTitle className="text-lg font-semibold">Poverty by Gender</CardTitle></CardHeader>
+            <CardContent>
+              {filteredGender && filteredGender.length > 0 ? (
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={filteredGender} layout="vertical" barCategoryGap={30}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                    <XAxis type="number" fontSize={14} tickLine={false} axisLine={false} label={{ value: "Poverty Rate", position: "insideBottom", offset: -5 }} />
+                    <YAxis dataKey="s1q1" type="category" fontSize={14} label={{ value: "Gender", angle: -90, position: "insideLeft", offset: 10 }} />
+                    <Tooltip />
+                    <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
+                    <Bar dataKey="poverty" fill={COLORS[3]} radius={[8, 8, 0, 0]} maxBarSize={40}>
+                      <LabelList dataKey="poverty" position="top" formatter={(v: number) => v?.toLocaleString()} />
+                    </Bar>
+                  </BarChart>
                 </ResponsiveContainer>
               ) : (
                 <div className="text-muted-foreground text-center py-8">No data available for this chart.</div>
@@ -307,7 +317,9 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
                     <YAxis dataKey="education_level" type="category" fontSize={14} width={120} label={{ value: "Education Level", angle: -90, position: "insideLeft", offset: 10 }} />
                     <Tooltip />
                     <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
-                    <Bar dataKey="count" fill={COLORS[4]} radius={[8, 8, 0, 0]} maxBarSize={40} />
+                    <Bar dataKey="count" fill={COLORS[4]} radius={[8, 8, 0, 0]} maxBarSize={40}>
+                      <LabelList dataKey="count" position="top" formatter={(v: number) => v?.toLocaleString()} />
+                    </Bar>
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
