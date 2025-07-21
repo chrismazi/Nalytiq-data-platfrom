@@ -130,7 +130,7 @@ export function ChatbotButton() {
       </Button>
 
       {isOpen && (
-        <Card className="fixed bottom-6 right-6 w-80 md:w-[400px] h-[600px] shadow-xl flex flex-col animate-in z-50">
+        <Card className="fixed bottom-10 right-6 w-80 md:w-[400px] h-[540px] shadow-xl flex flex-col animate-in z-50">
           <CardHeader className="border-b px-4 py-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -209,7 +209,7 @@ export function ChatbotButton() {
                 )}
               </ScrollArea>
 
-              <CardFooter className="border-t p-4 bg-muted/40">
+              <CardFooter className="border-t p-4 bg-muted/40 shadow-lg rounded-b-lg" style={{marginBottom: '8px', marginTop: '4px'}}>
                 <form onSubmit={handleSendMessage} className="flex w-full gap-2 items-end">
                   <Textarea
                     placeholder="Type your question here..."
@@ -218,6 +218,7 @@ export function ChatbotButton() {
                     className="flex-1 resize-none min-h-[48px] max-h-[120px] border-2 border-primary focus:border-primary focus:ring-2 focus:ring-primary/50 text-base px-4 py-2 rounded-lg bg-white shadow"
                     rows={2}
                     disabled={isTyping}
+                    style={{marginBottom: '0'}}
                   />
                   <Button
                     type="submit"
@@ -225,6 +226,7 @@ export function ChatbotButton() {
                     className="ml-2 h-12 w-12 rounded-lg bg-primary text-white shadow-lg"
                     disabled={isTyping || !input.trim()}
                     aria-label="Send message"
+                    style={{marginBottom: '0'}}
                   >
                     {isTyping ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
                   </Button>
