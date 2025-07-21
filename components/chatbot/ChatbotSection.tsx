@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback } from "react";
+import { Textarea } from "@/components/ui/textarea"
 
 interface ChatbotSectionProps {
   data: any;
@@ -70,15 +71,23 @@ const ChatbotSection: React.FC<ChatbotSectionProps> = ({ data, columns }) => {
           ))}
           {isTyping && <div className="text-muted-foreground">AI is typing...</div>}
         </div>
-        <form onSubmit={handleSendMessage} className="flex gap-2">
-          <input
-            className="flex-1 border rounded px-3 py-2"
-            placeholder="Ask a question about your data..."
+        <form onSubmit={handleSendMessage} className="flex gap-2 items-end mt-2 bg-muted/40 p-2 rounded-lg">
+          <Textarea
+            placeholder="Type your question here..."
             value={input}
             onChange={e => setInput(e.target.value)}
+            className="flex-1 resize-none min-h-[48px] max-h-[120px] border-2 border-primary focus:border-primary focus:ring-2 focus:ring-primary/50 text-base px-4 py-2 rounded-lg bg-white shadow"
+            rows={2}
             disabled={isTyping}
           />
-          <button type="submit" className="bg-primary text-white px-4 py-2 rounded" disabled={isTyping || !input.trim()}>Send</button>
+          <button
+            type="submit"
+            className="ml-2 h-12 w-12 rounded-lg bg-primary text-white shadow-lg flex items-center justify-center"
+            disabled={isTyping || !input.trim()}
+            aria-label="Send message"
+          >
+            {isTyping ? <span className="loader2 h-5 w-5 animate-spin" /> : <span className="send h-5 w-5" />}
+          </button>
         </form>
       </div>
     </section>
