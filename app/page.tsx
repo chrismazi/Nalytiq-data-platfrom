@@ -278,7 +278,7 @@ export default function LandingPage() {
               className="text-center max-w-3xl mx-auto mb-12"
             >
               <Badge className="mb-4 rounded-full px-4 py-1.5 text-sm font-medium" variant="secondary">
-                Nalytiq's Official Data Platform
+                Nalytiq Rwanda's Official Data Platform
               </Badge>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
                 Empowering Africa with AI-Powered Data Insights
@@ -645,11 +645,16 @@ export default function LandingPage() {
               </ul>
             </div>
           </div>
-          <div className="flex flex-col gap-4 sm:flex-row justify-between items-center border-t border-border/40 pt-8 mt-8">
-            <p className="text-xs text-muted-foreground">
-              &copy; {new Date().getFullYear()} Nalytiq. All rights reserved.
-            </p>
-            <div className="flex gap-4">
+          <div className="w-full max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between border-t border-border/40 pt-8 mt-8 gap-2">
+            <div className="flex-1 flex justify-start">
+              <p className="text-xs text-muted-foreground">&copy; {new Date().getFullYear()} Nalytiq. All rights reserved.</p>
+            </div>
+            <div className="flex-1 flex justify-center text-center">
+              <p className="text-xs text-muted-foreground">
+                Nalytiq &nbsp;|&nbsp; created by <a href="https://chrismazii.online" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">Chris Mazimpaka</a> &bull; matthew 5:16
+              </p>
+            </div>
+            <div className="flex-1 flex justify-end gap-4">
               <Link href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
                 Privacy Policy
               </Link>
