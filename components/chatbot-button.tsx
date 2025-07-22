@@ -18,7 +18,7 @@ export function ChatbotButton() {
     {
       role: "assistant",
       content:
-        "Hello! I'm your NISR AI assistant. I can help you with questions about Rwanda's statistics, surveys, and reports. How can I assist you today?",
+        "Hello! I'm your Nalytiq AI assistant. I can help you with questions about analytics, datasets, and reports. How can I assist you today?",
     },
   ])
   const [input, setInput] = useState("")
@@ -93,17 +93,17 @@ export function ChatbotButton() {
   }, [isOpen, activeTab])
 
   const suggestedQuestions = [
-    "What is Rwanda's current inflation rate?",
+    "What is the current inflation rate?",
     "Tell me about the EICV survey",
-    "What is the population of Rwanda?",
-    "What was Rwanda's GDP growth in 2022?",
-    "What is the literacy rate in Rwanda?",
-    "Tell me about healthcare in Rwanda",
+    "What is the population?",
+    "What was the GDP growth in 2022?",
+    "What is the literacy rate?",
+    "Tell me about healthcare trends",
   ]
 
   const recentReports = [
     {
-      title: "Rwanda Economic Outlook 2023",
+      title: "Economic Outlook 2023",
       date: "May 2, 2023",
       pages: 48,
     },
@@ -136,7 +136,7 @@ export function ChatbotButton() {
               <div className="p-1.5 rounded-md bg-primary/10">
                 <Bot className="h-5 w-5 text-primary" />
               </div>
-              <CardTitle className="text-lg font-medium">NISR AI Assistant</CardTitle>
+              <CardTitle className="text-lg font-medium">Nalytiq AI Assistant</CardTitle>
               <span className="ml-2 flex items-center gap-1">
                 <span className="inline-block h-2 w-2 rounded-full bg-green-500 animate-pulse" title="Online" />
                 <span className="text-xs text-muted-foreground">Online</span>
@@ -256,10 +256,10 @@ export function ChatbotButton() {
                       className="w-full justify-start text-sm"
                       onClick={() => {
                         setActiveTab("chat")
-                        setInput("Summarize the Rwanda Economic Outlook 2023")
+                        setInput("Summarize the Economic Outlook 2023")
                       }}
                     >
-                      Summarize the Rwanda Economic Outlook 2023
+                      Summarize the Economic Outlook 2023
                     </Button>
                     <Button
                       variant="outline"

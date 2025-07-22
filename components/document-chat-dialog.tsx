@@ -28,7 +28,7 @@ export function DocumentChatDialog({ open, onOpenChange, insights }: DocumentCha
     {
       role: "assistant",
       content:
-        "I've analyzed the EICV6 Survey Data. This dataset contains information on household living conditions across Rwanda. What specific insights would you like to explore?",
+        "I've analyzed the EICV6 Survey Data. This dataset contains information on household living conditions. What specific insights would you like to explore?",
     },
   ])
   const [input, setInput] = useState("")

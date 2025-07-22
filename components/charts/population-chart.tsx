@@ -1,6 +1,6 @@
 "use client"
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 
 const data = [
@@ -18,41 +18,15 @@ interface PopulationChartProps {
 
 export function PopulationChart({ height = 180 }: PopulationChartProps) {
   return (
-    <ChartContainer
-      config={{
-        height,
-        margin: { top: 5, right: 5, left: 5, bottom: 20 },
-      }}
-    >
+    <ChartContainer config={{}}>
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} />
-          <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
-          <YAxis fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}M`} />
-          <Tooltip
-            content={({ active, payload }) => {
-              if (active && payload && payload.length) {
-                return (
-                  <ChartTooltip>
-                    <ChartTooltipContent
-                      content={[
-                        {
-                          label: "Year",
-                          value: payload[0].payload.name,
-                        },
-                        {
-                          label: "Population",
-                          value: `${payload[0].value}M`,
-                        },
-                      ]}
-                    />
-                  </ChartTooltip>
-                )
-              }
-              return null
-            }}
-          />
-          <Bar dataKey="population" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+        <BarChart data={data} barCategoryGap={30}>
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+          <XAxis dataKey="name" fontSize={14} tickLine={false} axisLine={false} dy={8} />
+          <YAxis fontSize={14} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}M`} dx={-8} />
+          <Tooltip />
+          <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ fontSize: 13 }} />
+          <Bar dataKey="population" name="Population (M)" fill="#2563eb" radius={[8, 8, 0, 0]} maxBarSize={40} />
         </BarChart>
       </ResponsiveContainer>
     </ChartContainer>

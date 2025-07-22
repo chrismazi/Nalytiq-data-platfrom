@@ -103,6 +103,49 @@ class DataAnalyzer:
         except Exception as e:
             raise ValueError(f"Error reading Stata file: {e}")
 
+    def analyze_insights(self) -> Dict[str, Any]:
+        """Return automated warnings and insights for the current df."""
+        if self.df is None:
+            return {"warnings": ["No dataset loaded"]}
+        warnings = []
+        insights = []
+        df = self.df
+        n_rows = len(df)
+        # High missingness
+        missing_pct = df.isnull().mean()
+        high_missing = missing_pct[missing_pct > 0.2].index.tolist()
+        if high_missing:
+            warnings.append(f"High missingness (>20%) in columns: {', '.join(high_missing)}")
+        # High duplicates
+        dup_pct = df.duplicated().mean()
+        if dup_pct > 0.05:
+            warnings.append(f"High duplicate row rate: {dup_pct:.1%}")
+        # Constant columns
+        constant_cols = [col for col in df.columns if df[col].nunique() <= 1]
+        if constant_cols:
+            warnings.append(f"Constant/no-variance columns: {', '.join(constant_cols)}")
+        # Outliers (numeric columns)
+        outlier_cols = []
+        for col in df.select_dtypes(include=[np.number]).columns:
+            col_z = (df[col] - df[col].mean()) / (df[col].std() or 1)
+            n_out = (col_z.abs() > 3).sum()
+            if n_out > 0:
+                outlier_cols.append(f"{col} ({n_out} outliers)")
+        if outlier_cols:
+            warnings.append(f"Potential outliers detected in: {', '.join(outlier_cols)}")
+        # Strong correlations
+        corr = df.select_dtypes(include=[np.number]).corr()
+        strong_corrs = []
+        for i, col1 in enumerate(corr.columns):
+            for col2 in corr.columns[i+1:]:
+                val = corr.loc[col1, col2]
+                if abs(val) > 0.8:
+                    strong_corrs.append(f"{col1} vs {col2} (corr={val:.2f})")
+        if strong_corrs:
+            insights.append(f"Strong correlations: {', '.join(strong_corrs)}")
+        # TODO: Add statistical tests (t-test, chi-square) in future step
+        return {"warnings": warnings, "insights": insights}
+
     def _get_basic_info(self) -> Dict[str, Any]:
         if self.df is None:
             return {"error": "No dataset loaded"}
@@ -147,6 +190,8 @@ class DataAnalyzer:
                 })
             column_stats[col] = col_stats
         info["column_stats"] = column_stats
+        # Add insights/warnings
+        info["insights"] = self.analyze_insights()
         return info
 
     def get_descriptive_stats(self) -> Dict[str, Any]:

@@ -65,7 +65,7 @@ export function AppSidebar() {
             N
           </div>
           <div>
-            <h3 className="font-semibold">NISR Rwanda</h3>
+            <h3 className="font-semibold">Nalytiq</h3>
             <p className="text-xs text-muted-foreground">Data Platform</p>
           </div>
         </div>

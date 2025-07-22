@@ -1,32 +1,28 @@
 import type React from "react"
-import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import "./globals.css"
+import type { Metadata } from "next"
 import { ThemeProvider } from "@/components/theme-provider"
-import { SidebarProvider } from "@/components/ui/sidebar"
-import { LayoutClientWrapper } from '@/components/LayoutClientWrapper';
+import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "NISR Rwanda | Intelligent Data Platform",
-  description: "National Institute of Statistics of Rwanda - AI-powered analytics and reporting portal",
+  title: "Nalytiq | Intelligent Data Platform",
+  description: "Nalytiq - AI-powered analytics and reporting portal",
   generator: 'v0.dev'
 }
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <LayoutClientWrapper>
-          <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-            <SidebarProvider>{children}</SidebarProvider>
-          </ThemeProvider>
-        </LayoutClientWrapper>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )

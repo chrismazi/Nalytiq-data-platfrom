@@ -101,7 +101,7 @@ export function GenerateReportDialog({ open, onOpenChange, isGenerating }: Gener
               <div className="flex items-center justify-center gap-3 p-4 border rounded-lg bg-muted/50 w-full">
                 <FileText className="h-8 w-8 text-primary" />
                 <div className="text-left">
-                  <p className="font-medium">Rwanda Statistics Dashboard Report</p>
+                  <p className="font-medium">Nalytiq Dashboard Report</p>
                   <p className="text-xs text-muted-foreground">PDF • 2.4 MB • Generated on May 3, 2023</p>
                 </div>
               </div>

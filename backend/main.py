@@ -55,6 +55,7 @@ async def upload_file(file: UploadFile = File(...)):
             "dtypes": result["dtypes"],
             "head": result["sample_data"],
             "describe": result.get("descriptive_stats", {}),
+            "insights": result.get("insights", {}),
         }
         
         print(f"Summary created: {len(summary['columns'])} columns")
@@ -91,7 +92,9 @@ async def profile_file(file: UploadFile = File(...)):
         if "error" not in corr_matrix:
             result.update(corr_matrix)
         
-        # Create a comprehensive HTML report
+        # Add insights
+        insights = result.get("insights", {})
+        # Create a comprehensive HTML report (add insights section)
         html_content = f"""
         <!DOCTYPE html>
         <html>
@@ -110,6 +113,15 @@ async def profile_file(file: UploadFile = File(...)):
         </head>
         <body>
             <h1>Data Profile Report</h1>
+            <div class="section">
+                <h2>Automated Insights & Warnings</h2>
+                <ul>"""
+        for w in insights.get("warnings", []):
+            html_content += f'<li style="color:red">⚠️ {w}</li>'
+        for i in insights.get("insights", []):
+            html_content += f'<li style="color:green">💡 {i}</li>'
+        html_content += """</ul>
+            </div>
             <div class="section">
                 <h2>Dataset Overview</h2>
                 <div class="stats">
