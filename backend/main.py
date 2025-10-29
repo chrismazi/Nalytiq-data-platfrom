@@ -1,6 +1,7 @@
-from fastapi import FastAPI, File, UploadFile, Form, Body
+from fastapi import FastAPI, File, UploadFile, Form, Body, HTTPException, status
 from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import RequestValidationError
 import pandas as pd
 import tempfile
 import os
@@ -13,42 +14,110 @@ from modeling import run_model
 from chatbot import ask_chatbot
 from typing import List, Optional
 
-app = FastAPI()
+# Import new utilities
+from config import settings
+from logger import get_logger
+from exceptions import (
+    validation_exception_handler,
+    http_exception_handler,
+    general_exception_handler,
+    DataProcessingError,
+    FileValidationError,
+    create_error_response
+)
+from validators import FileValidator, DataValidator
 
-# Allow CORS for local frontend development
+# Initialize logger
+logger = get_logger(__name__)
+
+# Initialize FastAPI app
+app = FastAPI(
+    title="Nalytiq Data Platform API",
+    description="AI-powered data analytics platform for NISR Rwanda",
+    version="1.0.0",
+    docs_url="/api/docs",
+    redoc_url="/api/redoc"
+)
+
+# Exception handlers
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
+app.add_exception_handler(HTTPException, http_exception_handler)
+app.add_exception_handler(Exception, general_exception_handler)
+
+# CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.include_router(auth_router, prefix="/auth")
+# Include routers
+app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
 
-@app.post("/upload/")
+# Include enhanced endpoints
+from enhanced_endpoints import router as enhanced_router
+app.include_router(enhanced_router, prefix="/api", tags=["Enhanced Analytics"])
+
+@app.get("/", tags=["Health"])
+async def root():
+    """API health check endpoint"""
+    return {
+        "status": "healthy",
+        "version": "1.0.0",
+        "service": "Nalytiq Data Platform API"
+    }
+
+@app.get("/health", tags=["Health"])
+async def health_check():
+    """Detailed health check"""
+    return {
+        "status": "healthy",
+        "database": "connected",
+        "timestamp": pd.Timestamp.now().isoformat()
+    }
+
+@app.post("/upload/", tags=["Data Processing"])
 async def upload_file(file: UploadFile = File(...)):
-    print(f"Received file: {file.filename}")
-    # Save uploaded file to a temp location
-    with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(file.filename)[-1]) as tmp:
-        content = await file.read()
-        tmp.write(content)
-        tmp_path = tmp.name
-        print(f"File saved to: {tmp_path}")
+    """
+    Upload and analyze a dataset
+    
+    Supports CSV, Excel (.xlsx, .xls), and Stata (.dta) files
+    """
+    logger.info(f"Upload request received for file: {file.filename}")
+    tmp_path = None
+    
     try:
-        # Use the DataAnalyzer to read and analyze the file
+        # Validate file
+        await FileValidator.validate_upload(file)
+        file_info = FileValidator.get_file_info(file)
+        logger.info(f"File validation passed: {file_info}")
+        
+        # Save uploaded file to temp location
+        with tempfile.NamedTemporaryFile(
+            delete=False, 
+            suffix=os.path.splitext(file.filename or "data.csv")[-1]
+        ) as tmp:
+            content = await file.read()
+            tmp.write(content)
+            tmp_path = tmp.name
+            logger.debug(f"File saved to: {tmp_path}")
+        
+        # Analyze file
         analyzer = DataAnalyzer()
         result = analyzer.read_file(tmp_path)
         
         if "error" in result:
-            return JSONResponse(status_code=400, content={"error": result["error"]})
+            logger.error(f"Analysis error: {result['error']}")
+            raise DataProcessingError(result["error"])
         
         # Add descriptive stats
         desc_stats = analyzer.get_descriptive_stats()
         if "error" not in desc_stats:
             result.update(desc_stats)
         
-        # Format the response to match the expected frontend format
+        # Format response
         summary = {
             "columns": result["columns"],
             "shape": result["shape"],
@@ -56,16 +125,36 @@ async def upload_file(file: UploadFile = File(...)):
             "head": result["sample_data"],
             "describe": result.get("descriptive_stats", {}),
             "insights": result.get("insights", {}),
+            "file_info": file_info,
         }
         
-        print(f"Summary created: {len(summary['columns'])} columns")
+        logger.info(f"Upload successful: {len(summary['columns'])} columns, {summary['shape'][0]} rows")
         return JSONResponse(content=summary)
         
+    except FileValidationError as e:
+        logger.warning(f"File validation failed: {str(e)}")
+        return create_error_response(str(e), "FILE_VALIDATION_ERROR", status.HTTP_400_BAD_REQUEST)
+    
+    except DataProcessingError as e:
+        logger.error(f"Data processing failed: {str(e)}")
+        return create_error_response(str(e), "DATA_PROCESSING_ERROR", status.HTTP_400_BAD_REQUEST)
+    
     except Exception as e:
-        print(f"Error processing file: {e}")
-        return JSONResponse(status_code=500, content={"error": str(e)})
+        logger.exception(f"Unexpected error processing file: {str(e)}")
+        return create_error_response(
+            "Failed to process file. Please check the file format and try again.",
+            "PROCESSING_ERROR",
+            status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+    
     finally:
-        os.remove(tmp_path)
+        # Clean up temp file
+        if tmp_path and os.path.exists(tmp_path):
+            try:
+                os.remove(tmp_path)
+                logger.debug(f"Temp file removed: {tmp_path}")
+            except Exception as e:
+                logger.warning(f"Failed to remove temp file: {str(e)}")
 
 @app.post("/profile/")
 async def profile_file(file: UploadFile = File(...)):
