@@ -200,4 +200,212 @@ export async function crosstab(file: File, columns: string[]) {
   });
   if (!res.ok) throw new Error('Failed to get crosstab/frequency table');
   return res.json();
+}
+
+// ===== ENHANCED UNIVERSAL ANALYTICS API =====
+
+export async function uploadDatasetEnhanced(
+  file: File,
+  name?: string,
+  description?: string,
+  autoClean: boolean = true
+) {
+  console.log('Enhanced upload:', file.name);
+  const formData = new FormData();
+  formData.append('file', file);
+  if (name) formData.append('name', name);
+  if (description) formData.append('description', description);
+  formData.append('auto_clean', String(autoClean));
+
+  const res = await fetch('http://localhost:8000/api/upload-enhanced/', {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({ error: 'Upload failed' }));
+    throw new Error(errorData.error || 'Failed to upload dataset');
+  }
+
+  const result = await res.json();
+  console.log('Enhanced upload successful:', result);
+  return result;
+}
+
+export async function getGroupedStats(
+  datasetId: number,
+  groupBy: string,
+  valueCol: string,
+  aggregation: string = 'mean'
+) {
+  const res = await fetch('http://localhost:8000/api/analyze/grouped-stats/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      dataset_id: datasetId,
+      group_by: groupBy,
+      value_col: valueCol,
+      aggregation,
+    }),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({ error: 'Analysis failed' }));
+    throw new Error(errorData.error || 'Failed to get grouped statistics');
+  }
+
+  return res.json();
+}
+
+export async function getCrosstab(
+  datasetId: number,
+  rowCol: string,
+  colCol: string,
+  valueCol?: string,
+  aggfunc: string = 'count',
+  normalize: boolean = false
+) {
+  const res = await fetch('http://localhost:8000/api/analyze/crosstab/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      dataset_id: datasetId,
+      row_col: rowCol,
+      col_col: colCol,
+      value_col: valueCol,
+      aggfunc,
+      normalize,
+    }),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({ error: 'Analysis failed' }));
+    throw new Error(errorData.error || 'Failed to generate crosstab');
+  }
+
+  return res.json();
+}
+
+export async function trainMLModel(
+  datasetId: number,
+  target: string,
+  features?: string[],
+  testSize: number = 0.2,
+  nEstimators: number = 100,
+  maxDepth?: number
+) {
+  const res = await fetch('http://localhost:8000/api/ml/train/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      dataset_id: datasetId,
+      target,
+      features,
+      test_size: testSize,
+      n_estimators: nEstimators,
+      max_depth: maxDepth,
+    }),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({ error: 'Training failed' }));
+    throw new Error(errorData.error || 'Failed to train model');
+  }
+
+  return res.json();
+}
+
+export async function getTopN(
+  datasetId: number,
+  groupCol: string,
+  valueCol: string,
+  n: number = 10,
+  ascending: boolean = false
+) {
+  const res = await fetch('http://localhost:8000/api/analyze/top-n/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      dataset_id: datasetId,
+      group_col: groupCol,
+      value_col: valueCol,
+      n,
+      ascending,
+    }),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({ error: 'Analysis failed' }));
+    throw new Error(errorData.error || 'Failed to get top N');
+  }
+
+  return res.json();
+}
+
+export async function getComparison(
+  datasetId: number,
+  categoryCol: string,
+  valueCol: string,
+  categories?: string[]
+) {
+  const res = await fetch('http://localhost:8000/api/analyze/comparison/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      dataset_id: datasetId,
+      category_col: categoryCol,
+      value_col: valueCol,
+      categories,
+    }),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({ error: 'Analysis failed' }));
+    throw new Error(errorData.error || 'Failed to get comparison');
+  }
+
+  return res.json();
+}
+
+export async function listDatasets(limit: number = 100) {
+  const res = await fetch(`http://localhost:8000/api/datasets/?limit=${limit}`);
+
+  if (!res.ok) {
+    throw new Error('Failed to list datasets');
+  }
+
+  return res.json();
+}
+
+export async function getDataset(datasetId: number) {
+  const res = await fetch(`http://localhost:8000/api/datasets/${datasetId}/`);
+
+  if (!res.ok) {
+    throw new Error('Failed to get dataset');
+  }
+
+  return res.json();
+}
+
+export async function downloadDataset(
+  datasetId: number,
+  format: 'csv' | 'excel' | 'json' = 'csv'
+) {
+  const res = await fetch(
+    `http://localhost:8000/api/datasets/${datasetId}/download/?format=${format}`
+  );
+
+  if (!res.ok) {
+    throw new Error('Failed to download dataset');
+  }
+
+  const blob = await res.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `dataset_${datasetId}.${format === 'excel' ? 'xlsx' : format}`;
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
 } 

@@ -10,3 +10,6 @@ Traceback (most recent call last):
     version = _bcrypt.__about__.__version__
               ^^^^^^^^^^^^^^^^^
 AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-10-30 01:46:34 - main - INFO - main.py:88 - Upload request received for file: cs_s1_s2_s3_s4_s6a_s6e_s6f_person.dta
+2025-10-30 01:46:35 - main - INFO - main.py:95 - File validation passed: {'filename': 'cs_s1_s2_s3_s4_s6a_s6e_s6f_person.dta', 'size_bytes': 68769929, 'size_mb': 65.58, 'extension': '.dta'}
+2025-10-30 01:46:38 - main - INFO - main.py:131 - Upload successful: 128 columns, 66081 rows
