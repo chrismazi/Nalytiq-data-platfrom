@@ -85,6 +85,10 @@ app.include_router(ml_router, tags=["Advanced ML"])
 from visualization_endpoints import router as viz_router
 app.include_router(viz_router, tags=["Visualizations"])
 
+# Include export and transformation endpoints
+from export_transform_endpoints import router as export_transform_router
+app.include_router(export_transform_router, tags=["Export & Transformation"])
+
 @app.get("/", tags=["Health"])
 async def root():
     """API health check endpoint"""
