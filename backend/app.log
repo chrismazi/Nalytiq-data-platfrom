@@ -212,3 +212,40 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 2025-10-30 13:42:43 - enhanced_endpoints - INFO - enhanced_endpoints.py:141 - Cleaning complete: 0 duplicates removed
 2025-10-30 13:42:43 - enhanced_endpoints - INFO - enhanced_endpoints.py:200 - Upload successful: dataset_id=7
 2025-10-30 14:28:41 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/stats: {'analysis_id': ['Input should be a valid integer, unable to parse string as an integer']}
+2025-10-30 15:40:44 - main - INFO - main.py:50 - Initializing databases...
+2025-10-30 15:40:44 - main - INFO - main.py:53 - Databases initialized successfully
+2025-10-30 15:40:45 - passlib.handlers.bcrypt - WARNING - bcrypt.py:622 - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-10-30 15:40:45 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Invalid token
+2025-10-30 15:40:45 - passlib.handlers.bcrypt - WARNING - bcrypt.py:622 - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-10-30 15:40:45 - passlib.handlers.bcrypt - WARNING - bcrypt.py:622 - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-10-30 15:40:45 - passlib.handlers.bcrypt - WARNING - bcrypt.py:622 - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-10-30 15:40:45 - passlib.handlers.bcrypt - WARNING - bcrypt.py:622 - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-10-30 15:40:45 - main - INFO - main.py:50 - Initializing databases...
+2025-10-30 15:40:45 - main - INFO - main.py:53 - Databases initialized successfully
+2025-10-30 15:40:45 - main - INFO - main.py:50 - Initializing databases...
+2025-10-30 15:40:45 - main - INFO - main.py:53 - Databases initialized successfully

@@ -30,6 +30,10 @@ from validators import FileValidator, DataValidator
 # Initialize logger
 logger = get_logger(__name__)
 
+# Initialize databases
+from database_enhanced import init_enhanced_database
+from database import init_database
+
 # Initialize FastAPI app
 app = FastAPI(
     title="Nalytiq Data Platform API",
@@ -38,6 +42,15 @@ app = FastAPI(
     docs_url="/api/docs",
     redoc_url="/api/redoc"
 )
+
+# Initialize databases on startup
+@app.on_event("startup")
+async def startup_event():
+    """Initialize databases on application startup"""
+    logger.info("Initializing databases...")
+    init_database()  # Original database
+    init_enhanced_database()  # Enhanced database with users table
+    logger.info("Databases initialized successfully")
 
 # Exception handlers
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
