@@ -28,7 +28,8 @@ import {
   trainMLModel,
   getTopN,
   getComparison,
-  downloadDataset
+  downloadDataset,
+  saveAnalysis
 } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
 
@@ -127,6 +128,7 @@ export default function DataUploadPage() {
     if (!datasetId) return
 
     setAnalyzing(true)
+    const startTime = Date.now()
     
     try {
       let result: any = null
@@ -187,6 +189,24 @@ export default function DataUploadPage() {
           )
           title = `ML Model: Predict ${config.target}`
           break
+      }
+
+      const executionTime = Date.now() - startTime
+
+      // Save analysis to history
+      try {
+        await saveAnalysis({
+          dataset_id: datasetId,
+          analysis_type: type,
+          title: title,
+          parameters: config,
+          results: result,
+          visualization_data: { type, config },
+          execution_time_ms: executionTime
+        })
+      } catch (saveErr) {
+        console.error("Failed to save analysis to history:", saveErr)
+        // Don't fail the whole analysis if save fails
       }
 
       // Add to results
