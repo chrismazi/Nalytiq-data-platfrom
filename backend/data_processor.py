@@ -41,9 +41,12 @@ class UniversalDataProcessor:
                     # Sample a few non-null values
                     sample = self.df[col].dropna().head(100)
                     if len(sample) > 0:
-                        # Try parsing as datetime
-                        pd.to_datetime(sample, errors='raise')
-                        self.df[col] = pd.to_datetime(self.df[col], errors='coerce')
+                        # Try parsing as datetime (suppress warning about format inference)
+                        import warnings
+                        with warnings.catch_warnings():
+                            warnings.filterwarnings('ignore', message='Could not infer format')
+                            pd.to_datetime(sample, errors='raise')
+                            self.df[col] = pd.to_datetime(self.df[col], errors='coerce')
                         type_changes[col] = f"{original_type} → datetime"
                         logger.info(f"Converted {col} to datetime")
                         continue
