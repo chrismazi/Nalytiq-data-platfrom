@@ -13,3 +13,45 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 2025-10-30 01:46:34 - main - INFO - main.py:88 - Upload request received for file: cs_s1_s2_s3_s4_s6a_s6e_s6f_person.dta
 2025-10-30 01:46:35 - main - INFO - main.py:95 - File validation passed: {'filename': 'cs_s1_s2_s3_s4_s6a_s6e_s6f_person.dta', 'size_bytes': 68769929, 'size_mb': 65.58, 'extension': '.dta'}
 2025-10-30 01:46:38 - main - INFO - main.py:131 - Upload successful: 128 columns, 66081 rows
+2025-10-30 02:02:43 - main - INFO - main.py:88 - Upload request received for file: cs_s1_s2_s3_s4_s6a_s6e_s6f_person.dta
+2025-10-30 02:02:43 - main - INFO - main.py:95 - File validation passed: {'filename': 'cs_s1_s2_s3_s4_s6a_s6e_s6f_person.dta', 'size_bytes': 68769929, 'size_mb': 65.58, 'extension': '.dta'}
+2025-10-30 02:02:47 - main - INFO - main.py:131 - Upload successful: 128 columns, 66081 rows
+2025-10-30 02:19:21 - enhanced_endpoints - INFO - enhanced_endpoints.py:76 - Enhanced upload request: cs_s1_s2_s3_s4_s6a_s6e_s6f_person.dta
+2025-10-30 02:19:21 - enhanced_endpoints - INFO - enhanced_endpoints.py:83 - File validation passed: {'filename': 'cs_s1_s2_s3_s4_s6a_s6e_s6f_person.dta', 'size_bytes': 68769929, 'size_mb': 65.58, 'extension': '.dta'}
+2025-10-30 02:19:27 - data_processor - INFO - data_processor.py:74 - Converted education_level to category
+2025-10-30 02:19:27 - data_processor - INFO - data_processor.py:146 - Dropped column s1q3m due to high missingness
+2025-10-30 02:19:27 - data_processor - INFO - data_processor.py:146 - Dropped column s6eq0a due to high missingness
+2025-10-30 02:19:27 - data_processor - INFO - data_processor.py:201 - Removed 0 duplicate rows
+2025-10-30 02:19:27 - enhanced_endpoints - INFO - enhanced_endpoints.py:119 - Cleaning complete: 0 duplicates removed
+2025-10-30 02:19:31 - enhanced_endpoints - INFO - enhanced_endpoints.py:175 - Upload successful: dataset_id=1
+2025-10-30 02:19:31 - enhanced_endpoints - ERROR - enhanced_endpoints.py:187 - Unexpected error: Object of type bool is not JSON serializable
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\enhanced_endpoints.py", line 176, in upload_enhanced
+    return JSONResponse(content=response)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 182, in __init__
+    super().__init__(content, status_code, headers, media_type, background)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 45, in __init__
+    self.body = self.render(content)
+                ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 185, in render
+    return json.dumps(
+           ~~~~~~~~~~^
+        content,
+        ^^^^^^^^
+    ...<3 lines>...
+        separators=(",", ":"),
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ).encode("utf-8")
+    ^
+  File "C:\Python313\Lib\json\__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "C:\Python313\Lib\json\encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "C:\Python313\Lib\json\encoder.py", line 261, in iterencode
+    return _iterencode(o, 0)
+  File "C:\Python313\Lib\json\encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type bool is not JSON serializable

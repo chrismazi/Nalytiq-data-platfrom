@@ -27,6 +27,28 @@ router = APIRouter()
 # In-memory cache for uploaded datasets (temporary solution)
 DATASET_CACHE = {}
 
+# Helper function to convert numpy types to native Python types
+def convert_to_json_serializable(obj):
+    """Convert numpy/pandas types to JSON-serializable Python types"""
+    import numpy as np
+    
+    if isinstance(obj, dict):
+        return {key: convert_to_json_serializable(value) for key, value in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_to_json_serializable(item) for item in obj]
+    elif isinstance(obj, (np.integer, np.int64, np.int32)):
+        return int(obj)
+    elif isinstance(obj, (np.floating, np.float64, np.float32)):
+        return float(obj)
+    elif isinstance(obj, (np.bool_, bool)):
+        return bool(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    elif pd.isna(obj):
+        return None
+    else:
+        return obj
+
 # Pydantic models for request validation
 class GroupedStatsRequest(BaseModel):
     dataset_id: Optional[int] = None
@@ -171,6 +193,9 @@ async def upload_enhanced(
             'warnings': profile.get('warnings', []),
             'cleaning_summary': processor.get_cleaning_summary() if auto_clean else None
         }
+        
+        # Convert numpy types to JSON-serializable types
+        response = convert_to_json_serializable(response)
         
         logger.info(f"Upload successful: dataset_id={dataset_id}")
         return JSONResponse(content=response)
