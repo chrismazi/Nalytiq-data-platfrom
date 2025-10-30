@@ -377,6 +377,9 @@ export async function listDatasets(limit: number = 100) {
   return res.json();
 }
 
+// Alias for convenience
+export const getDatasetsList = listDatasets;
+
 export async function getDataset(datasetId: number) {
   const res = await fetch(`http://localhost:8000/api/datasets/${datasetId}/`);
 
@@ -558,6 +561,131 @@ export async function getHistoryStats(userId: number = 1) {
 
   if (!res.ok) {
     throw new Error('Failed to get history stats');
+  }
+
+  return res.json();
+}
+
+// ============= Advanced ML APIs =============
+
+export async function trainXGBoost(data: {
+  dataset_id: number;
+  target: string;
+  features?: string[];
+  test_size?: number;
+  n_estimators?: number;
+  max_depth?: number;
+  learning_rate?: number;
+  tune_hyperparameters?: boolean;
+  save_model?: boolean;
+}) {
+  const res = await fetch('http://localhost:8000/api/ml/train-xgboost', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.detail || 'Failed to train XGBoost model');
+  }
+
+  return res.json();
+}
+
+export async function trainNeuralNetwork(data: {
+  dataset_id: number;
+  target: string;
+  features?: string[];
+  test_size?: number;
+  hidden_layers?: number[];
+  dropout_rate?: number;
+  epochs?: number;
+  batch_size?: number;
+  save_model?: boolean;
+}) {
+  const res = await fetch('http://localhost:8000/api/ml/train-neural-network', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.detail || 'Failed to train Neural Network');
+  }
+
+  return res.json();
+}
+
+export async function compareModels(data: {
+  dataset_id: number;
+  target: string;
+  features?: string[];
+  test_size?: number;
+  algorithms: string[];
+  xgboost_params?: any;
+  nn_params?: any;
+}) {
+  const res = await fetch('http://localhost:8000/api/ml/compare-models', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.detail || 'Failed to compare models');
+  }
+
+  return res.json();
+}
+
+export async function getFeatureSuggestions(datasetId: number, target: string) {
+  const res = await fetch('http://localhost:8000/api/ml/feature-suggestions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      dataset_id: datasetId,
+      target: target,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to get feature suggestions');
+  }
+
+  return res.json();
+}
+
+export async function getSavedModels(datasetId?: number) {
+  const params = datasetId ? `?dataset_id=${datasetId}` : '';
+  const res = await fetch(`http://localhost:8000/api/ml/models/list${params}`);
+
+  if (!res.ok) {
+    throw new Error('Failed to get saved models');
+  }
+
+  return res.json();
+}
+
+export async function deleteModel(modelId: number) {
+  const res = await fetch(`http://localhost:8000/api/ml/models/${modelId}`, {
+    method: 'DELETE',
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to delete model');
+  }
+
+  return res.json();
+}
+
+export async function getSupportedAlgorithms() {
+  const res = await fetch('http://localhost:8000/api/ml/algorithms');
+
+  if (!res.ok) {
+    throw new Error('Failed to get supported algorithms');
   }
 
   return res.json();
