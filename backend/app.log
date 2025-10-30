@@ -55,3 +55,140 @@ Traceback (most recent call last):
     raise TypeError(f'Object of type {o.__class__.__name__} '
                     f'is not JSON serializable')
 TypeError: Object of type bool is not JSON serializable
+2025-10-30 02:24:24 - enhanced_endpoints - INFO - enhanced_endpoints.py:98 - Enhanced upload request: cs_s1_s2_s3_s4_s6a_s6e_s6f_person.dta
+2025-10-30 02:24:25 - enhanced_endpoints - INFO - enhanced_endpoints.py:105 - File validation passed: {'filename': 'cs_s1_s2_s3_s4_s6a_s6e_s6f_person.dta', 'size_bytes': 68769929, 'size_mb': 65.58, 'extension': '.dta'}
+2025-10-30 02:24:29 - data_processor - INFO - data_processor.py:77 - Converted education_level to category
+2025-10-30 02:24:29 - data_processor - INFO - data_processor.py:149 - Dropped column s1q3m due to high missingness
+2025-10-30 02:24:29 - data_processor - INFO - data_processor.py:149 - Dropped column s6eq0a due to high missingness
+2025-10-30 02:24:30 - data_processor - INFO - data_processor.py:204 - Removed 0 duplicate rows
+2025-10-30 02:24:30 - enhanced_endpoints - INFO - enhanced_endpoints.py:141 - Cleaning complete: 0 duplicates removed
+2025-10-30 02:24:34 - enhanced_endpoints - INFO - enhanced_endpoints.py:200 - Upload successful: dataset_id=2
+2025-10-30 02:25:15 - enhanced_endpoints - INFO - enhanced_endpoints.py:98 - Enhanced upload request: cs_s1_s2_s3_s4_s6a_s6e_s6f_person.dta
+2025-10-30 02:25:15 - enhanced_endpoints - INFO - enhanced_endpoints.py:105 - File validation passed: {'filename': 'cs_s1_s2_s3_s4_s6a_s6e_s6f_person.dta', 'size_bytes': 68769929, 'size_mb': 65.58, 'extension': '.dta'}
+2025-10-30 02:25:20 - data_processor - INFO - data_processor.py:77 - Converted education_level to category
+2025-10-30 02:25:20 - data_processor - INFO - data_processor.py:149 - Dropped column s1q3m due to high missingness
+2025-10-30 02:25:20 - data_processor - INFO - data_processor.py:149 - Dropped column s6eq0a due to high missingness
+2025-10-30 02:25:20 - data_processor - INFO - data_processor.py:204 - Removed 0 duplicate rows
+2025-10-30 02:25:20 - enhanced_endpoints - INFO - enhanced_endpoints.py:141 - Cleaning complete: 0 duplicates removed
+2025-10-30 02:25:25 - enhanced_endpoints - INFO - enhanced_endpoints.py:200 - Upload successful: dataset_id=3
+2025-10-30 02:27:24 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Invalid token
+2025-10-30 02:31:24 - enhanced_endpoints - INFO - enhanced_endpoints.py:98 - Enhanced upload request: healthcare-dataset-stroke-data.csv
+2025-10-30 02:31:24 - enhanced_endpoints - INFO - enhanced_endpoints.py:105 - File validation passed: {'filename': 'healthcare-dataset-stroke-data.csv', 'size_bytes': 316971, 'size_mb': 0.3, 'extension': '.csv'}
+2025-10-30 02:31:25 - data_processor - INFO - data_processor.py:77 - Converted gender to category
+2025-10-30 02:31:25 - data_processor - INFO - data_processor.py:77 - Converted ever_married to category
+2025-10-30 02:31:25 - data_processor - INFO - data_processor.py:77 - Converted work_type to category
+2025-10-30 02:31:25 - data_processor - INFO - data_processor.py:77 - Converted residence_type to category
+2025-10-30 02:31:25 - data_processor - INFO - data_processor.py:77 - Converted smoking_status to category
+2025-10-30 02:31:25 - data_processor - INFO - data_processor.py:204 - Removed 0 duplicate rows
+2025-10-30 02:31:25 - enhanced_endpoints - INFO - enhanced_endpoints.py:141 - Cleaning complete: 0 duplicates removed
+2025-10-30 02:31:25 - enhanced_endpoints - INFO - enhanced_endpoints.py:200 - Upload successful: dataset_id=4
+2025-10-30 02:33:48 - enhanced_endpoints - INFO - enhanced_endpoints.py:98 - Enhanced upload request: healthcare-dataset-stroke-data.csv
+2025-10-30 02:33:48 - enhanced_endpoints - INFO - enhanced_endpoints.py:105 - File validation passed: {'filename': 'healthcare-dataset-stroke-data.csv', 'size_bytes': 316971, 'size_mb': 0.3, 'extension': '.csv'}
+2025-10-30 02:33:49 - data_processor - INFO - data_processor.py:77 - Converted gender to category
+2025-10-30 02:33:49 - data_processor - INFO - data_processor.py:77 - Converted ever_married to category
+2025-10-30 02:33:49 - data_processor - INFO - data_processor.py:77 - Converted work_type to category
+2025-10-30 02:33:49 - data_processor - INFO - data_processor.py:77 - Converted residence_type to category
+2025-10-30 02:33:49 - data_processor - INFO - data_processor.py:77 - Converted smoking_status to category
+2025-10-30 02:33:49 - data_processor - INFO - data_processor.py:204 - Removed 0 duplicate rows
+2025-10-30 02:33:49 - enhanced_endpoints - INFO - enhanced_endpoints.py:141 - Cleaning complete: 0 duplicates removed
+2025-10-30 02:33:49 - enhanced_endpoints - INFO - enhanced_endpoints.py:200 - Upload successful: dataset_id=5
+2025-10-30 02:34:17 - ml_pipeline - INFO - ml_pipeline.py:119 - Training model for target: ever_married
+2025-10-30 02:34:17 - enhanced_endpoints - ERROR - enhanced_endpoints.py:322 - ML training failed: No valid features found (need numeric or categorical)
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\enhanced_endpoints.py", line 303, in train_ml_model
+    results = pipeline.train_model(
+        target=request.target,
+    ...<3 lines>...
+        max_depth=request.max_depth
+    )
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_pipeline.py", line 122, in train_model
+    X, y = self.prepare_features(target, features)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_pipeline.py", line 71, in prepare_features
+    raise ValueError("No valid features found (need numeric or categorical)")
+ValueError: No valid features found (need numeric or categorical)
+2025-10-30 02:34:20 - ml_pipeline - INFO - ml_pipeline.py:119 - Training model for target: ever_married
+2025-10-30 02:34:20 - enhanced_endpoints - ERROR - enhanced_endpoints.py:322 - ML training failed: No valid features found (need numeric or categorical)
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\enhanced_endpoints.py", line 303, in train_ml_model
+    results = pipeline.train_model(
+        target=request.target,
+    ...<3 lines>...
+        max_depth=request.max_depth
+    )
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_pipeline.py", line 122, in train_model
+    X, y = self.prepare_features(target, features)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_pipeline.py", line 71, in prepare_features
+    raise ValueError("No valid features found (need numeric or categorical)")
+ValueError: No valid features found (need numeric or categorical)
+2025-10-30 02:34:22 - ml_pipeline - INFO - ml_pipeline.py:119 - Training model for target: ever_married
+2025-10-30 02:34:22 - enhanced_endpoints - ERROR - enhanced_endpoints.py:322 - ML training failed: No valid features found (need numeric or categorical)
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\enhanced_endpoints.py", line 303, in train_ml_model
+    results = pipeline.train_model(
+        target=request.target,
+    ...<3 lines>...
+        max_depth=request.max_depth
+    )
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_pipeline.py", line 122, in train_model
+    X, y = self.prepare_features(target, features)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_pipeline.py", line 71, in prepare_features
+    raise ValueError("No valid features found (need numeric or categorical)")
+ValueError: No valid features found (need numeric or categorical)
+2025-10-30 02:34:22 - ml_pipeline - INFO - ml_pipeline.py:119 - Training model for target: ever_married
+2025-10-30 02:34:22 - enhanced_endpoints - ERROR - enhanced_endpoints.py:322 - ML training failed: No valid features found (need numeric or categorical)
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\enhanced_endpoints.py", line 303, in train_ml_model
+    results = pipeline.train_model(
+        target=request.target,
+    ...<3 lines>...
+        max_depth=request.max_depth
+    )
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_pipeline.py", line 122, in train_model
+    X, y = self.prepare_features(target, features)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_pipeline.py", line 71, in prepare_features
+    raise ValueError("No valid features found (need numeric or categorical)")
+ValueError: No valid features found (need numeric or categorical)
+2025-10-30 02:34:23 - ml_pipeline - INFO - ml_pipeline.py:119 - Training model for target: ever_married
+2025-10-30 02:34:23 - enhanced_endpoints - ERROR - enhanced_endpoints.py:322 - ML training failed: No valid features found (need numeric or categorical)
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\enhanced_endpoints.py", line 303, in train_ml_model
+    results = pipeline.train_model(
+        target=request.target,
+    ...<3 lines>...
+        max_depth=request.max_depth
+    )
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_pipeline.py", line 122, in train_model
+    X, y = self.prepare_features(target, features)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_pipeline.py", line 71, in prepare_features
+    raise ValueError("No valid features found (need numeric or categorical)")
+ValueError: No valid features found (need numeric or categorical)
+2025-10-30 02:34:28 - ml_pipeline - INFO - ml_pipeline.py:119 - Training model for target: ever_married
+2025-10-30 02:34:28 - enhanced_endpoints - ERROR - enhanced_endpoints.py:322 - ML training failed: No valid features found (need numeric or categorical)
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\enhanced_endpoints.py", line 303, in train_ml_model
+    results = pipeline.train_model(
+        target=request.target,
+    ...<3 lines>...
+        max_depth=request.max_depth
+    )
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_pipeline.py", line 122, in train_model
+    X, y = self.prepare_features(target, features)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_pipeline.py", line 71, in prepare_features
+    raise ValueError("No valid features found (need numeric or categorical)")
+ValueError: No valid features found (need numeric or categorical)
+2025-10-30 12:14:29 - enhanced_endpoints - INFO - enhanced_endpoints.py:98 - Enhanced upload request: healthcare-dataset-stroke-data.csv
+2025-10-30 12:14:29 - enhanced_endpoints - INFO - enhanced_endpoints.py:105 - File validation passed: {'filename': 'healthcare-dataset-stroke-data.csv', 'size_bytes': 316971, 'size_mb': 0.3, 'extension': '.csv'}
+2025-10-30 12:14:29 - data_processor - INFO - data_processor.py:77 - Converted gender to category
+2025-10-30 12:14:29 - data_processor - INFO - data_processor.py:77 - Converted ever_married to category
+2025-10-30 12:14:29 - data_processor - INFO - data_processor.py:77 - Converted work_type to category
+2025-10-30 12:14:29 - data_processor - INFO - data_processor.py:77 - Converted residence_type to category
+2025-10-30 12:14:29 - data_processor - INFO - data_processor.py:77 - Converted smoking_status to category
+2025-10-30 12:14:29 - data_processor - INFO - data_processor.py:204 - Removed 0 duplicate rows
+2025-10-30 12:14:29 - enhanced_endpoints - INFO - enhanced_endpoints.py:141 - Cleaning complete: 0 duplicates removed
+2025-10-30 12:14:29 - enhanced_endpoints - INFO - enhanced_endpoints.py:200 - Upload successful: dataset_id=6
