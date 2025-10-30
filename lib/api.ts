@@ -408,4 +408,157 @@ export async function downloadDataset(
   a.click();
   window.URL.revokeObjectURL(url);
   document.body.removeChild(a);
+}
+
+// ============= Analysis History APIs =============
+
+export async function saveAnalysis(data: {
+  dataset_id: number;
+  user_id?: number;
+  analysis_type: string;
+  title: string;
+  description?: string;
+  parameters: any;
+  results: any;
+  visualization_data?: any;
+  is_saved?: boolean;
+  execution_time_ms?: number;
+}) {
+  const res = await fetch('http://localhost:8000/api/history/save', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      user_id: 1, // Default user
+      is_saved: true,
+      ...data,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to save analysis');
+  }
+
+  return res.json();
+}
+
+export async function getAnalysisHistory(filters?: {
+  dataset_id?: number;
+  user_id?: number;
+  analysis_type?: string;
+  is_saved?: boolean;
+  limit?: number;
+}) {
+  const params = new URLSearchParams();
+  if (filters?.dataset_id) params.append('dataset_id', filters.dataset_id.toString());
+  if (filters?.user_id) params.append('user_id', filters.user_id.toString());
+  if (filters?.analysis_type) params.append('analysis_type', filters.analysis_type);
+  if (filters?.is_saved !== undefined) params.append('is_saved', filters.is_saved.toString());
+  if (filters?.limit) params.append('limit', filters.limit.toString());
+
+  const res = await fetch(`http://localhost:8000/api/history/list?${params}`);
+
+  if (!res.ok) {
+    throw new Error('Failed to get analysis history');
+  }
+
+  return res.json();
+}
+
+export async function getAnalysisDetail(analysisId: number) {
+  const res = await fetch(`http://localhost:8000/api/history/${analysisId}`);
+
+  if (!res.ok) {
+    throw new Error('Failed to get analysis detail');
+  }
+
+  return res.json();
+}
+
+export async function toggleAnalysisFavorite(analysisId: number, userId: number = 1) {
+  const res = await fetch(
+    `http://localhost:8000/api/history/${analysisId}/favorite?user_id=${userId}`,
+    { method: 'PUT' }
+  );
+
+  if (!res.ok) {
+    throw new Error('Failed to toggle favorite');
+  }
+
+  return res.json();
+}
+
+export async function deleteAnalysis(analysisId: number, userId: number = 1) {
+  const res = await fetch(
+    `http://localhost:8000/api/history/${analysisId}?user_id=${userId}`,
+    { method: 'DELETE' }
+  );
+
+  if (!res.ok) {
+    throw new Error('Failed to delete analysis');
+  }
+
+  return res.json();
+}
+
+export async function compareAnalyses(analysisIds: number[], comparisonName?: string) {
+  const res = await fetch('http://localhost:8000/api/history/compare', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      analysis_ids: analysisIds,
+      comparison_name: comparisonName,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to compare analyses');
+  }
+
+  return res.json();
+}
+
+export async function saveAnalysisConfig(data: {
+  name: string;
+  description?: string;
+  analysis_type: string;
+  parameters: any;
+  user_id?: number;
+}) {
+  const res = await fetch('http://localhost:8000/api/history/config/save', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      user_id: 1,
+      ...data,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to save config');
+  }
+
+  return res.json();
+}
+
+export async function getSavedConfigs(userId: number = 1, analysisType?: string) {
+  const params = new URLSearchParams({ user_id: userId.toString() });
+  if (analysisType) params.append('analysis_type', analysisType);
+
+  const res = await fetch(`http://localhost:8000/api/history/config/list?${params}`);
+
+  if (!res.ok) {
+    throw new Error('Failed to get saved configs');
+  }
+
+  return res.json();
+}
+
+export async function getHistoryStats(userId: number = 1) {
+  const res = await fetch(`http://localhost:8000/api/history/stats?user_id=${userId}`);
+
+  if (!res.ok) {
+    throw new Error('Failed to get history stats');
+  }
+
+  return res.json();
 } 
