@@ -264,3 +264,15 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 2025-10-30 15:47:36 - main - INFO - main.py:53 - Databases initialized successfully
 2025-10-30 15:47:36 - main - INFO - main.py:53 - Databases initialized successfully
 2025-10-30 15:47:36 - main - INFO - main.py:53 - Databases initialized successfully
+2025-10-30 15:58:44 - visualization_endpoints - ERROR - visualization_endpoints.py:372 - Failed to get columns: 404: Dataset not found
+2025-10-30 15:58:44 - exceptions - ERROR - exceptions.py:71 - HTTP error on /api/viz/dataset-columns/7: 500 - 404: Dataset not found
+2025-10-30 15:59:28 - visualization_endpoints - ERROR - visualization_endpoints.py:372 - Failed to get columns: 404: Dataset not found
+2025-10-30 15:59:28 - exceptions - ERROR - exceptions.py:71 - HTTP error on /api/viz/dataset-columns/6: 500 - 404: Dataset not found
+2025-10-30 16:03:04 - visualization_endpoints - ERROR - visualization_endpoints.py:372 - Failed to get columns: 404: Dataset not found
+2025-10-30 16:03:04 - exceptions - ERROR - exceptions.py:71 - HTTP error on /api/viz/dataset-columns/3: 500 - 404: Dataset not found
+2025-10-30 16:04:02 - main - INFO - main.py:50 - Initializing databases...
+2025-10-30 16:04:02 - main - INFO - main.py:53 - Databases initialized successfully
+2025-10-30 16:04:02 - main - INFO - main.py:50 - Initializing databases...
+2025-10-30 16:04:02 - main - INFO - main.py:50 - Initializing databases...
+2025-10-30 16:04:02 - main - INFO - main.py:53 - Databases initialized successfully
+2025-10-30 16:04:02 - main - INFO - main.py:53 - Databases initialized successfully
