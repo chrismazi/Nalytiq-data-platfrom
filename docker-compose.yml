@@ -1,0 +1,145 @@
+# Docker Compose for Nalytiq Platform
+# Production deployment with all services
+
+version: '3.8'
+
+services:
+  # Frontend (Next.js)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=http://backend:8000
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - nalytiq-network
+
+  # Backend (FastAPI)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - SECRET_KEY=${SECRET_KEY:-your-super-secret-key-min-32-characters}
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=60
+      - CORS_ORIGINS=http://localhost:3000,http://frontend:3000
+      - MAX_FILE_SIZE_MB=500
+      - ALLOWED_EXTENSIONS=csv,xlsx,xls,dta
+      - LOG_LEVEL=INFO
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://nalytiq:${DB_PASSWORD:-password}@postgres:5432/nalytiq
+    volumes:
+      - backend-data:/app/data
+      - backend-logs:/app/logs
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+    networks:
+      - nalytiq-network
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=nalytiq
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-password}
+      - POSTGRES_DB=nalytiq
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - nalytiq-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nalytiq"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    networks:
+      - nalytiq-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Celery Worker (for background jobs)
+  celery-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: celery -A celery_app worker --loglevel=info
+    environment:
+      - SECRET_KEY=${SECRET_KEY:-your-super-secret-key-min-32-characters}
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://nalytiq:${DB_PASSWORD:-password}@postgres:5432/nalytiq
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+    networks:
+      - nalytiq-network
+
+  # Celery Beat (scheduled tasks)
+  celery-beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: celery -A celery_app beat --loglevel=info
+    environment:
+      - SECRET_KEY=${SECRET_KEY:-your-super-secret-key-min-32-characters}
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+      - celery-worker
+    restart: unless-stopped
+    networks:
+      - nalytiq-network
+
+  # Nginx Reverse Proxy (optional, for production)
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped
+    networks:
+      - nalytiq-network
+    profiles:
+      - production
+
+volumes:
+  postgres-data:
+  redis-data:
+  backend-data:
+  backend-logs:
+
+networks:
+  nalytiq-network:
+    driver: bridge
