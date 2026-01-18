@@ -353,7 +353,7 @@ def init_enhanced_database():
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_cache_expires ON cache(expires_at)")
         
         conn.commit()
-        print("✅ Enhanced database schema initialized successfully")
+        print(" Enhanced database schema initialized successfully")
 
 # Repository classes for enhanced tables
 
@@ -417,7 +417,7 @@ class AnalysisHistoryRepository:
     
     @staticmethod
     def get_analysis_history(dataset_id: int = None, user_id: int = None, 
-                            limit: int = 50) -> List[Dict]:
+                            limit: int = 50, offset: int = 0) -> List[Dict]:
         """Get analysis history"""
         with get_db_connection() as conn:
             cursor = conn.cursor()
@@ -433,8 +433,9 @@ class AnalysisHistoryRepository:
                 query += " AND user_id = ?"
                 params.append(user_id)
             
-            query += " ORDER BY created_at DESC LIMIT ?"
+            query += " ORDER BY created_at DESC LIMIT ? OFFSET ?"
             params.append(limit)
+            params.append(offset)
             
             cursor.execute(query, params)
             return [dict(row) for row in cursor.fetchall()]

@@ -2,7 +2,10 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useRouter } from "next/navigation"
-import { BarChart3, FileSpreadsheet, FileText, LayoutDashboard, LogOut, Settings, User } from "lucide-react"
+import { 
+  BarChart3, FileSpreadsheet, FileText, LayoutDashboard, LogOut, Settings, User,
+  History, Brain, LineChart, Shuffle, PieChart
+} from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -72,8 +75,9 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
+        {/* Main Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel>Main</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
@@ -95,10 +99,66 @@ export function AppSidebar() {
               </SidebarMenuItem>
 
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive("/analysis")}>
-                  <Link href="/analysis">
-                    <BarChart3 />
-                    <span>Analysis</span>
+                <SidebarMenuButton asChild isActive={isActive("/history")}>
+                  <Link href="/history">
+                    <History />
+                    <span>History</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarSeparator />
+
+        {/* Machine Learning */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Machine Learning</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive("/ml-training")}>
+                  <Link href="/ml-training">
+                    <Brain />
+                    <span>ML Training</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive("/model-comparison")}>
+                  <Link href="/model-comparison">
+                    <Shuffle />
+                    <span>Model Comparison</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarSeparator />
+
+        {/* Analytics & Visualization */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Analytics</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive("/visualizations")}>
+                  <Link href="/visualizations">
+                    <PieChart />
+                    <span>Visualizations</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive("/transform")}>
+                  <Link href="/transform">
+                    <Shuffle />
+                    <span>Transform & Export</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -111,26 +171,6 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarSeparator />
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Recent Datasets</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {["EICV6 Survey Data 2023", "Health Indicators 2022", "Economic Census 2023"].map((dataset, index) => (
-                <SidebarMenuItem key={index}>
-                  <SidebarMenuButton asChild>
-                    <Link href="#">
-                      <FileSpreadsheet className="h-4 w-4" />
-                      <span>{dataset}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

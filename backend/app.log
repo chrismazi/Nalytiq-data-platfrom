@@ -287,3 +287,983 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 2025-10-30 16:08:11 - main - INFO - main.py:53 - Databases initialized successfully
 2025-10-30 16:08:11 - main - INFO - main.py:53 - Databases initialized successfully
 2025-10-30 16:08:11 - main - INFO - main.py:53 - Databases initialized successfully
+2025-10-31 02:11:15 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Invalid token
+2025-10-31 02:12:06 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Invalid token
+2025-10-31 02:12:08 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Invalid token
+2025-10-31 13:39:19 - passlib.handlers.bcrypt - WARNING - bcrypt.py:622 - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-10-31 13:40:58 - enhanced_endpoints - INFO - enhanced_endpoints.py:98 - Enhanced upload request: healthcare-dataset-stroke-data.csv
+2025-10-31 13:40:58 - enhanced_endpoints - INFO - enhanced_endpoints.py:105 - File validation passed: {'filename': 'healthcare-dataset-stroke-data.csv', 'size_bytes': 316971, 'size_mb': 0.3, 'extension': '.csv'}
+2025-10-31 13:40:58 - data_processor - INFO - data_processor.py:77 - Converted gender to category
+2025-10-31 13:40:58 - data_processor - INFO - data_processor.py:77 - Converted ever_married to category
+2025-10-31 13:40:58 - data_processor - INFO - data_processor.py:77 - Converted work_type to category
+2025-10-31 13:40:58 - data_processor - INFO - data_processor.py:77 - Converted residence_type to category
+2025-10-31 13:40:58 - data_processor - INFO - data_processor.py:77 - Converted smoking_status to category
+2025-10-31 13:40:58 - data_processor - INFO - data_processor.py:204 - Removed 0 duplicate rows
+2025-10-31 13:40:58 - enhanced_endpoints - INFO - enhanced_endpoints.py:141 - Cleaning complete: 0 duplicates removed
+2025-10-31 13:40:59 - enhanced_endpoints - INFO - enhanced_endpoints.py:200 - Upload successful: dataset_id=8
+2025-11-01 01:08:22 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/stats: {'analysis_id': ['Input should be a valid integer, unable to parse string as an integer']}
+2025-11-01 01:08:22 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/stats: {'analysis_id': ['Input should be a valid integer, unable to parse string as an integer']}
+2025-11-01 01:09:40 - ml_endpoints - INFO - ml_endpoints.py:310 - Getting feature suggestions for dataset 3
+2025-11-01 01:09:40 - ml_endpoints - ERROR - ml_endpoints.py:333 - Feature suggestions failed: 404: Dataset not found
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 313, in get_feature_suggestions
+    df = get_dataset_df(request.dataset_id)
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 85, in get_dataset_df
+    raise HTTPException(status_code=404, detail="Dataset not found")
+fastapi.exceptions.HTTPException: 404: Dataset not found
+2025-11-01 01:09:40 - exceptions - ERROR - exceptions.py:71 - HTTP error on /api/ml/feature-suggestions: 500 - 404: Dataset not found
+2025-11-01 01:10:03 - ml_endpoints - INFO - ml_endpoints.py:107 - Training XGBoost model for dataset 3
+2025-11-01 01:10:03 - ml_endpoints - ERROR - ml_endpoints.py:161 - XGBoost training failed: 404: Dataset not found
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 111, in train_xgboost
+    df = get_dataset_df(request.dataset_id)
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 85, in get_dataset_df
+    raise HTTPException(status_code=404, detail="Dataset not found")
+fastapi.exceptions.HTTPException: 404: Dataset not found
+2025-11-01 01:10:03 - exceptions - ERROR - exceptions.py:71 - HTTP error on /api/ml/train-xgboost: 500 - 404: Dataset not found
+2025-11-01 01:10:12 - ml_endpoints - INFO - ml_endpoints.py:107 - Training XGBoost model for dataset 3
+2025-11-01 01:10:13 - ml_endpoints - ERROR - ml_endpoints.py:161 - XGBoost training failed: 404: Dataset not found
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 111, in train_xgboost
+    df = get_dataset_df(request.dataset_id)
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 85, in get_dataset_df
+    raise HTTPException(status_code=404, detail="Dataset not found")
+fastapi.exceptions.HTTPException: 404: Dataset not found
+2025-11-01 01:10:13 - exceptions - ERROR - exceptions.py:71 - HTTP error on /api/ml/train-xgboost: 500 - 404: Dataset not found
+2025-11-01 01:10:15 - ml_endpoints - INFO - ml_endpoints.py:107 - Training XGBoost model for dataset 3
+2025-11-01 01:10:15 - ml_endpoints - ERROR - ml_endpoints.py:161 - XGBoost training failed: 404: Dataset not found
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 111, in train_xgboost
+    df = get_dataset_df(request.dataset_id)
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 85, in get_dataset_df
+    raise HTTPException(status_code=404, detail="Dataset not found")
+fastapi.exceptions.HTTPException: 404: Dataset not found
+2025-11-01 01:10:15 - exceptions - ERROR - exceptions.py:71 - HTTP error on /api/ml/train-xgboost: 500 - 404: Dataset not found
+2025-11-01 01:10:56 - visualization_endpoints - ERROR - visualization_endpoints.py:372 - Failed to get columns: 404: Dataset not found
+2025-11-01 01:10:56 - exceptions - ERROR - exceptions.py:71 - HTTP error on /api/viz/dataset-columns/7: 500 - 404: Dataset not found
+2025-11-01 01:11:49 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/stats: {'analysis_id': ['Input should be a valid integer, unable to parse string as an integer']}
+2025-11-01 01:11:49 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/stats: {'analysis_id': ['Input should be a valid integer, unable to parse string as an integer']}
+2025-11-01 01:13:32 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/list: {'limit': ['Input should be less than or equal to 200']}
+2025-11-01 01:13:32 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/list: {'limit': ['Input should be less than or equal to 200']}
+2025-11-01 01:13:53 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/list: {'limit': ['Input should be less than or equal to 200']}
+2025-11-01 01:13:53 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/list: {'limit': ['Input should be less than or equal to 200']}
+2025-11-01 01:13:57 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/list: {'limit': ['Input should be less than or equal to 200']}
+2025-11-01 01:13:57 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/list: {'limit': ['Input should be less than or equal to 200']}
+2025-11-01 01:14:03 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/list: {'limit': ['Input should be less than or equal to 200']}
+2025-11-01 01:14:03 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/list: {'limit': ['Input should be less than or equal to 200']}
+2025-11-01 01:14:05 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/stats: {'analysis_id': ['Input should be a valid integer, unable to parse string as an integer']}
+2025-11-01 01:14:05 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/stats: {'analysis_id': ['Input should be a valid integer, unable to parse string as an integer']}
+2025-11-01 01:14:08 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/list: {'limit': ['Input should be less than or equal to 200']}
+2025-11-01 01:14:08 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/list: {'limit': ['Input should be less than or equal to 200']}
+2025-11-01 01:14:24 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/list: {'limit': ['Input should be less than or equal to 200']}
+2025-11-01 01:14:24 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/list: {'limit': ['Input should be less than or equal to 200']}
+2025-11-01 01:18:21 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/list: {'limit': ['Input should be less than or equal to 200']}
+2025-11-01 01:18:21 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/list: {'limit': ['Input should be less than or equal to 200']}
+2025-11-01 01:20:13 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/list: {'limit': ['Input should be less than or equal to 200']}
+2025-11-01 01:24:07 - enhanced_endpoints - INFO - enhanced_endpoints.py:98 - Enhanced upload request: healthcare-dataset-stroke-data.csv
+2025-11-01 01:24:07 - enhanced_endpoints - INFO - enhanced_endpoints.py:105 - File validation passed: {'filename': 'healthcare-dataset-stroke-data.csv', 'size_bytes': 316971, 'size_mb': 0.3, 'extension': '.csv'}
+2025-11-01 01:24:07 - data_processor - INFO - data_processor.py:77 - Converted gender to category
+2025-11-01 01:24:08 - data_processor - INFO - data_processor.py:77 - Converted ever_married to category
+2025-11-01 01:24:08 - data_processor - INFO - data_processor.py:77 - Converted work_type to category
+2025-11-01 01:24:08 - data_processor - INFO - data_processor.py:77 - Converted residence_type to category
+2025-11-01 01:24:08 - data_processor - INFO - data_processor.py:77 - Converted smoking_status to category
+2025-11-01 01:24:08 - data_processor - INFO - data_processor.py:204 - Removed 0 duplicate rows
+2025-11-01 01:24:08 - enhanced_endpoints - INFO - enhanced_endpoints.py:141 - Cleaning complete: 0 duplicates removed
+2025-11-01 01:24:08 - enhanced_endpoints - INFO - enhanced_endpoints.py:200 - Upload successful: dataset_id=9
+2025-11-19 07:35:32 - main - INFO - main.py:50 - Initializing databases...
+2025-11-19 07:35:32 - main - INFO - main.py:53 - Databases initialized successfully
+2025-11-19 07:38:02 - passlib.handlers.bcrypt - WARNING - bcrypt.py:622 - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-11-19 07:38:55 - enhanced_endpoints - INFO - enhanced_endpoints.py:98 - Enhanced upload request: stolen_vehicles_enhanced.csv
+2025-11-19 07:38:55 - enhanced_endpoints - INFO - enhanced_endpoints.py:105 - File validation passed: {'filename': 'stolen_vehicles_enhanced.csv', 'size_bytes': 575015, 'size_mb': 0.55, 'extension': '.csv'}
+2025-11-19 07:38:56 - data_processor - INFO - data_processor.py:77 - Converted vehicle_type to category
+2025-11-19 07:38:56 - data_processor - INFO - data_processor.py:77 - Converted color to category
+2025-11-19 07:38:56 - data_processor - INFO - data_processor.py:51 - Converted date_stolen to datetime
+2025-11-19 07:38:56 - data_processor - INFO - data_processor.py:77 - Converted make_type to category
+2025-11-19 07:38:56 - data_processor - INFO - data_processor.py:77 - Converted region to category
+2025-11-19 07:38:56 - data_processor - INFO - data_processor.py:77 - Converted country to category
+2025-11-19 07:38:56 - data_processor - INFO - data_processor.py:67 - Converted population to numeric
+2025-11-19 07:38:56 - data_processor - INFO - data_processor.py:77 - Converted weekday_stolen to category
+2025-11-19 07:38:56 - data_processor - INFO - data_processor.py:204 - Removed 0 duplicate rows
+2025-11-19 07:38:56 - enhanced_endpoints - INFO - enhanced_endpoints.py:141 - Cleaning complete: 0 duplicates removed
+2025-11-19 07:38:57 - enhanced_endpoints - INFO - enhanced_endpoints.py:200 - Upload successful: dataset_id=10
+2025-11-19 07:38:57 - enhanced_endpoints - ERROR - enhanced_endpoints.py:212 - Unexpected error: Object of type Timestamp is not JSON serializable
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\enhanced_endpoints.py", line 201, in upload_enhanced
+    return JSONResponse(content=response)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 182, in __init__
+    super().__init__(content, status_code, headers, media_type, background)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 45, in __init__
+    self.body = self.render(content)
+                ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 185, in render
+    return json.dumps(
+           ~~~~~~~~~~^
+        content,
+        ^^^^^^^^
+    ...<3 lines>...
+        separators=(",", ":"),
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ).encode("utf-8")
+    ^
+  File "C:\Python313\Lib\json\__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "C:\Python313\Lib\json\encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "C:\Python313\Lib\json\encoder.py", line 261, in iterencode
+    return _iterencode(o, 0)
+  File "C:\Python313\Lib\json\encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type Timestamp is not JSON serializable
+2025-11-19 07:39:47 - enhanced_endpoints - INFO - enhanced_endpoints.py:98 - Enhanced upload request: cs_s1_s2_s3_s4_s6a_s6e_s6f_person.dta
+2025-11-19 07:39:47 - enhanced_endpoints - INFO - enhanced_endpoints.py:105 - File validation passed: {'filename': 'cs_s1_s2_s3_s4_s6a_s6e_s6f_person.dta', 'size_bytes': 68769929, 'size_mb': 65.58, 'extension': '.dta'}
+2025-11-19 07:39:53 - data_processor - INFO - data_processor.py:77 - Converted education_level to category
+2025-11-19 07:39:53 - data_processor - INFO - data_processor.py:149 - Dropped column s1q3m due to high missingness
+2025-11-19 07:39:53 - data_processor - INFO - data_processor.py:149 - Dropped column s6eq0a due to high missingness
+2025-11-19 07:39:53 - data_processor - INFO - data_processor.py:204 - Removed 0 duplicate rows
+2025-11-19 07:39:53 - enhanced_endpoints - INFO - enhanced_endpoints.py:141 - Cleaning complete: 0 duplicates removed
+2025-11-19 07:39:57 - enhanced_endpoints - INFO - enhanced_endpoints.py:200 - Upload successful: dataset_id=11
+2025-11-19 07:42:08 - ml_endpoints - INFO - ml_endpoints.py:310 - Getting feature suggestions for dataset 9
+2025-11-19 07:42:08 - ml_endpoints - ERROR - ml_endpoints.py:333 - Feature suggestions failed: 404: Dataset not found
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 313, in get_feature_suggestions
+    df = get_dataset_df(request.dataset_id)
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 85, in get_dataset_df
+    raise HTTPException(status_code=404, detail="Dataset not found")
+fastapi.exceptions.HTTPException: 404: Dataset not found
+2025-11-19 07:42:08 - exceptions - ERROR - exceptions.py:71 - HTTP error on /api/ml/feature-suggestions: 500 - 404: Dataset not found
+2025-11-19 07:43:40 - visualization_endpoints - ERROR - visualization_endpoints.py:372 - Failed to get columns: 404: Dataset not found
+2025-11-19 07:43:40 - exceptions - ERROR - exceptions.py:71 - HTTP error on /api/viz/dataset-columns/11: 500 - 404: Dataset not found
+2025-11-19 07:44:00 - visualization_endpoints - ERROR - visualization_endpoints.py:372 - Failed to get columns: 404: Dataset not found
+2025-11-19 07:44:00 - exceptions - ERROR - exceptions.py:71 - HTTP error on /api/viz/dataset-columns/11: 500 - 404: Dataset not found
+2025-11-19 07:44:09 - export_transform_endpoints - ERROR - export_transform_endpoints.py:171 - Export failed: 404: Dataset not found
+2025-11-19 07:44:09 - exceptions - ERROR - exceptions.py:71 - HTTP error on /api/export-transform/export-dataset: 500 - 404: Dataset not found
+2025-11-19 07:53:58 - main - INFO - main.py:50 - Initializing databases...
+2025-11-19 07:53:58 - main - INFO - main.py:53 - Databases initialized successfully
+2025-11-19 07:54:57 - ml_endpoints - INFO - ml_endpoints.py:310 - Getting feature suggestions for dataset 11
+2025-11-19 07:54:57 - ml_endpoints - ERROR - ml_endpoints.py:333 - Feature suggestions failed: 404: Dataset not found
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 313, in get_feature_suggestions
+    df = get_dataset_df(request.dataset_id)
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 85, in get_dataset_df
+    raise HTTPException(status_code=404, detail="Dataset not found")
+fastapi.exceptions.HTTPException: 404: Dataset not found
+2025-11-19 07:54:57 - exceptions - ERROR - exceptions.py:71 - HTTP error on /api/ml/feature-suggestions: 500 - 404: Dataset not found
+2025-11-19 07:55:10 - ml_endpoints - INFO - ml_endpoints.py:168 - Training Neural Network for dataset 11
+2025-11-19 07:55:10 - ml_endpoints - ERROR - ml_endpoints.py:222 - Neural Network training failed: 404: Dataset not found
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 172, in train_neural_network
+    df = get_dataset_df(request.dataset_id)
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 85, in get_dataset_df
+    raise HTTPException(status_code=404, detail="Dataset not found")
+fastapi.exceptions.HTTPException: 404: Dataset not found
+2025-11-19 07:55:10 - exceptions - ERROR - exceptions.py:71 - HTTP error on /api/ml/train-neural-network: 500 - 404: Dataset not found
+2025-11-19 07:55:57 - ml_endpoints - INFO - ml_endpoints.py:229 - Comparing models for dataset 8
+2025-11-19 07:55:57 - ml_endpoints - ERROR - ml_endpoints.py:303 - Model comparison failed: 404: Dataset not found
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 233, in compare_models
+    df = get_dataset_df(request.dataset_id)
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 85, in get_dataset_df
+    raise HTTPException(status_code=404, detail="Dataset not found")
+fastapi.exceptions.HTTPException: 404: Dataset not found
+2025-11-19 07:55:57 - exceptions - ERROR - exceptions.py:71 - HTTP error on /api/ml/compare-models: 500 - 404: Dataset not found
+2025-11-19 07:56:00 - ml_endpoints - INFO - ml_endpoints.py:229 - Comparing models for dataset 8
+2025-11-19 07:56:00 - ml_endpoints - ERROR - ml_endpoints.py:303 - Model comparison failed: 404: Dataset not found
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 233, in compare_models
+    df = get_dataset_df(request.dataset_id)
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 85, in get_dataset_df
+    raise HTTPException(status_code=404, detail="Dataset not found")
+fastapi.exceptions.HTTPException: 404: Dataset not found
+2025-11-19 07:56:00 - exceptions - ERROR - exceptions.py:71 - HTTP error on /api/ml/compare-models: 500 - 404: Dataset not found
+2025-11-19 07:56:01 - ml_endpoints - INFO - ml_endpoints.py:229 - Comparing models for dataset 8
+2025-11-19 07:56:01 - ml_endpoints - ERROR - ml_endpoints.py:303 - Model comparison failed: 404: Dataset not found
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 233, in compare_models
+    df = get_dataset_df(request.dataset_id)
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 85, in get_dataset_df
+    raise HTTPException(status_code=404, detail="Dataset not found")
+fastapi.exceptions.HTTPException: 404: Dataset not found
+2025-11-19 07:56:01 - exceptions - ERROR - exceptions.py:71 - HTTP error on /api/ml/compare-models: 500 - 404: Dataset not found
+2025-11-19 07:56:02 - ml_endpoints - INFO - ml_endpoints.py:229 - Comparing models for dataset 8
+2025-11-19 07:56:02 - ml_endpoints - ERROR - ml_endpoints.py:303 - Model comparison failed: 404: Dataset not found
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 233, in compare_models
+    df = get_dataset_df(request.dataset_id)
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 85, in get_dataset_df
+    raise HTTPException(status_code=404, detail="Dataset not found")
+fastapi.exceptions.HTTPException: 404: Dataset not found
+2025-11-19 07:56:02 - exceptions - ERROR - exceptions.py:71 - HTTP error on /api/ml/compare-models: 500 - 404: Dataset not found
+2025-11-19 07:56:03 - ml_endpoints - INFO - ml_endpoints.py:229 - Comparing models for dataset 8
+2025-11-19 07:56:03 - ml_endpoints - ERROR - ml_endpoints.py:303 - Model comparison failed: 404: Dataset not found
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 233, in compare_models
+    df = get_dataset_df(request.dataset_id)
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 85, in get_dataset_df
+    raise HTTPException(status_code=404, detail="Dataset not found")
+fastapi.exceptions.HTTPException: 404: Dataset not found
+2025-11-19 07:56:03 - exceptions - ERROR - exceptions.py:71 - HTTP error on /api/ml/compare-models: 500 - 404: Dataset not found
+2025-11-19 07:56:05 - ml_endpoints - INFO - ml_endpoints.py:229 - Comparing models for dataset 8
+2025-11-19 07:56:05 - ml_endpoints - ERROR - ml_endpoints.py:303 - Model comparison failed: 404: Dataset not found
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 233, in compare_models
+    df = get_dataset_df(request.dataset_id)
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\ml_endpoints.py", line 85, in get_dataset_df
+    raise HTTPException(status_code=404, detail="Dataset not found")
+fastapi.exceptions.HTTPException: 404: Dataset not found
+2025-11-19 07:56:05 - exceptions - ERROR - exceptions.py:71 - HTTP error on /api/ml/compare-models: 500 - 404: Dataset not found
+2025-11-19 07:56:32 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/stats: {'analysis_id': ['Input should be a valid integer, unable to parse string as an integer']}
+2025-11-19 07:56:33 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/stats: {'analysis_id': ['Input should be a valid integer, unable to parse string as an integer']}
+2025-11-19 13:35:08 - main - INFO - main.py:50 - Initializing databases...
+2025-11-19 13:35:08 - main - INFO - main.py:53 - Databases initialized successfully
+2025-11-19 13:35:22 - passlib.handlers.bcrypt - WARNING - bcrypt.py:622 - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-11-19 13:35:50 - enhanced_endpoints - INFO - enhanced_endpoints.py:98 - Enhanced upload request: cs_s1_s2_s3_s4_s6a_s6e_s6f_person.dta
+2025-11-19 13:35:50 - enhanced_endpoints - INFO - enhanced_endpoints.py:105 - File validation passed: {'filename': 'cs_s1_s2_s3_s4_s6a_s6e_s6f_person.dta', 'size_bytes': 68769929, 'size_mb': 65.58, 'extension': '.dta'}
+2025-11-19 13:35:54 - data_processor - INFO - data_processor.py:77 - Converted education_level to category
+2025-11-19 13:35:54 - data_processor - INFO - data_processor.py:149 - Dropped column s1q3m due to high missingness
+2025-11-19 13:35:54 - data_processor - INFO - data_processor.py:149 - Dropped column s6eq0a due to high missingness
+2025-11-19 13:35:54 - data_processor - INFO - data_processor.py:204 - Removed 0 duplicate rows
+2025-11-19 13:35:54 - enhanced_endpoints - INFO - enhanced_endpoints.py:141 - Cleaning complete: 0 duplicates removed
+2025-11-19 13:35:57 - enhanced_endpoints - INFO - enhanced_endpoints.py:200 - Upload successful: dataset_id=1
+2025-12-13 04:40:39 - exceptions - ERROR - exceptions.py:85 - Unexpected error on /auth/register: Object of type bytes is not JSON serializable
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\fastapi\routing.py", line 346, in app
+    raise validation_error
+fastapi.exceptions.RequestValidationError: [{'type': 'model_attributes_type', 'loc': ('body',), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': b'email=newuser%40nalytiq.rw&password=SecurePassword123%21&role=analyst'}]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 59, in wrapped_app
+    response = await handler(conn, exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\exceptions.py", line 58, in validation_exception_handler
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+    ...<5 lines>...
+        },
+    )
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 182, in __init__
+    super().__init__(content, status_code, headers, media_type, background)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 45, in __init__
+    self.body = self.render(content)
+                ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 185, in render
+    return json.dumps(
+           ~~~~~~~~~~^
+        content,
+        ^^^^^^^^
+    ...<3 lines>...
+        separators=(",", ":"),
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ).encode("utf-8")
+    ^
+  File "C:\Python313\Lib\json\__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "C:\Python313\Lib\json\encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "C:\Python313\Lib\json\encoder.py", line 261, in iterencode
+    return _iterencode(o, 0)
+  File "C:\Python313\Lib\json\encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type bytes is not JSON serializable
+2025-12-13 04:40:40 - exceptions - ERROR - exceptions.py:85 - Unexpected error on /auth/register: Object of type bytes is not JSON serializable
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\fastapi\routing.py", line 346, in app
+    raise validation_error
+fastapi.exceptions.RequestValidationError: [{'type': 'model_attributes_type', 'loc': ('body',), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': b'email=duplicate%40nalytiq.rw&password=Password123%21&role=analyst'}]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 59, in wrapped_app
+    response = await handler(conn, exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\exceptions.py", line 58, in validation_exception_handler
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+    ...<5 lines>...
+        },
+    )
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 182, in __init__
+    super().__init__(content, status_code, headers, media_type, background)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 45, in __init__
+    self.body = self.render(content)
+                ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 185, in render
+    return json.dumps(
+           ~~~~~~~~~~^
+        content,
+        ^^^^^^^^
+    ...<3 lines>...
+        separators=(",", ":"),
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ).encode("utf-8")
+    ^
+  File "C:\Python313\Lib\json\__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "C:\Python313\Lib\json\encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "C:\Python313\Lib\json\encoder.py", line 261, in iterencode
+    return _iterencode(o, 0)
+  File "C:\Python313\Lib\json\encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type bytes is not JSON serializable
+2025-12-13 04:40:40 - exceptions - ERROR - exceptions.py:85 - Unexpected error on /auth/register: Object of type bytes is not JSON serializable
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\fastapi\routing.py", line 346, in app
+    raise validation_error
+fastapi.exceptions.RequestValidationError: [{'type': 'model_attributes_type', 'loc': ('body',), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': b'email=not-an-email&password=Password123%21&role=analyst'}]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 59, in wrapped_app
+    response = await handler(conn, exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\exceptions.py", line 58, in validation_exception_handler
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+    ...<5 lines>...
+        },
+    )
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 182, in __init__
+    super().__init__(content, status_code, headers, media_type, background)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 45, in __init__
+    self.body = self.render(content)
+                ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 185, in render
+    return json.dumps(
+           ~~~~~~~~~~^
+        content,
+        ^^^^^^^^
+    ...<3 lines>...
+        separators=(",", ":"),
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ).encode("utf-8")
+    ^
+  File "C:\Python313\Lib\json\__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "C:\Python313\Lib\json\encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "C:\Python313\Lib\json\encoder.py", line 261, in iterencode
+    return _iterencode(o, 0)
+  File "C:\Python313\Lib\json\encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type bytes is not JSON serializable
+2025-12-13 04:40:40 - exceptions - ERROR - exceptions.py:85 - Unexpected error on /auth/register: Object of type bytes is not JSON serializable
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\fastapi\routing.py", line 346, in app
+    raise validation_error
+fastapi.exceptions.RequestValidationError: [{'type': 'model_attributes_type', 'loc': ('body',), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': b'email=weakpass%40nalytiq.rw&password=123&role=analyst'}]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 59, in wrapped_app
+    response = await handler(conn, exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\exceptions.py", line 58, in validation_exception_handler
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+    ...<5 lines>...
+        },
+    )
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 182, in __init__
+    super().__init__(content, status_code, headers, media_type, background)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 45, in __init__
+    self.body = self.render(content)
+                ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 185, in render
+    return json.dumps(
+           ~~~~~~~~~~^
+        content,
+        ^^^^^^^^
+    ...<3 lines>...
+        separators=(",", ":"),
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ).encode("utf-8")
+    ^
+  File "C:\Python313\Lib\json\__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "C:\Python313\Lib\json\encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "C:\Python313\Lib\json\encoder.py", line 261, in iterencode
+    return _iterencode(o, 0)
+  File "C:\Python313\Lib\json\encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type bytes is not JSON serializable
+2025-12-13 04:40:41 - exceptions - ERROR - exceptions.py:85 - Unexpected error on /auth/register: Object of type bytes is not JSON serializable
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\fastapi\routing.py", line 346, in app
+    raise validation_error
+fastapi.exceptions.RequestValidationError: [{'type': 'model_attributes_type', 'loc': ('body',), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': b'email=logintest%40nalytiq.rw&password=ValidPassword123%21&role=analyst'}]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 59, in wrapped_app
+    response = await handler(conn, exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\exceptions.py", line 58, in validation_exception_handler
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+    ...<5 lines>...
+        },
+    )
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 182, in __init__
+    super().__init__(content, status_code, headers, media_type, background)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 45, in __init__
+    self.body = self.render(content)
+                ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 185, in render
+    return json.dumps(
+           ~~~~~~~~~~^
+        content,
+        ^^^^^^^^
+    ...<3 lines>...
+        separators=(",", ":"),
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ).encode("utf-8")
+    ^
+  File "C:\Python313\Lib\json\__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "C:\Python313\Lib\json\encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "C:\Python313\Lib\json\encoder.py", line 261, in iterencode
+    return _iterencode(o, 0)
+  File "C:\Python313\Lib\json\encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type bytes is not JSON serializable
+2025-12-13 04:40:41 - exceptions - ERROR - exceptions.py:85 - Unexpected error on /auth/register: Object of type bytes is not JSON serializable
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\fastapi\routing.py", line 346, in app
+    raise validation_error
+fastapi.exceptions.RequestValidationError: [{'type': 'model_attributes_type', 'loc': ('body',), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': b'email=wrongpass%40nalytiq.rw&password=CorrectPassword123%21&role=analyst'}]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 59, in wrapped_app
+    response = await handler(conn, exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\exceptions.py", line 58, in validation_exception_handler
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+    ...<5 lines>...
+        },
+    )
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 182, in __init__
+    super().__init__(content, status_code, headers, media_type, background)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 45, in __init__
+    self.body = self.render(content)
+                ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 185, in render
+    return json.dumps(
+           ~~~~~~~~~~^
+        content,
+        ^^^^^^^^
+    ...<3 lines>...
+        separators=(",", ":"),
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ).encode("utf-8")
+    ^
+  File "C:\Python313\Lib\json\__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "C:\Python313\Lib\json\encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "C:\Python313\Lib\json\encoder.py", line 261, in iterencode
+    return _iterencode(o, 0)
+  File "C:\Python313\Lib\json\encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type bytes is not JSON serializable
+2025-12-13 04:40:41 - exceptions - ERROR - exceptions.py:85 - Unexpected error on /auth/register: Object of type bytes is not JSON serializable
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\fastapi\routing.py", line 346, in app
+    raise validation_error
+fastapi.exceptions.RequestValidationError: [{'type': 'model_attributes_type', 'loc': ('body',), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': b'email=test%40nalytiq.rw&password=TestPassword123%21&role=analyst'}]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 59, in wrapped_app
+    response = await handler(conn, exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\exceptions.py", line 58, in validation_exception_handler
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+    ...<5 lines>...
+        },
+    )
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 182, in __init__
+    super().__init__(content, status_code, headers, media_type, background)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 45, in __init__
+    self.body = self.render(content)
+                ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 185, in render
+    return json.dumps(
+           ~~~~~~~~~~^
+        content,
+        ^^^^^^^^
+    ...<3 lines>...
+        separators=(",", ":"),
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ).encode("utf-8")
+    ^
+  File "C:\Python313\Lib\json\__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "C:\Python313\Lib\json\encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "C:\Python313\Lib\json\encoder.py", line 261, in iterencode
+    return _iterencode(o, 0)
+  File "C:\Python313\Lib\json\encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type bytes is not JSON serializable
+2025-12-13 04:40:41 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Not authenticated
+2025-12-13 04:40:41 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Invalid token
+2025-12-13 04:40:41 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Not authenticated
+2025-12-13 04:40:41 - exceptions - ERROR - exceptions.py:85 - Unexpected error on /auth/register: Object of type bytes is not JSON serializable
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\fastapi\routing.py", line 346, in app
+    raise validation_error
+fastapi.exceptions.RequestValidationError: [{'type': 'model_attributes_type', 'loc': ('body',), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': b'email=test%40nalytiq.rw&password=TestPassword123%21&role=analyst'}]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 59, in wrapped_app
+    response = await handler(conn, exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\exceptions.py", line 58, in validation_exception_handler
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+    ...<5 lines>...
+        },
+    )
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 182, in __init__
+    super().__init__(content, status_code, headers, media_type, background)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 45, in __init__
+    self.body = self.render(content)
+                ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\responses.py", line 185, in render
+    return json.dumps(
+           ~~~~~~~~~~^
+        content,
+        ^^^^^^^^
+    ...<3 lines>...
+        separators=(",", ":"),
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ).encode("utf-8")
+    ^
+  File "C:\Python313\Lib\json\__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "C:\Python313\Lib\json\encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "C:\Python313\Lib\json\encoder.py", line 261, in iterencode
+    return _iterencode(o, 0)
+  File "C:\Python313\Lib\json\encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type bytes is not JSON serializable
+2025-12-13 04:40:42 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/update: 401 - Not authenticated
+2025-12-13 04:40:59 - exceptions - ERROR - exceptions.py:85 - Unexpected error on /model/: Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\fastapi\routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\fastapi\routing.py", line 212, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\ML\nisr-data-platform\backend\main.py", line 454, in model_file
+    features_list = json.loads(features)
+  File "C:\Python313\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\json\decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+2025-12-13 04:55:43 - main - INFO - main.py:50 - Initializing databases...
+2025-12-13 04:55:43 - main - INFO - main.py:53 - Databases initialized successfully
+2025-12-13 04:55:57 - main - INFO - main.py:50 - Initializing databases...
+2025-12-13 04:55:57 - main - INFO - main.py:53 - Databases initialized successfully
+2025-12-13 05:04:44 - main - INFO - main.py:50 - Initializing databases...
+2025-12-13 05:04:44 - main - INFO - main.py:53 - Databases initialized successfully
+2025-12-13 05:04:44 - main - INFO - main.py:53 - Databases initialized successfully
+2025-12-13 05:04:44 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/login: 401 - Incorrect email or password
+2025-12-13 05:07:33 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/login: 401 - Incorrect email or password
+2025-12-13 05:07:34 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/login: 401 - Incorrect email or password
+2025-12-13 05:07:34 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/login: 401 - Incorrect email or password
+2025-12-13 05:07:35 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/login: 401 - Incorrect email or password
+2025-12-13 05:20:07 - main - INFO - main.py:50 - Initializing databases...
+2025-12-13 05:20:07 - main - INFO - main.py:50 - Initializing databases...
+2025-12-13 05:20:07 - main - INFO - main.py:53 - Databases initialized successfully
+2025-12-13 05:20:07 - main - INFO - main.py:53 - Databases initialized successfully
+2025-12-13 05:20:41 - main - INFO - main.py:50 - Initializing databases...
+2025-12-13 05:20:41 - main - INFO - main.py:53 - Databases initialized successfully
+2025-12-13 05:20:41 - main - INFO - main.py:50 - Initializing databases...
+2025-12-13 05:20:41 - main - INFO - main.py:53 - Databases initialized successfully
+2025-12-13 05:21:51 - main - INFO - main.py:50 - Initializing databases...
+2025-12-13 05:21:51 - main - INFO - main.py:50 - Initializing databases...
+2025-12-13 05:21:51 - main - INFO - main.py:53 - Databases initialized successfully
+2025-12-13 05:21:51 - main - INFO - main.py:53 - Databases initialized successfully
+2025-12-13 05:22:34 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/stats: {'analysis_id': ['Input should be a valid integer, unable to parse string as an integer']}
+2025-12-13 06:07:39 - main - INFO - main.py:50 - Initializing databases...
+2025-12-13 06:07:39 - main - INFO - main.py:50 - Initializing databases...
+2025-12-13 06:07:39 - main - INFO - main.py:53 - Databases initialized successfully
+2025-12-13 06:07:39 - main - INFO - main.py:53 - Databases initialized successfully
+2025-12-13 06:07:40 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/stats: {'analysis_id': ['Input should be a valid integer, unable to parse string as an integer']}
+2025-12-13 06:07:40 - exceptions - WARNING - exceptions.py:56 - Validation error on /api/history/stats: {'analysis_id': ['Input should be a valid integer, unable to parse string as an integer']}
+2026-01-18 03:02:16 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:02:16 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 03:23:23 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:23:23 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 03:23:31 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:23:31 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 03:23:39 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:23:39 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 03:25:12 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:25:12 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 03:25:53 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:25:53 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 03:27:02 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:27:02 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 03:27:43 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:27:43 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 03:28:23 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:28:23 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 03:30:11 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:30:11 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 03:30:28 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:30:28 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 03:30:56 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:30:56 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 03:31:27 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:31:27 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 03:32:37 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:32:37 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 03:36:26 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:36:26 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 03:37:05 - pki.key_manager - INFO - key_manager.py:42 - KeyManager initialized with keys directory: C:\Users\user\Documents\ML\nisr-data-platform\backend\pki\..\keys
+2026-01-18 03:37:05 - pki.certificate_authority - INFO - certificate_authority.py:87 - Generating new Root CA...
+2026-01-18 03:37:05 - pki.key_manager - INFO - key_manager.py:62 - Generating 4096-bit RSA key pair...
+2026-01-18 03:37:05 - pki.key_manager - INFO - key_manager.py:72 - RSA key pair generated successfully
+2026-01-18 03:37:05 - pki.certificate_authority - INFO - certificate_authority.py:162 - Root CA certificate saved to C:\Users\user\Documents\ML\nisr-data-platform\backend\pki\..\certificates\root_ca_cert.pem
+2026-01-18 03:37:05 - pki.certificate_authority - INFO - certificate_authority.py:89 - Root CA generated successfully
+2026-01-18 03:37:05 - pki.certificate_authority - INFO - certificate_authority.py:68 - CertificateAuthority initialized
+2026-01-18 03:37:05 - pki.certificate_manager - INFO - certificate_manager.py:42 - CertificateManager initialized
+2026-01-18 03:37:05 - registry.organization_registry - INFO - organization_registry.py:46 - OrganizationRegistry initialized
+2026-01-18 03:37:05 - registry.service_registry - INFO - service_registry.py:42 - ServiceRegistry initialized
+2026-01-18 03:37:05 - registry.access_rights - INFO - access_rights.py:36 - AccessRightsManager initialized
+2026-01-18 03:37:05 - xroad.security_server - INFO - security_server.py:61 - SecurityServer initialized - Instance: RW
+2026-01-18 03:38:54 - registry.organization_registry - INFO - organization_registry.py:134 - Organization registered: RW-GOV-NISR
+2026-01-18 03:44:03 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:44:03 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 03:44:47 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:44:47 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 03:50:26 - registry.organization_registry - INFO - organization_registry.py:58 - Loaded 1 organizations
+2026-01-18 03:50:26 - registry.organization_registry - INFO - organization_registry.py:46 - OrganizationRegistry initialized
+2026-01-18 03:50:26 - registry.service_registry - INFO - service_registry.py:42 - ServiceRegistry initialized
+2026-01-18 03:50:26 - registry.access_rights - INFO - access_rights.py:36 - AccessRightsManager initialized
+2026-01-18 03:50:26 - pki.key_manager - INFO - key_manager.py:42 - KeyManager initialized with keys directory: C:\Users\user\Documents\ML\nisr-data-platform\backend\pki\..\keys
+2026-01-18 03:50:26 - pki.certificate_authority - INFO - certificate_authority.py:77 - Loading existing Root CA...
+2026-01-18 03:50:27 - pki.certificate_authority - INFO - certificate_authority.py:84 - Root CA loaded successfully
+2026-01-18 03:50:27 - pki.certificate_authority - INFO - certificate_authority.py:68 - CertificateAuthority initialized
+2026-01-18 03:50:27 - pki.certificate_manager - INFO - certificate_manager.py:42 - CertificateManager initialized
+2026-01-18 03:50:51 - xroad.security_server - INFO - security_server.py:61 - SecurityServer initialized - Instance: RW
+2026-01-18 03:50:54 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Invalid token
+2026-01-18 03:50:54 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Invalid token
+2026-01-18 03:51:17 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Invalid token
+2026-01-18 03:51:17 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Invalid token
+2026-01-18 03:52:30 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Invalid token
+2026-01-18 03:52:31 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Invalid token
+2026-01-18 03:57:59 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:57:59 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 03:58:23 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:58:23 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 03:58:58 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:58:58 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 03:59:45 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 03:59:45 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 04:00:36 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 04:00:36 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 04:01:26 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 04:01:26 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 04:02:16 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 04:02:16 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 04:03:56 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 04:03:56 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 04:04:17 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 04:04:17 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 04:04:25 - registry.service_registry - INFO - service_registry.py:42 - ServiceRegistry initialized
+2026-01-18 04:04:25 - registry.organization_registry - INFO - organization_registry.py:58 - Loaded 1 organizations
+2026-01-18 04:04:25 - registry.organization_registry - INFO - organization_registry.py:46 - OrganizationRegistry initialized
+2026-01-18 04:04:25 - gateway.router - INFO - router.py:41 - ServiceRouter initialized
+2026-01-18 04:04:25 - gateway.rate_limiter - INFO - rate_limiter.py:100 - RateLimiter initialized
+2026-01-18 04:04:25 - gateway.circuit_breaker - INFO - circuit_breaker.py:69 - CircuitBreaker initialized
+2026-01-18 04:04:25 - registry.access_rights - INFO - access_rights.py:36 - AccessRightsManager initialized
+2026-01-18 04:04:25 - audit.audit_logger - INFO - audit_logger.py:172 - AuditLogger initialized
+2026-01-18 04:04:25 - pki.key_manager - INFO - key_manager.py:42 - KeyManager initialized with keys directory: C:\Users\user\Documents\ML\nisr-data-platform\backend\pki\..\keys
+2026-01-18 04:04:25 - xroad.signature - INFO - signature.py:38 - SignatureService initialized
+2026-01-18 04:04:25 - gateway.gateway - INFO - gateway.py:51 - APIGateway initialized
+2026-01-18 04:05:36 - federation.data_catalog - INFO - data_catalog.py:59 - DataCatalog initialized
+2026-01-18 04:05:36 - federation.data_catalog - INFO - data_catalog.py:155 - Dataset registered: Rwanda Population Census 2022 by RW-GOV-NISR
+2026-01-18 04:05:53 - federation.data_catalog - INFO - data_catalog.py:155 - Dataset registered: Rwanda GDP Statistics 2023 by RW-GOV-NISR
+2026-01-18 04:05:54 - federation.data_catalog - INFO - data_catalog.py:155 - Dataset registered: Health Facility Registry by RW-GOV-NISR
+2026-01-18 04:05:54 - federation.data_catalog - INFO - data_catalog.py:155 - Dataset registered: Agricultural Production Survey 2023 by RW-GOV-NISR
+2026-01-18 04:31:18 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 04:31:18 - main - INFO - main.py:53 - Databases initialized successfully

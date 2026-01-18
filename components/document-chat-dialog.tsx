@@ -251,10 +251,10 @@ export function DocumentChatDialog({ open, onOpenChange, insights }: DocumentCha
                     <li className="text-muted-foreground">No insights or warnings detected for this dataset.</li>
                   )}
                   {warnings.map((w, i) => (
-                    <li key={"warn-"+i} className="text-yellow-800 dark:text-yellow-200 flex items-center gap-2"><span role="img" aria-label="warning">⚠️</span> {w}</li>
+                    <li key={"warn-"+i} className="text-yellow-800 dark:text-yellow-200 flex items-center gap-2"><span role="img" aria-label="warning"></span> {w}</li>
                   ))}
                   {highlights.map((h, i) => (
-                    <li key={"insight-"+i} className="text-green-800 dark:text-green-200 flex items-center gap-2"><span role="img" aria-label="insight">✅</span> {h}</li>
+                    <li key={"insight-"+i} className="text-green-800 dark:text-green-200 flex items-center gap-2"><span role="img" aria-label="insight"></span> {h}</li>
                   ))}
                 </ul>
               </div>

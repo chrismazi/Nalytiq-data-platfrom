@@ -90,6 +90,22 @@ export async function updateUser({ password }: { password?: string }) {
   return res.json();
 }
 
+export function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('nalytiq_token');
+  localStorage.removeItem('nalytiq_user');
+  window.location.href = '/login';
+}
+
+export function isAuthenticated(): boolean {
+  const token = localStorage.getItem('token');
+  return !!token;
+}
+
+export function getAuthToken(): string | null {
+  return localStorage.getItem('token');
+}
+
 export async function cleanDataset(file: File) {
   console.log('Cleaning file:', file.name, 'Size:', file.size);
   const formData = new FormData();

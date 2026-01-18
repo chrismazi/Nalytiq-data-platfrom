@@ -103,7 +103,7 @@ def save_column_summary(summary: dict, original_filename: str) -> str:
     return summary_path
 
 def main(file_path: str):
-    print(f"\n🧼 Cleaning: {file_path}")
+    print(f"\n Cleaning: {file_path}")
     df, filetype = load_data(file_path)
     print(f"Loaded {filetype.upper()} file with shape: {df.shape}")
     cleaned = clean_data(df)
@@ -112,9 +112,9 @@ def main(file_path: str):
     cleaned_path = save_cleaned_data(cleaned, file_path)
     preview_path = save_preview(cleaned, file_path)
     summary_path = save_column_summary(summary, file_path)
-    print(f"\n✅ Cleaned file saved to: {cleaned_path}")
-    print(f"🔎 Preview (first 10 rows) saved to: {preview_path}")
-    print(f"📊 Column summary saved to: {summary_path}")
+    print(f"\n Cleaned file saved to: {cleaned_path}")
+    print(f" Preview (first 10 rows) saved to: {preview_path}")
+    print(f" Column summary saved to: {summary_path}")
     print("\nColumn Summary:")
     print(json.dumps(summary, indent=2))
     print("\nPreview of cleaned data:")
