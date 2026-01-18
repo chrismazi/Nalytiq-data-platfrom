@@ -12,30 +12,30 @@ Transform raw data into actionable insights with automated analysis, interactive
 
 ---
 
-## 🌟 Features
+## Features
 
 ### **Core Capabilities**
-- ✅ **Multi-Format Support** - Upload CSV, Excel, and Stata files
-- ✅ **Automated Data Analysis** - Instant insights with AI-powered recommendations
-- ✅ **Interactive Dashboards** - Real-time visualizations and metrics
-- ✅ **Advanced Analytics** - Statistical modeling, cross-tabulation, correlations
-- ✅ **AI Chatbot** - Natural language queries about your data
-- ✅ **Report Generation** - Automated PDF/Excel reports with narratives
-- ✅ **Role-Based Access** - Secure authentication and authorization
-- ✅ **Data Export** - Export results in multiple formats
+- **Multi-Format Support** - Upload CSV, Excel, and Stata files
+- **Automated Data Analysis** - Instant insights with AI-powered recommendations
+- **Interactive Dashboards** - Real-time visualizations and metrics
+- **Advanced Analytics** - Statistical modeling, cross-tabulation, correlations
+- **AI Chatbot** - Natural language queries about your data
+- **Report Generation** - Automated PDF/Excel reports with narratives
+- **Role-Based Access** - Secure authentication and authorization
+- **Data Export** - Export results in multiple formats
 
 ### **Enhanced Features (Latest)**
-- 🔥 **Comprehensive Error Handling** - User-friendly error messages
-- 🔥 **File Validation** - Size and format validation before processing
-- 🔥 **Request Timeout Handling** - Graceful timeout management
-- 🔥 **Structured Logging** - Detailed logs for debugging
-- 🔥 **API Documentation** - Auto-generated interactive docs
-- 🔥 **Type Safety** - Full TypeScript implementation
-- 🔥 **Environment Configuration** - Easy deployment configuration
+- **Comprehensive Error Handling** - User-friendly error messages
+- **File Validation** - Size and format validation before processing
+- **Request Timeout Handling** - Graceful timeout management
+- **Structured Logging** - Detailed logs for debugging
+- **API Documentation** - Auto-generated interactive docs
+- **Type Safety** - Full TypeScript implementation
+- **Environment Configuration** - Easy deployment configuration
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### **Prerequisites**
 - Node.js 18+ and npm/pnpm
@@ -102,7 +102,7 @@ Frontend will be available at:
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 nisr-data-platform/
@@ -151,7 +151,7 @@ nisr-data-platform/
 
 ---
 
-## 🔧 Configuration
+## Configuration
 
 ### **Frontend Environment Variables**
 
@@ -178,7 +178,7 @@ LOG_LEVEL=INFO
 
 ---
 
-## 📖 API Documentation
+## API Documentation
 
 ### **Interactive API Docs**
 Visit http://localhost:8000/api/docs for interactive Swagger UI documentation.
@@ -213,7 +213,7 @@ Visit http://localhost:8000/api/docs for interactive Swagger UI documentation.
 
 ---
 
-## 🎨 Features In Detail
+## Features In Detail
 
 ### **1. Data Upload & Validation**
 - File type detection (CSV, Excel, Stata)
@@ -261,7 +261,7 @@ Visit http://localhost:8000/api/docs for interactive Swagger UI documentation.
 
 ---
 
-## 🧪 Error Handling
+## Error Handling
 
 The platform includes comprehensive error handling:
 
@@ -281,7 +281,7 @@ The platform includes comprehensive error handling:
 
 ---
 
-## 📊 Supported Data Formats
+## Supported Data Formats
 
 ### **Input Formats**
 - **CSV** - Comma-separated values
@@ -296,7 +296,7 @@ The platform includes comprehensive error handling:
 
 ---
 
-## 🔐 Authentication Flow
+## Authentication Flow
 
 1. **Register** - Create account with email and password
 2. **Login** - Receive JWT token
@@ -306,7 +306,7 @@ The platform includes comprehensive error handling:
 
 ---
 
-## 🎯 Usage Examples
+## Usage Examples
 
 ### **Upload and Analyze Data**
 ```typescript
@@ -331,7 +331,7 @@ const response = await apiClient.post("/chatbot/", {
 
 ---
 
-## 🚀 Deployment
+## Deployment
 
 ### **Frontend (Vercel/Netlify)**
 ```bash
@@ -351,7 +351,7 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 ---
 
-## 🛠️ Development
+## Development
 
 ### **Code Quality**
 - TypeScript strict mode
@@ -370,20 +370,20 @@ pytest
 
 ---
 
-## 📝 License
+## License
 
 This project is proprietary software developed for Rwanda's National Institute of Statistics (NISR).
 
 ---
 
-## 👥 Contributors
+## Contributors
 
 - **Chris Mazimpaka** - Lead Developer
 - NISR Rwanda - Product Owner
 
 ---
 
-## 🆘 Support
+## Support
 
 For issues and questions:
 - Email: support@nalytiq.rw
@@ -392,7 +392,7 @@ For issues and questions:
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
 - [ ] Unit and integration tests
 - [ ] Real-time collaboration
@@ -407,6 +407,6 @@ For issues and questions:
 
 ---
 
-**Built with ❤️ for Rwanda**
+**Built with love for Rwanda**
 
 *Matthew 5:16*

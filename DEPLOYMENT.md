@@ -1,10 +1,10 @@
 # Deployment Guide - Nalytiq Platform
 
-## 🚀 Production Deployment Checklist
+##  Production Deployment Checklist
 
 ### **Pre-Deployment Steps**
 
-#### 1. **Environment Configuration** ✓
+#### 1. **Environment Configuration** 
 - [ ] Copy `env.example` to `.env.local` (frontend)
 - [ ] Copy `backend/env.example` to `backend/.env`
 - [ ] Update `SECRET_KEY` with a strong 32+ character key
@@ -37,7 +37,7 @@ npm run build
 
 ---
 
-## 🐳 Docker Deployment
+##  Docker Deployment
 
 ### **Backend Dockerfile**
 ```dockerfile
@@ -157,7 +157,7 @@ services:
 
 ---
 
-## ☁️ Cloud Deployment Options
+##  Cloud Deployment Options
 
 ### **Option 1: Vercel (Frontend) + Railway/Render (Backend)**
 
@@ -239,7 +239,7 @@ services:
 
 ---
 
-## 🔐 SSL/HTTPS Configuration
+##  SSL/HTTPS Configuration
 
 ### **Let's Encrypt with Nginx**
 ```bash
@@ -292,7 +292,7 @@ server {
 
 ---
 
-## 📊 Monitoring & Logging
+##  Monitoring & Logging
 
 ### **Application Logging**
 - Logs are stored in `backend/app.log`
@@ -331,7 +331,7 @@ export default withSentryConfig(config, {
 
 ---
 
-## 🗄️ Database Migration
+##  Database Migration
 
 ### **SQLite to PostgreSQL (Recommended for Production)**
 
@@ -385,7 +385,7 @@ pg_conn.commit()
 
 ---
 
-## 🔄 CI/CD Pipeline
+##  CI/CD Pipeline
 
 ### **GitHub Actions**
 ```yaml
@@ -444,7 +444,7 @@ jobs:
 
 ---
 
-## 📈 Performance Optimization
+##  Performance Optimization
 
 ### **Backend**
 ```python
@@ -470,7 +470,7 @@ const Dashboard = lazy(() => import('./pages/dashboard'));
 
 ---
 
-## ✅ Post-Deployment Verification
+##  Post-Deployment Verification
 
 - [ ] All endpoints return expected responses
 - [ ] Health check endpoint returns 200
@@ -488,7 +488,7 @@ const Dashboard = lazy(() => import('./pages/dashboard'));
 
 ---
 
-## 🆘 Troubleshooting
+## Troubleshooting
 
 ### **Common Issues**
 
@@ -523,7 +523,7 @@ python -c "import sqlite3; print('OK')"
 
 ---
 
-## 📞 Support
+##  Support
 
 For deployment issues:
 - Email: support@nalytiq.rw

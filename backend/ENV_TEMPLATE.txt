@@ -1,0 +1,86 @@
+# Nalytiq Backend Environment Variables
+# Copy this file to .env and fill in your values
+
+# ===========================================
+# SECURITY - REQUIRED
+# ===========================================
+# Secret key for JWT token signing (min 32 characters)
+SECRET_KEY=your-super-secret-key-change-this-in-production
+
+# JWT Algorithm (keep HS256 unless you know what you're doing)
+ALGORITHM=HS256
+
+# Token expiration (minutes)
+ACCESS_TOKEN_EXPIRE_MINUTES=60
+
+# ===========================================
+# AI/LLM - RECOMMENDED
+# ===========================================
+# Google Gemini API Key (get one at https://makersuite.google.com/app/apikey)
+GEMINI_API_KEY=your-gemini-api-key-here
+
+# Alternative: Google API Key
+# GOOGLE_API_KEY=your-google-api-key-here
+
+# ===========================================
+# DATABASE - FOR PRODUCTION
+# ===========================================
+# PostgreSQL connection URL (production)
+# DATABASE_URL=postgresql://user:password@localhost:5432/nalytiq
+
+# ===========================================
+# CACHING - FOR PRODUCTION
+# ===========================================
+# Redis URL
+# REDIS_URL=redis://localhost:6379
+
+# ===========================================
+# FILE HANDLING
+# ===========================================
+# Maximum file size in MB
+MAX_FILE_SIZE_MB=500
+
+# Allowed file extensions (comma-separated)
+ALLOWED_EXTENSIONS=csv,xlsx,xls,dta
+
+# Upload directory
+UPLOAD_DIR=./uploads
+
+# ===========================================
+# CORS SETTINGS
+# ===========================================
+# Allowed origins (comma-separated)
+CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+
+# ===========================================
+# LOGGING
+# ===========================================
+# Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+LOG_LEVEL=INFO
+
+# Log file path
+LOG_FILE=./logs/nalytiq.log
+
+# ===========================================
+# RATE LIMITING
+# ===========================================
+# Enable rate limiting
+RATE_LIMIT_ENABLED=true
+
+# Requests per minute
+RATE_LIMIT_PER_MINUTE=60
+
+# ===========================================
+# MONITORING (OPTIONAL)
+# ===========================================
+# Sentry DSN for error tracking (optional)
+# SENTRY_DSN=https://your-sentry-dsn
+
+# ===========================================
+# OLLAMA (LOCAL LLM FALLBACK)
+# ===========================================
+# Ollama host for local LLM (fallback when Gemini unavailable)
+OLLAMA_HOST=http://localhost:11434
+
+# Default Ollama model
+OLLAMA_MODEL=gemma:2b

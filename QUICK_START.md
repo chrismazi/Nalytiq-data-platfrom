@@ -1,10 +1,10 @@
-# ⚡ Quick Start Guide - Nalytiq Platform
+#  Quick Start Guide - Nalytiq Platform
 
 **Get up and running in 5 minutes!**
 
 ---
 
-## 🚀 Installation (First Time Only)
+##  Installation (First Time Only)
 
 ### **1. Clone & Install**
 ```bash
@@ -43,7 +43,7 @@ SECRET_KEY=your-secret-key-change-this
 
 ---
 
-## 🎯 Daily Development
+##  Daily Development
 
 ### **Start Development Servers**
 
@@ -65,7 +65,7 @@ npm run dev
 
 ---
 
-## 🔑 Common Tasks
+##  Common Tasks
 
 ### **Create a User**
 1. Go to http://localhost:3000
@@ -90,7 +90,7 @@ npm run dev
 
 ---
 
-## 🛠️ Useful Commands
+##  Useful Commands
 
 ### **Frontend**
 ```bash
@@ -114,7 +114,7 @@ tail -f backend/app.log
 
 ---
 
-## 📝 Code Examples
+##  Code Examples
 
 ### **Upload File (Frontend)**
 ```typescript
@@ -220,7 +220,7 @@ async function loadData() {
 
 ---
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### **Backend won't start**
 ```bash
@@ -260,7 +260,7 @@ npm run dev
 
 ---
 
-## 📚 File Structure Reference
+##  File Structure Reference
 
 ```
 nisr-data-platform/
@@ -295,7 +295,7 @@ nisr-data-platform/
 
 ---
 
-## 🎨 UI Component Examples
+##  UI Component Examples
 
 ### **Button with Loading**
 ```tsx
@@ -332,7 +332,7 @@ const handleDelete = async () => {
 
 ---
 
-## 🔐 Environment Variables Reference
+##  Environment Variables Reference
 
 ### **Frontend (.env.local)**
 | Variable | Description | Example |
@@ -351,7 +351,7 @@ const handleDelete = async () => {
 
 ---
 
-## 📞 Getting Help
+##  Getting Help
 
 ### **Documentation**
 - Main README: `/README.md`
@@ -371,7 +371,7 @@ const handleDelete = async () => {
 
 ---
 
-## ✅ Quick Checklist
+##  Quick Checklist
 
 Before starting development:
 - [ ] Python 3.10+ installed
@@ -384,7 +384,7 @@ Before starting development:
 
 ---
 
-## 🎓 Next Steps
+##  Next Steps
 
 1. **Explore the UI** - Browse all pages
 2. **Upload a file** - Try the data upload feature
@@ -395,7 +395,7 @@ Before starting development:
 
 ---
 
-**Happy Coding! 🚀**
+**Happy Coding! **
 
 *Created by: Chris Mazimpaka*  
 *Updated: October 29, 2025*

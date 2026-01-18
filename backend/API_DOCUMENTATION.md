@@ -1,12 +1,12 @@
 # Nalytiq Platform - API Documentation
 
-## 🚀 Enhanced Universal Analytics API
+##  Enhanced Universal Analytics API
 
 The Nalytiq platform now features a **universal analytics engine** that works with ANY dataset structure. No more Rwanda-specific limitations!
 
 ---
 
-## 📊 **Core Features**
+##  **Core Features**
 
 ### **1. Universal Data Processing**
 - Works with any CSV, Excel, or Stata file
@@ -42,7 +42,7 @@ The Nalytiq platform now features a **universal analytics engine** that works wi
 
 ---
 
-## 🔗 **API Endpoints**
+##  **API Endpoints**
 
 ### **Data Upload & Processing**
 
@@ -324,7 +324,7 @@ Download cleaned dataset
 
 ---
 
-## 🎯 **Usage Examples**
+##  **Usage Examples**
 
 ### **Example 1: Sales Analysis**
 
@@ -388,7 +388,7 @@ print(f"Top Features: {response.json()['feature_importance'][:3]}")
 
 ---
 
-## 🔧 **Configuration**
+##  **Configuration**
 
 ### **Environment Variables**
 
@@ -402,7 +402,7 @@ LOG_LEVEL=INFO
 
 ---
 
-## 📈 **Best Practices**
+##  **Best Practices**
 
 1. **Always check data quality score** before analysis
 2. **Review insights and warnings** from the upload response
@@ -413,7 +413,7 @@ LOG_LEVEL=INFO
 
 ---
 
-## 🚨 **Error Handling**
+##  **Error Handling**
 
 All endpoints return structured error responses:
 
@@ -437,7 +437,7 @@ All endpoints return structured error responses:
 
 ---
 
-## 📚 **Interactive Documentation**
+##  **Interactive Documentation**
 
 Visit http://localhost:8000/api/docs for interactive Swagger UI with:
 - Try-it-out functionality
@@ -447,4 +447,4 @@ Visit http://localhost:8000/api/docs for interactive Swagger UI with:
 
 ---
 
-**Built with ❤️ for universal data analytics**
+**Built with  for universal data analytics**
