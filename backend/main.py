@@ -109,6 +109,10 @@ app.include_router(security_router, tags=["Security & Compliance"])
 from advanced_endpoints import router as advanced_router
 app.include_router(advanced_router, tags=["Advanced Features"])
 
+# Include Research-Grade endpoints (AutoML, Data Exchange, Privacy, Lineage)
+from research_endpoints import router as research_router
+app.include_router(research_router, tags=["Research-Grade Features"])
+
 @app.get("/", tags=["Health"])
 async def root():
     """API health check endpoint"""
