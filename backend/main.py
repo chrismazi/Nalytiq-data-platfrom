@@ -105,6 +105,10 @@ app.include_router(federation_router, tags=["Data Federation"])
 from security_endpoints import router as security_router
 app.include_router(security_router, tags=["Security & Compliance"])
 
+# Include Advanced Features endpoints (notifications, ML, reports, email, jobs)
+from advanced_endpoints import router as advanced_router
+app.include_router(advanced_router, tags=["Advanced Features"])
+
 @app.get("/", tags=["Health"])
 async def root():
     """API health check endpoint"""

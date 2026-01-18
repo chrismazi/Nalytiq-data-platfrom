@@ -91,3 +91,6 @@ mypy>=1.7.0
 
 # API Documentation
 pydantic>=2.5.0
+
+# Scheduled Jobs
+croniter>=2.0.0
