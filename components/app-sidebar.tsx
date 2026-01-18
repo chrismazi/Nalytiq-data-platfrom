@@ -2,9 +2,9 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useRouter } from "next/navigation"
-import { 
+import {
   BarChart3, FileSpreadsheet, FileText, LayoutDashboard, LogOut, Settings, User,
-  History, Brain, LineChart, Shuffle, PieChart
+  History, Brain, LineChart, Shuffle, PieChart, Network, Zap, Database, Shield
 } from "lucide-react"
 import {
   Sidebar,
@@ -168,6 +168,52 @@ export function AppSidebar() {
                   <Link href="/reports">
                     <FileText />
                     <span>Reports</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarSeparator />
+
+        {/* X-Road Infrastructure */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Data Exchange</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive("/xroad")}>
+                  <Link href="/xroad">
+                    <Network />
+                    <span>X-Road</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive("/gateway")}>
+                  <Link href="/gateway">
+                    <Zap />
+                    <span>API Gateway</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive("/federation")}>
+                  <Link href="/federation">
+                    <Database />
+                    <span>Data Federation</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive("/security")}>
+                  <Link href="/security">
+                    <Shield />
+                    <span>Security</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
