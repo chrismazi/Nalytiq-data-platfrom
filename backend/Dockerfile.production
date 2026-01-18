@@ -1,0 +1,78 @@
+# ============================================
+# NALYTIQ DATA PLATFORM - PRODUCTION DOCKER
+# ============================================
+# Multi-stage build for optimized production image
+
+# Stage 1: Builder
+FROM python:3.12-slim as builder
+
+WORKDIR /app
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create virtual environment
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Stage 2: Production
+FROM python:3.12-slim as production
+
+# Security: Create non-root user
+RUN groupadd -r nalytiq && useradd -r -g nalytiq nalytiq
+
+WORKDIR /app
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy virtual environment from builder
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Copy application code
+COPY --chown=nalytiq:nalytiq . .
+
+# Create required directories
+RUN mkdir -p /app/data /app/logs /app/uploads /app/models /app/keys /app/certificates && \
+    chown -R nalytiq:nalytiq /app
+
+# Environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app \
+    ENVIRONMENT=production
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/health/live || exit 1
+
+# Switch to non-root user
+USER nalytiq
+
+# Expose port
+EXPOSE 8000
+
+# Run with Gunicorn + Uvicorn workers
+CMD ["gunicorn", "main:app", \
+    "--bind", "0.0.0.0:8000", \
+    "--workers", "4", \
+    "--worker-class", "uvicorn.workers.UvicornWorker", \
+    "--timeout", "120", \
+    "--keep-alive", "5", \
+    "--max-requests", "1000", \
+    "--max-requests-jitter", "50", \
+    "--access-logfile", "-", \
+    "--error-logfile", "-", \
+    "--capture-output"]

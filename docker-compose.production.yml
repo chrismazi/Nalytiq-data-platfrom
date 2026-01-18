@@ -1,0 +1,253 @@
+# ============================================
+# NALYTIQ DATA PLATFORM - PRODUCTION COMPOSE
+# ============================================
+# Complete production stack with all services
+
+version: '3.9'
+
+services:
+  # ==========================================
+  # API Backend
+  # ==========================================
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.production
+    container_name: nalytiq-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - USE_SQLITE=false
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER:-nalytiq}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB:-nalytiq_db}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - SECRET_KEY=${SECRET_KEY}
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - SENTRY_DSN=${SENTRY_DSN:-}
+    volumes:
+      - api-data:/app/data
+      - api-uploads:/app/uploads
+      - api-models:/app/models
+      - api-logs:/app/logs
+      - api-keys:/app/keys
+      - api-certs:/app/certificates
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - nalytiq-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health/live" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ==========================================
+  # Celery Worker
+  # ==========================================
+  celery-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.production
+    container_name: nalytiq-worker
+    restart: unless-stopped
+    command: celery -A celery_app worker --loglevel=info --concurrency=4
+    environment:
+      - ENVIRONMENT=production
+      - USE_SQLITE=false
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER:-nalytiq}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB:-nalytiq_db}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+    volumes:
+      - api-data:/app/data
+      - api-uploads:/app/uploads
+      - api-models:/app/models
+    depends_on:
+      - api
+      - redis
+      - postgres
+    networks:
+      - nalytiq-network
+
+  # ==========================================
+  # Celery Beat (Scheduler)
+  # ==========================================
+  celery-beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.production
+    container_name: nalytiq-beat
+    restart: unless-stopped
+    command: celery -A celery_app beat --loglevel=info
+    environment:
+      - ENVIRONMENT=production
+      - REDIS_HOST=redis
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+    depends_on:
+      - celery-worker
+    networks:
+      - nalytiq-network
+
+  # ==========================================
+  # Frontend (Next.js)
+  # ==========================================
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        - NEXT_PUBLIC_API_URL=http://api:8000
+    container_name: nalytiq-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${API_URL:-http://localhost:8000}
+    depends_on:
+      - api
+    networks:
+      - nalytiq-network
+
+  # ==========================================
+  # PostgreSQL Database
+  # ==========================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: nalytiq-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-nalytiq}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB:-nalytiq_db}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - nalytiq-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-nalytiq} -d ${POSTGRES_DB:-nalytiq_db}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================
+  # Redis (Cache & Message Broker)
+  # ==========================================
+  redis:
+    image: redis:7-alpine
+    container_name: nalytiq-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - nalytiq-network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================
+  # Nginx Reverse Proxy
+  # ==========================================
+  nginx:
+    image: nginx:alpine
+    container_name: nalytiq-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/logs:/var/log/nginx
+    depends_on:
+      - api
+      - frontend
+    networks:
+      - nalytiq-network
+
+  # ==========================================
+  # Prometheus (Metrics)
+  # ==========================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: nalytiq-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'
+    networks:
+      - nalytiq-network
+
+  # ==========================================
+  # Grafana (Dashboards)
+  # ==========================================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: nalytiq-grafana
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - prometheus
+    networks:
+      - nalytiq-network
+
+# ==========================================
+# Networks
+# ==========================================
+networks:
+  nalytiq-network:
+    driver: bridge
+
+# ==========================================
+# Volumes (Persistent Data)
+# ==========================================
+volumes:
+  postgres-data:
+  redis-data:
+  api-data:
+  api-uploads:
+  api-models:
+  api-logs:
+  api-keys:
+  api-certs:
+  prometheus-data:
+  grafana-data:

@@ -75,3 +75,19 @@ sentry-sdk>=1.35.0
 
 # X-Road PKI & Security
 cryptography>=41.0.0
+
+# Production Server
+gunicorn>=21.2.0
+
+# System Monitoring
+psutil>=5.9.0
+
+# Configuration
+pyyaml>=6.0.0
+
+# Code Quality (development)
+ruff>=0.1.0
+mypy>=1.7.0
+
+# API Documentation
+pydantic>=2.5.0

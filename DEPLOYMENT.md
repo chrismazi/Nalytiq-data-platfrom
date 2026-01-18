@@ -1,537 +1,441 @@
-# Deployment Guide - Nalytiq Platform
+# Nalytiq Data Platform - Production Deployment Guide
 
-##  Production Deployment Checklist
+## Table of Contents
+1. [Prerequisites](#prerequisites)
+2. [Quick Start](#quick-start)
+3. [Development Setup](#development-setup)
+4. [Production Deployment](#production-deployment)
+5. [Docker Deployment](#docker-deployment)
+6. [Kubernetes Deployment](#kubernetes-deployment)
+7. [Configuration](#configuration)
+8. [Database Setup](#database-setup)
+9. [Monitoring](#monitoring)
+10. [Security](#security)
+11. [Troubleshooting](#troubleshooting)
 
-### **Pre-Deployment Steps**
+---
 
-#### 1. **Environment Configuration** 
-- [ ] Copy `env.example` to `.env.local` (frontend)
-- [ ] Copy `backend/env.example` to `backend/.env`
-- [ ] Update `SECRET_KEY` with a strong 32+ character key
-- [ ] Configure `CORS_ORIGINS` with your production domain
-- [ ] Set `LOG_LEVEL` to `WARNING` or `ERROR` for production
-- [ ] Configure database URL if using external database
+## Prerequisites
 
-#### 2. **Security Hardening**
-- [ ] Generate secure `SECRET_KEY`: `openssl rand -hex 32`
-- [ ] Update CORS to only allow your frontend domain
-- [ ] Enable HTTPS in production
-- [ ] Set up rate limiting
-- [ ] Configure CSP headers
-- [ ] Enable security headers (HSTS, X-Frame-Options, etc.)
+### System Requirements
+- **OS**: Ubuntu 22.04+ / RHEL 8+ / Windows Server 2022
+- **CPU**: 4+ cores (8+ recommended for production)
+- **RAM**: 8GB minimum (16GB+ recommended)
+- **Disk**: 50GB+ SSD
 
-#### 3. **Dependencies**
+### Software Requirements
+- Python 3.12+
+- Node.js 20+
+- PostgreSQL 16+
+- Redis 7+
+- Docker 24+ (for containerized deployment)
+- Kubernetes 1.28+ (for K8s deployment)
+
+---
+
+## Quick Start
+
+### 1. Clone Repository
 ```bash
-# Backend
+git clone https://github.com/chrismazi/Nalytiq-data-platfrom.git
+cd Nalytiq-data-platfrom
+```
+
+### 2. Backend Setup
+```bash
 cd backend
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# or: venv\Scripts\activate  # Windows
+
+# Install dependencies
 pip install -r requirements.txt
 
-# Frontend
-npm install --legacy-peer-deps
+# Copy environment file
+cp env.production.example .env
+
+# Edit .env with your settings
+# IMPORTANT: Generate a secure SECRET_KEY:
+python -c "import secrets; print(secrets.token_urlsafe(64))"
+
+# Start development server
+uvicorn main:app --reload --port 8000
 ```
 
-#### 4. **Build Frontend**
+### 3. Frontend Setup
 ```bash
-npm run build
+# From project root
+npm install
+npm run dev
 ```
+
+### 4. Access Application
+- Frontend: http://localhost:3000
+- API: http://localhost:8000
+- API Docs: http://localhost:8000/docs
 
 ---
 
-##  Docker Deployment
+## Development Setup
 
-### **Backend Dockerfile**
-```dockerfile
-FROM python:3.10-slim
-
-WORKDIR /app
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy requirements
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy application
-COPY . .
-
-# Create log directory
-RUN mkdir -p /app/logs
-
-# Expose port
-EXPOSE 8000
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD python -c "import requests; requests.get('http://localhost:8000/health')"
-
-# Run application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
-
-### **Frontend Dockerfile**
-```dockerfile
-FROM node:18-alpine AS builder
-
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-RUN npm install --legacy-peer-deps
-
-# Copy application
-COPY . .
-
-# Build
-RUN npm run build
-
-# Production image
-FROM node:18-alpine
-
-WORKDIR /app
-
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/next.config.mjs ./
-
-RUN npm install --production --legacy-peer-deps
-
-EXPOSE 3000
-
-CMD ["npm", "start"]
-```
-
-### **Docker Compose**
-```yaml
-version: '3.8'
-
-services:
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
-    environment:
-      - SECRET_KEY=${SECRET_KEY}
-      - CORS_ORIGINS=${CORS_ORIGINS}
-      - LOG_LEVEL=INFO
-    volumes:
-      - ./backend/logs:/app/logs
-      - ./backend/users.db:/app/users.db
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - NEXT_PUBLIC_BACKEND_URL=http://backend:8000
-    depends_on:
-      - backend
-    restart: unless-stopped
-
-  nginx:
-    image: nginx:alpine
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./ssl:/etc/nginx/ssl:ro
-    depends_on:
-      - frontend
-      - backend
-    restart: unless-stopped
-```
-
----
-
-##  Cloud Deployment Options
-
-### **Option 1: Vercel (Frontend) + Railway/Render (Backend)**
-
-#### **Frontend on Vercel**
+### Database (SQLite - Development)
 ```bash
-# Install Vercel CLI
-npm install -g vercel
-
-# Deploy
-vercel --prod
-
-# Set environment variables in Vercel dashboard
-# NEXT_PUBLIC_BACKEND_URL=https://your-backend.railway.app
+# SQLite is configured by default for development
+# No additional setup required
 ```
 
-#### **Backend on Railway**
-1. Connect GitHub repository
-2. Select `backend` directory
-3. Add environment variables in Railway dashboard
-4. Deploy automatically on push
-
-### **Option 2: AWS Deployment**
-
-#### **Backend on AWS Elastic Beanstalk**
+### Database (PostgreSQL - Development)
 ```bash
-# Install EB CLI
-pip install awsebcli
+# Start PostgreSQL
+docker run -d \
+  --name nalytiq-postgres \
+  -e POSTGRES_USER=nalytiq \
+  -e POSTGRES_PASSWORD=devpassword \
+  -e POSTGRES_DB=nalytiq_db \
+  -p 5432:5432 \
+  postgres:16-alpine
 
-# Initialize
+# Update .env
+USE_SQLITE=false
+POSTGRES_HOST=localhost
+POSTGRES_PASSWORD=devpassword
+```
+
+### Redis (Optional for Development)
+```bash
+docker run -d \
+  --name nalytiq-redis \
+  -p 6379:6379 \
+  redis:7-alpine
+```
+
+### Run Database Migrations
+```bash
 cd backend
-eb init -p python-3.10 nalytiq-backend
-
-# Create environment
-eb create nalytiq-prod
-
-# Deploy
-eb deploy
-```
-
-#### **Frontend on AWS Amplify**
-1. Connect to GitHub repository
-2. Configure build settings
-3. Add environment variables
-4. Deploy
-
-### **Option 3: DigitalOcean App Platform**
-
-**app.yaml**
-```yaml
-name: nalytiq
-services:
-  - name: backend
-    dockerfile_path: backend/Dockerfile
-    github:
-      repo: your-repo/nisr-data-platform
-      branch: main
-      deploy_on_push: true
-    envs:
-      - key: SECRET_KEY
-        value: ${SECRET_KEY}
-      - key: CORS_ORIGINS
-        value: ${FRONTEND_URL}
-    http_port: 8000
-    health_check:
-      http_path: /health
-
-  - name: frontend
-    dockerfile_path: Dockerfile
-    github:
-      repo: your-repo/nisr-data-platform
-      branch: main
-    envs:
-      - key: NEXT_PUBLIC_BACKEND_URL
-        value: ${BACKEND_URL}
-    http_port: 3000
-    routes:
-      - path: /
+alembic upgrade head
 ```
 
 ---
 
-##  SSL/HTTPS Configuration
+## Production Deployment
 
-### **Let's Encrypt with Nginx**
+### 1. Server Preparation
 ```bash
-# Install certbot
-sudo apt-get install certbot python3-certbot-nginx
+# Update system
+sudo apt update && sudo apt upgrade -y
 
-# Get certificate
-sudo certbot --nginx -d nalytiq.rw -d www.nalytiq.rw
+# Install dependencies
+sudo apt install -y python3.12 python3.12-venv postgresql-16 redis-server nginx certbot
 
-# Auto-renewal
-sudo certbot renew --dry-run
+# Create application user
+sudo useradd -m -s /bin/bash nalytiq
+sudo mkdir -p /opt/nalytiq
+sudo chown nalytiq:nalytiq /opt/nalytiq
 ```
 
-### **Nginx Configuration**
-```nginx
-# /etc/nginx/sites-available/nalytiq
-server {
-    listen 80;
-    server_name nalytiq.rw www.nalytiq.rw;
-    return 301 https://$server_name$request_uri;
-}
-
-server {
-    listen 443 ssl http2;
-    server_name nalytiq.rw www.nalytiq.rw;
-
-    ssl_certificate /etc/letsencrypt/live/nalytiq.rw/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/nalytiq.rw/privkey.pem;
-
-    # Frontend
-    location / {
-        proxy_pass http://localhost:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-
-    # Backend API
-    location /api {
-        proxy_pass http://localhost:8000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-```
-
----
-
-##  Monitoring & Logging
-
-### **Application Logging**
-- Logs are stored in `backend/app.log`
-- Rotation: 10MB per file, 5 backup files
-- Configure log shipping to services like:
-  - AWS CloudWatch
-  - Datadog
-  - Loggly
-  - Papertrail
-
-### **Health Checks**
-- Backend: `GET /health`
-- Database status included in health response
-- Set up uptime monitoring with:
-  - UptimeRobot
-  - Pingdom
-  - Better Uptime
-
-### **Error Tracking**
-```typescript
-// Add Sentry integration (optional)
-// Install: npm install @sentry/nextjs
-
-// next.config.mjs
-import { withSentryConfig } from '@sentry/nextjs';
-
-const config = {
-  // ... your config
-};
-
-export default withSentryConfig(config, {
-  org: "your-org",
-  project: "nalytiq",
-});
-```
-
----
-
-##  Database Migration
-
-### **SQLite to PostgreSQL (Recommended for Production)**
-
-1. **Install PostgreSQL**
+### 2. Database Setup
 ```bash
-pip install psycopg2-binary
+# Create PostgreSQL database
+sudo -u postgres psql << EOF
+CREATE USER nalytiq WITH PASSWORD 'YOUR_SECURE_PASSWORD';
+CREATE DATABASE nalytiq_db OWNER nalytiq;
+GRANT ALL PRIVILEGES ON DATABASE nalytiq_db TO nalytiq;
+EOF
 ```
 
-2. **Update `backend/config.py`**
-```python
-DATABASE_URL: str = os.getenv(
-    "DATABASE_URL", 
-    "postgresql://user:password@localhost/nalytiq"
-)
+### 3. Application Deployment
+```bash
+# As nalytiq user
+sudo su - nalytiq
+cd /opt/nalytiq
+
+# Clone repository
+git clone https://github.com/chrismazi/Nalytiq-data-platfrom.git app
+cd app/backend
+
+# Setup Python environment
+python3.12 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+pip install gunicorn
+
+# Configure environment
+cp env.production.example .env
+# Edit .env with production settings
 ```
 
-3. **Migrate Data**
-```python
-# migration script
-import sqlite3
-import psycopg2
+### 4. Systemd Service
+```bash
+# Create /etc/systemd/system/nalytiq-api.service
+sudo cat > /etc/systemd/system/nalytiq-api.service << EOF
+[Unit]
+Description=Nalytiq API
+After=network.target postgresql.service redis.service
 
-# Connect to SQLite
-sqlite_conn = sqlite3.connect('users.db')
-sqlite_cur = sqlite_conn.cursor()
+[Service]
+User=nalytiq
+Group=nalytiq
+WorkingDirectory=/opt/nalytiq/app/backend
+Environment="PATH=/opt/nalytiq/app/backend/venv/bin"
+ExecStart=/opt/nalytiq/app/backend/venv/bin/gunicorn main:app \
+    --bind 0.0.0.0:8000 \
+    --workers 4 \
+    --worker-class uvicorn.workers.UvicornWorker \
+    --timeout 120 \
+    --access-logfile /var/log/nalytiq/access.log \
+    --error-logfile /var/log/nalytiq/error.log
 
-# Connect to PostgreSQL
-pg_conn = psycopg2.connect(DATABASE_URL)
-pg_cur = pg_conn.cursor()
+Restart=always
+RestartSec=5
 
-# Create table
-pg_cur.execute("""
-    CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        password VARCHAR(255) NOT NULL,
-        role VARCHAR(50) NOT NULL
-    )
-""")
+[Install]
+WantedBy=multi-user.target
+EOF
 
-# Migrate data
-sqlite_cur.execute("SELECT email, password, role FROM users")
-for row in sqlite_cur.fetchall():
-    pg_cur.execute(
-        "INSERT INTO users (email, password, role) VALUES (%s, %s, %s)",
-        row
-    )
-
-pg_conn.commit()
+# Enable and start
+sudo systemctl daemon-reload
+sudo systemctl enable nalytiq-api
+sudo systemctl start nalytiq-api
 ```
 
----
+### 5. Nginx Configuration
+```bash
+# See nginx/nginx.conf for full configuration
+sudo cp nginx/nginx.conf /etc/nginx/nginx.conf
+sudo nginx -t
+sudo systemctl reload nginx
+```
 
-##  CI/CD Pipeline
-
-### **GitHub Actions**
-```yaml
-# .github/workflows/deploy.yml
-name: Deploy to Production
-
-on:
-  push:
-    branches: [main]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      
-      - name: Install dependencies
-        run: |
-          cd backend
-          pip install -r requirements.txt
-      
-      - name: Run tests
-        run: pytest
-
-  deploy-backend:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Deploy to Railway
-        uses: railway-app/cli@v1
-        with:
-          railway-token: ${{ secrets.RAILWAY_TOKEN }}
-          service: backend
-
-  deploy-frontend:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v20
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.ORG_ID }}
-          vercel-project-id: ${{ secrets.PROJECT_ID }}
-          vercel-args: '--prod'
+### 6. SSL Certificate
+```bash
+sudo certbot --nginx -d nalytiq.gov.rw -d api.nalytiq.gov.rw
 ```
 
 ---
 
-##  Performance Optimization
+## Docker Deployment
 
-### **Backend**
-```python
-# Add caching
-from functools import lru_cache
-
-@lru_cache(maxsize=100)
-def expensive_computation(data):
-    # Your expensive operation
-    pass
+### Development
+```bash
+docker-compose up -d
 ```
 
-### **Frontend**
-```typescript
-// Use React.memo for expensive components
-export const ExpensiveComponent = React.memo(({ data }) => {
-  // Component logic
-});
+### Production
+```bash
+# Set environment variables
+export POSTGRES_PASSWORD=your_secure_password
+export SECRET_KEY=your_64_char_secret_key
 
-// Lazy load routes
-const Dashboard = lazy(() => import('./pages/dashboard'));
+# Start all services
+docker-compose -f docker-compose.production.yml up -d
+
+# View logs
+docker-compose -f docker-compose.production.yml logs -f api
+```
+
+### Scaling
+```bash
+# Scale API workers
+docker-compose -f docker-compose.production.yml up -d --scale api=3
 ```
 
 ---
 
-##  Post-Deployment Verification
+## Kubernetes Deployment
 
-- [ ] All endpoints return expected responses
-- [ ] Health check endpoint returns 200
-- [ ] File uploads work correctly
-- [ ] Authentication flow works
-- [ ] Data export functionality works
-- [ ] Charts render properly
-- [ ] Error handling displays user-friendly messages
-- [ ] Toast notifications appear
-- [ ] Mobile responsiveness verified
-- [ ] SSL certificate valid
-- [ ] CORS configured correctly
-- [ ] Logs being written
-- [ ] Monitoring alerts configured
+### 1. Create Namespace
+```bash
+kubectl create namespace nalytiq
+```
+
+### 2. Create Secrets
+```bash
+kubectl create secret generic nalytiq-secrets \
+  --namespace nalytiq \
+  --from-literal=postgres-password=YOUR_PASSWORD \
+  --from-literal=secret-key=YOUR_SECRET_KEY \
+  --from-literal=redis-password=YOUR_REDIS_PASSWORD
+```
+
+### 3. Deploy
+```bash
+kubectl apply -f k8s/ --namespace nalytiq
+```
+
+### 4. Check Status
+```bash
+kubectl get pods -n nalytiq
+kubectl get services -n nalytiq
+```
+
+---
+
+## Configuration
+
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `ENVIRONMENT` | Environment mode | `development` |
+| `DEBUG` | Debug mode | `false` |
+| `SECRET_KEY` | JWT secret (64+ chars) | Required |
+| `POSTGRES_HOST` | Database host | `localhost` |
+| `POSTGRES_PORT` | Database port | `5432` |
+| `POSTGRES_USER` | Database user | `nalytiq` |
+| `POSTGRES_PASSWORD` | Database password | Required |
+| `POSTGRES_DB` | Database name | `nalytiq_db` |
+| `REDIS_HOST` | Redis host | `localhost` |
+| `REDIS_PORT` | Redis port | `6379` |
+| `CORS_ORIGINS` | Allowed CORS origins | `["http://localhost:3000"]` |
+
+### Feature Flags
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `ENABLE_DOCS` | API documentation | `true` |
+| `ENABLE_WEBSOCKETS` | WebSocket support | `true` |
+| `ENABLE_ML_TRAINING` | ML training features | `true` |
+| `ENABLE_XROAD` | X-Road integration | `true` |
+
+---
+
+## Database Setup
+
+### Create Tables
+```bash
+cd backend
+alembic upgrade head
+```
+
+### Create Migration
+```bash
+alembic revision --autogenerate -m "description"
+```
+
+### Backup
+```bash
+pg_dump -U nalytiq nalytiq_db > backup_$(date +%Y%m%d).sql
+```
+
+### Restore
+```bash
+psql -U nalytiq nalytiq_db < backup_20240118.sql
+```
+
+---
+
+## Monitoring
+
+### Prometheus Metrics
+- Endpoint: `http://localhost:8000/health/metrics`
+- Dashboard: http://localhost:9090
+
+### Grafana
+- URL: http://localhost:3001
+- Default credentials: admin/admin
+
+### Health Checks
+```bash
+# Liveness
+curl http://localhost:8000/health/live
+
+# Readiness
+curl http://localhost:8000/health/ready
+
+# Full health
+curl http://localhost:8000/health/
+```
+
+### Logs
+```bash
+# Docker
+docker-compose logs -f api
+
+# Systemd
+journalctl -u nalytiq-api -f
+
+# File logs
+tail -f /var/log/nalytiq/access.log
+```
+
+---
+
+## Security
+
+### Security Checklist
+- [ ] Generate secure SECRET_KEY (64+ characters)
+- [ ] Use strong database passwords
+- [ ] Enable HTTPS with valid certificates
+- [ ] Configure firewall (allow only 80, 443)
+- [ ] Set up regular backups
+- [ ] Enable audit logging
+- [ ] Configure rate limiting
+- [ ] Set up intrusion detection
+
+### Password Policy
+- Minimum 12 characters
+- Uppercase + lowercase + digits + special
+- 90-day expiry
+- 5-attempt lockout
+
+### Security Headers
+All responses include:
+- `X-Content-Type-Options: nosniff`
+- `X-Frame-Options: DENY`
+- `X-XSS-Protection: 1; mode=block`
+- `Strict-Transport-Security: max-age=63072000`
 
 ---
 
 ## Troubleshooting
 
-### **Common Issues**
+### Common Issues
 
-**Backend won't start**
+**API not starting**
 ```bash
 # Check logs
-tail -f backend/app.log
-
-# Verify dependencies
-pip list
+journalctl -u nalytiq-api -n 100
 
 # Check port
-lsof -i :8000
+netstat -tlnp | grep 8000
 ```
 
-**Frontend build fails**
+**Database connection failed**
+```bash
+# Test connection
+psql -h localhost -U nalytiq -d nalytiq_db
+
+# Check PostgreSQL status
+systemctl status postgresql
+```
+
+**Redis connection failed**
+```bash
+# Test connection
+redis-cli ping
+
+# Check Redis status
+systemctl status redis
+```
+
+**Frontend build failed**
 ```bash
 # Clear cache
 rm -rf .next node_modules
-npm install --legacy-peer-deps
+npm install
 npm run build
 ```
 
-**Database connection issues**
-```bash
-# Check database
-sqlite3 backend/users.db ".tables"
-
-# Test connection
-python -c "import sqlite3; print('OK')"
-```
+### Support
+- Documentation: https://docs.nalytiq.gov.rw
+- Issues: https://github.com/chrismazi/Nalytiq-data-platfrom/issues
+- Email: support@nalytiq.gov.rw
 
 ---
 
-##  Support
+## License
 
-For deployment issues:
-- Email: support@nalytiq.rw
-- Documentation: /README.md
-- Issues: GitHub Issues
-
----
-
-**Deployment prepared by:** Chris Mazimpaka  
-**Last updated:** 2025-01-29  
-**Version:** 1.0.0
+Copyright © 2024-2026 National Institute of Statistics of Rwanda (NISR)
+All rights reserved.

@@ -1267,3 +1267,119 @@ json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
 2026-01-18 04:05:54 - federation.data_catalog - INFO - data_catalog.py:155 - Dataset registered: Agricultural Production Survey 2023 by RW-GOV-NISR
 2026-01-18 04:31:18 - main - INFO - main.py:50 - Initializing databases...
 2026-01-18 04:31:18 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 04:49:07 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 04:49:07 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 04:49:07 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 04:49:07 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 04:49:07 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 04:49:07 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 04:52:27 - security.rbac - INFO - rbac.py:205 - RBACManager initialized
+2026-01-18 04:52:27 - security.rbac - INFO - rbac.py:280 - Role 'platform_admin' assigned to user 'admin-user'
+2026-01-18 04:52:58 - security.compliance - INFO - compliance.py:82 - ComplianceManager initialized
+2026-01-18 04:54:40 - security.policies - INFO - policies.py:100 - SecurityPolicy initialized
+2026-01-18 05:03:19 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Invalid token
+2026-01-18 05:03:19 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Invalid token
+2026-01-18 05:03:19 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Invalid token
+2026-01-18 05:07:28 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Invalid token
+2026-01-18 05:07:28 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Invalid token
+2026-01-18 05:09:07 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Invalid token
+2026-01-18 05:09:07 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Invalid token
+2026-01-18 05:09:08 - exceptions - ERROR - exceptions.py:71 - HTTP error on /auth/me: 401 - Invalid token
+2026-01-18 05:09:17 - passlib.handlers.bcrypt - WARNING - bcrypt.py:622 - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Roaming\Python\Python313\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-01-18 05:10:22 - gateway.circuit_breaker - INFO - circuit_breaker.py:69 - CircuitBreaker initialized
+2026-01-18 05:10:22 - registry.service_registry - INFO - service_registry.py:42 - ServiceRegistry initialized
+2026-01-18 05:10:22 - registry.organization_registry - INFO - organization_registry.py:58 - Loaded 1 organizations
+2026-01-18 05:10:22 - registry.organization_registry - INFO - organization_registry.py:46 - OrganizationRegistry initialized
+2026-01-18 05:10:22 - gateway.router - INFO - router.py:41 - ServiceRouter initialized
+2026-01-18 05:10:22 - gateway.rate_limiter - INFO - rate_limiter.py:100 - RateLimiter initialized
+2026-01-18 05:10:22 - registry.access_rights - INFO - access_rights.py:36 - AccessRightsManager initialized
+2026-01-18 05:10:22 - audit.audit_logger - INFO - audit_logger.py:172 - AuditLogger initialized
+2026-01-18 05:10:22 - pki.key_manager - INFO - key_manager.py:42 - KeyManager initialized with keys directory: C:\Users\user\Documents\ML\nisr-data-platform\backend\pki\..\keys
+2026-01-18 05:10:22 - xroad.signature - INFO - signature.py:38 - SignatureService initialized
+2026-01-18 05:10:22 - gateway.gateway - INFO - gateway.py:51 - APIGateway initialized
+2026-01-18 05:10:46 - federation.data_catalog - INFO - data_catalog.py:69 - Loaded 4 datasets from catalog
+2026-01-18 05:10:46 - federation.data_catalog - INFO - data_catalog.py:59 - DataCatalog initialized
+2026-01-18 05:18:09 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 05:18:09 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 05:18:09 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 05:18:09 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 05:18:09 - gateway.circuit_breaker - INFO - circuit_breaker.py:69 - CircuitBreaker initialized
+2026-01-18 05:18:09 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 05:18:09 - registry.service_registry - INFO - service_registry.py:42 - ServiceRegistry initialized
+2026-01-18 05:18:09 - registry.organization_registry - INFO - organization_registry.py:58 - Loaded 1 organizations
+2026-01-18 05:18:09 - registry.organization_registry - INFO - organization_registry.py:46 - OrganizationRegistry initialized
+2026-01-18 05:18:09 - gateway.router - INFO - router.py:41 - ServiceRouter initialized
+2026-01-18 05:18:09 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 05:18:09 - gateway.rate_limiter - INFO - rate_limiter.py:100 - RateLimiter initialized
+2026-01-18 05:18:09 - registry.access_rights - INFO - access_rights.py:36 - AccessRightsManager initialized
+2026-01-18 05:18:09 - audit.audit_logger - INFO - audit_logger.py:172 - AuditLogger initialized
+2026-01-18 05:18:09 - pki.key_manager - INFO - key_manager.py:42 - KeyManager initialized with keys directory: C:\Users\user\Documents\ML\nisr-data-platform\backend\pki\..\keys
+2026-01-18 05:18:09 - xroad.signature - INFO - signature.py:38 - SignatureService initialized
+2026-01-18 05:18:09 - gateway.gateway - INFO - gateway.py:51 - APIGateway initialized
+2026-01-18 05:19:49 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 05:19:49 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 05:19:49 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 05:19:49 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 05:19:49 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 05:19:49 - registry.service_registry - INFO - service_registry.py:42 - ServiceRegistry initialized
+2026-01-18 05:19:49 - registry.organization_registry - INFO - organization_registry.py:58 - Loaded 1 organizations
+2026-01-18 05:19:49 - registry.organization_registry - INFO - organization_registry.py:46 - OrganizationRegistry initialized
+2026-01-18 05:19:49 - gateway.router - INFO - router.py:41 - ServiceRouter initialized
+2026-01-18 05:19:49 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 05:19:49 - gateway.rate_limiter - INFO - rate_limiter.py:100 - RateLimiter initialized
+2026-01-18 05:19:49 - gateway.circuit_breaker - INFO - circuit_breaker.py:69 - CircuitBreaker initialized
+2026-01-18 05:19:49 - registry.access_rights - INFO - access_rights.py:36 - AccessRightsManager initialized
+2026-01-18 05:19:49 - audit.audit_logger - INFO - audit_logger.py:172 - AuditLogger initialized
+2026-01-18 05:19:49 - pki.key_manager - INFO - key_manager.py:42 - KeyManager initialized with keys directory: C:\Users\user\Documents\ML\nisr-data-platform\backend\pki\..\keys
+2026-01-18 05:19:49 - xroad.signature - INFO - signature.py:38 - SignatureService initialized
+2026-01-18 05:19:49 - gateway.gateway - INFO - gateway.py:51 - APIGateway initialized
+2026-01-18 05:21:15 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 05:21:15 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 05:21:15 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 05:21:15 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 05:21:15 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 05:21:15 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 05:21:15 - registry.service_registry - INFO - service_registry.py:42 - ServiceRegistry initialized
+2026-01-18 05:21:15 - registry.organization_registry - INFO - organization_registry.py:58 - Loaded 1 organizations
+2026-01-18 05:21:15 - registry.organization_registry - INFO - organization_registry.py:46 - OrganizationRegistry initialized
+2026-01-18 05:21:15 - gateway.router - INFO - router.py:41 - ServiceRouter initialized
+2026-01-18 05:21:15 - gateway.rate_limiter - INFO - rate_limiter.py:100 - RateLimiter initialized
+2026-01-18 05:21:15 - gateway.circuit_breaker - INFO - circuit_breaker.py:69 - CircuitBreaker initialized
+2026-01-18 05:21:15 - registry.access_rights - INFO - access_rights.py:36 - AccessRightsManager initialized
+2026-01-18 05:21:15 - audit.audit_logger - INFO - audit_logger.py:172 - AuditLogger initialized
+2026-01-18 05:21:15 - pki.key_manager - INFO - key_manager.py:42 - KeyManager initialized with keys directory: C:\Users\user\Documents\ML\nisr-data-platform\backend\pki\..\keys
+2026-01-18 05:21:15 - xroad.signature - INFO - signature.py:38 - SignatureService initialized
+2026-01-18 05:21:15 - gateway.gateway - INFO - gateway.py:51 - APIGateway initialized
+2026-01-18 05:25:23 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 05:25:23 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 05:25:23 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 05:25:23 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 05:25:23 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 05:25:23 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 05:25:23 - gateway.circuit_breaker - INFO - circuit_breaker.py:69 - CircuitBreaker initialized
+2026-01-18 05:25:23 - registry.service_registry - INFO - service_registry.py:42 - ServiceRegistry initialized
+2026-01-18 05:25:23 - registry.organization_registry - INFO - organization_registry.py:58 - Loaded 1 organizations
+2026-01-18 05:25:23 - registry.organization_registry - INFO - organization_registry.py:46 - OrganizationRegistry initialized
+2026-01-18 05:25:23 - gateway.router - INFO - router.py:41 - ServiceRouter initialized
+2026-01-18 05:25:23 - gateway.rate_limiter - INFO - rate_limiter.py:100 - RateLimiter initialized
+2026-01-18 05:25:23 - registry.access_rights - INFO - access_rights.py:36 - AccessRightsManager initialized
+2026-01-18 05:25:23 - audit.audit_logger - INFO - audit_logger.py:172 - AuditLogger initialized
+2026-01-18 05:25:23 - pki.key_manager - INFO - key_manager.py:42 - KeyManager initialized with keys directory: C:\Users\user\Documents\ML\nisr-data-platform\backend\pki\..\keys
+2026-01-18 05:25:23 - xroad.signature - INFO - signature.py:38 - SignatureService initialized
+2026-01-18 05:25:23 - gateway.gateway - INFO - gateway.py:51 - APIGateway initialized
+2026-01-18 05:30:16 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 05:30:16 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 05:30:16 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 05:30:16 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 05:30:16 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 05:30:16 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 05:31:13 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 05:31:13 - main - INFO - main.py:50 - Initializing databases...
+2026-01-18 05:31:13 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 05:31:13 - main - INFO - main.py:53 - Databases initialized successfully
+2026-01-18 05:31:13 - main - INFO - main.py:53 - Databases initialized successfully

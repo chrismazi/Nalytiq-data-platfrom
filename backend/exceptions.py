@@ -1,113 +1,273 @@
 """
-Custom exceptions and error handlers
+API Exception Handlers and Custom Exceptions
+
+Structured error responses for production APIs.
 """
-from fastapi import HTTPException, Request, status
+
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
-from typing import Any, Dict
+from pydantic import ValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 import logging
+from typing import Optional, Dict, Any
+from datetime import datetime
+
+from logging_config import get_correlation_id
 
 logger = logging.getLogger(__name__)
 
 
-class DataProcessingError(Exception):
-    """Raised when data processing fails"""
-    pass
+# ============================================
+# CUSTOM EXCEPTIONS
+# ============================================
 
-
-class FileValidationError(Exception):
-    """Raised when file validation fails"""
-    pass
-
-
-class AnalysisError(Exception):
-    """Raised when data analysis fails"""
-    pass
-
-
-class AuthenticationError(HTTPException):
-    """Raised when authentication fails"""
-    def __init__(self, detail: str = "Authentication failed"):
-        super().__init__(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=detail,
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
-
-class AuthorizationError(HTTPException):
-    """Raised when authorization fails"""
-    def __init__(self, detail: str = "Not authorized"):
-        super().__init__(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=detail,
-        )
-
-
-async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
-    """Handle validation errors"""
-    errors = {}
-    for error in exc.errors():
-        field = ".".join(str(x) for x in error["loc"][1:])  # Skip 'body' or 'query'
-        if field not in errors:
-            errors[field] = []
-        errors[field].append(error["msg"])
+class NalytiqException(Exception):
+    """Base exception for all platform errors"""
     
-    logger.warning(f"Validation error on {request.url.path}: {errors}")
+    def __init__(
+        self,
+        message: str,
+        error_code: str = "platform_error",
+        status_code: int = 500,
+        details: Dict[str, Any] = None
+    ):
+        self.message = message
+        self.error_code = error_code
+        self.status_code = status_code
+        self.details = details or {}
+        super().__init__(message)
+
+
+class AuthenticationError(NalytiqException):
+    """Authentication failed"""
+    
+    def __init__(self, message: str = "Authentication required", details: Dict = None):
+        super().__init__(
+            message=message,
+            error_code="authentication_error",
+            status_code=401,
+            details=details
+        )
+
+
+class AuthorizationError(NalytiqException):
+    """Authorization failed"""
+    
+    def __init__(self, message: str = "Insufficient permissions", details: Dict = None):
+        super().__init__(
+            message=message,
+            error_code="authorization_error",
+            status_code=403,
+            details=details
+        )
+
+
+class NotFoundError(NalytiqException):
+    """Resource not found"""
+    
+    def __init__(self, resource: str, identifier: str = None, details: Dict = None):
+        message = f"{resource} not found"
+        if identifier:
+            message = f"{resource} '{identifier}' not found"
+        super().__init__(
+            message=message,
+            error_code="not_found",
+            status_code=404,
+            details=details or {"resource": resource, "identifier": identifier}
+        )
+
+
+class ConflictError(NalytiqException):
+    """Resource conflict"""
+    
+    def __init__(self, message: str = "Resource already exists", details: Dict = None):
+        super().__init__(
+            message=message,
+            error_code="conflict",
+            status_code=409,
+            details=details
+        )
+
+
+class ValidationException(NalytiqException):
+    """Request validation error"""
+    
+    def __init__(self, message: str = "Validation failed", errors: list = None):
+        super().__init__(
+            message=message,
+            error_code="validation_error",
+            status_code=422,
+            details={"validation_errors": errors or []}
+        )
+
+
+class RateLimitError(NalytiqException):
+    """Rate limit exceeded"""
+    
+    def __init__(self, limit: int, window_seconds: int = 60):
+        super().__init__(
+            message=f"Rate limit of {limit} requests per {window_seconds}s exceeded",
+            error_code="rate_limit_exceeded",
+            status_code=429,
+            details={"limit": limit, "window_seconds": window_seconds}
+        )
+
+
+class ServiceUnavailableError(NalytiqException):
+    """Service temporarily unavailable"""
+    
+    def __init__(self, service: str = "service", message: str = None):
+        super().__init__(
+            message=message or f"{service} is temporarily unavailable",
+            error_code="service_unavailable",
+            status_code=503,
+            details={"service": service}
+        )
+
+
+class XRoadError(NalytiqException):
+    """X-Road specific error"""
+    
+    def __init__(self, message: str, fault_code: str = None, details: Dict = None):
+        super().__init__(
+            message=message,
+            error_code="xroad_error",
+            status_code=502,
+            details={"fault_code": fault_code, **(details or {})}
+        )
+
+
+# ============================================
+# ERROR RESPONSE FORMAT
+# ============================================
+
+def create_error_response(
+    error_code: str,
+    message: str,
+    status_code: int,
+    path: str,
+    details: Dict = None
+) -> Dict[str, Any]:
+    """Create standardized error response"""
+    return {
+        "error": {
+            "code": error_code,
+            "message": message,
+            "status_code": status_code,
+            "details": details or {},
+        },
+        "metadata": {
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "path": path,
+            "correlation_id": get_correlation_id() or "-",
+        }
+    }
+
+
+# ============================================
+# EXCEPTION HANDLERS
+# ============================================
+
+async def nalytiq_exception_handler(request: Request, exc: NalytiqException) -> JSONResponse:
+    """Handle custom platform exceptions"""
+    logger.warning(
+        f"Platform error: {exc.error_code} - {exc.message}",
+        extra={"error_code": exc.error_code, "path": request.url.path}
+    )
     
     return JSONResponse(
-        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content={
-            "error": "Validation failed",
-            "code": "VALIDATION_ERROR",
-            "errors": errors,
-            "detail": exc.errors()
-        },
+        status_code=exc.status_code,
+        content=create_error_response(
+            error_code=exc.error_code,
+            message=exc.message,
+            status_code=exc.status_code,
+            path=request.url.path,
+            details=exc.details
+        )
     )
 
 
 async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
-    """Handle HTTP exceptions"""
-    logger.error(f"HTTP error on {request.url.path}: {exc.status_code} - {exc.detail}")
+    """Handle FastAPI HTTP exceptions"""
+    error_codes = {
+        400: "bad_request",
+        401: "unauthorized",
+        403: "forbidden",
+        404: "not_found",
+        405: "method_not_allowed",
+        409: "conflict",
+        422: "validation_error",
+        429: "too_many_requests",
+        500: "internal_error",
+        502: "bad_gateway",
+        503: "service_unavailable",
+        504: "gateway_timeout",
+    }
     
     return JSONResponse(
         status_code=exc.status_code,
-        content={
-            "error": exc.detail,
-            "code": "HTTP_ERROR",
-            "status_code": exc.status_code,
-        },
+        content=create_error_response(
+            error_code=error_codes.get(exc.status_code, "error"),
+            message=str(exc.detail),
+            status_code=exc.status_code,
+            path=request.url.path,
+        )
     )
 
 
-async def general_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-    """Handle all other exceptions"""
-    logger.exception(f"Unexpected error on {request.url.path}: {exc}")
+async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+    """Handle Pydantic validation errors"""
+    errors = []
+    for error in exc.errors():
+        errors.append({
+            "field": ".".join(str(loc) for loc in error["loc"]),
+            "message": error["msg"],
+            "type": error["type"]
+        })
     
-    # Don't expose internal errors in production
+    logger.info(
+        f"Validation error on {request.url.path}",
+        extra={"errors": errors}
+    )
+    
     return JSONResponse(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={
-            "error": "An internal server error occurred",
-            "code": "INTERNAL_ERROR",
-            "detail": str(exc) if logger.level == logging.DEBUG else "Please contact support",
-        },
+        status_code=422,
+        content=create_error_response(
+            error_code="validation_error",
+            message="Request validation failed",
+            status_code=422,
+            path=request.url.path,
+            details={"validation_errors": errors}
+        )
     )
 
 
-def create_error_response(
-    message: str,
-    code: str,
-    status_code: int = status.HTTP_400_BAD_REQUEST,
-    details: Dict[str, Any] = None
-) -> JSONResponse:
-    """Create a standardized error response"""
-    content = {
-        "error": message,
-        "code": code,
-        "status_code": status_code,
-    }
-    if details:
-        content["details"] = details
+async def generic_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+    """Handle any unhandled exceptions"""
+    logger.error(
+        f"Unhandled exception: {type(exc).__name__}: {str(exc)}",
+        extra={"path": request.url.path},
+        exc_info=True
+    )
     
-    return JSONResponse(status_code=status_code, content=content)
+    return JSONResponse(
+        status_code=500,
+        content=create_error_response(
+            error_code="internal_error",
+            message="An unexpected error occurred",
+            status_code=500,
+            path=request.url.path,
+        )
+    )
+
+
+def setup_exception_handlers(app: FastAPI) -> None:
+    """Register all exception handlers"""
+    app.add_exception_handler(NalytiqException, nalytiq_exception_handler)
+    app.add_exception_handler(HTTPException, http_exception_handler)
+    app.add_exception_handler(StarletteHTTPException, http_exception_handler)
+    app.add_exception_handler(RequestValidationError, validation_exception_handler)
+    app.add_exception_handler(Exception, generic_exception_handler)
+    
+    logger.info("Exception handlers configured")
