@@ -1,0 +1,183 @@
+# ============================================
+# NALYTIQ API DEPLOYMENT
+# ============================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nalytiq-api
+  namespace: nalytiq
+  labels:
+    app.kubernetes.io/name: nalytiq-api
+    app.kubernetes.io/component: api
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: nalytiq-api
+  template:
+    metadata:
+      labels:
+        app: nalytiq-api
+        app.kubernetes.io/name: nalytiq-api
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/health/metrics"
+    spec:
+      serviceAccountName: nalytiq-sa
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+        - name: api
+          image: ghcr.io/chrismazi/nalytiq-data-platfrom-api:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+              name: http
+          envFrom:
+            - configMapRef:
+                name: nalytiq-config
+            - secretRef:
+                name: nalytiq-secrets
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: nalytiq-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nalytiq-secrets
+                  key: POSTGRES_PASSWORD
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "2Gi"
+              cpu: "2000m"
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /health/live
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 30
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+            - name: uploads
+              mountPath: /app/uploads
+            - name: models
+              mountPath: /app/models
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: nalytiq-data-pvc
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: nalytiq-uploads-pvc
+        - name: models
+          persistentVolumeClaim:
+            claimName: nalytiq-models-pvc
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - nalytiq-api
+                topologyKey: kubernetes.io/hostname
+---
+# Persistent Volume Claims
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nalytiq-data-pvc
+  namespace: nalytiq
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nalytiq-uploads-pvc
+  namespace: nalytiq
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nalytiq-models-pvc
+  namespace: nalytiq
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 20Gi
+---
+# Service Account
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nalytiq-sa
+  namespace: nalytiq
+---
+# API Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: nalytiq-api-service
+  namespace: nalytiq
+  labels:
+    app: nalytiq-api
+spec:
+  ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP
+      name: http
+  selector:
+    app: nalytiq-api
+  type: ClusterIP

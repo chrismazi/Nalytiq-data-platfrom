@@ -1,0 +1,51 @@
+# ============================================
+# NALYTIQ DATA PLATFORM - CONFIGMAP
+# ============================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nalytiq-config
+  namespace: nalytiq
+  labels:
+    app.kubernetes.io/name: nalytiq
+    app.kubernetes.io/component: config
+data:
+  ENVIRONMENT: "production"
+  DEBUG: "false"
+  
+  # Database
+  USE_SQLITE: "false"
+  POSTGRES_HOST: "postgres-service"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "nalytiq_db"
+  
+  # Redis
+  REDIS_HOST: "redis-service"
+  REDIS_PORT: "6379"
+  REDIS_DB: "0"
+  
+  # Celery
+  CELERY_BROKER_URL: "redis://redis-service:6379/1"
+  CELERY_RESULT_BACKEND: "redis://redis-service:6379/2"
+  CELERY_TIMEZONE: "Africa/Kigali"
+  
+  # Application
+  APP_NAME: "Nalytiq Data Platform"
+  HOST: "0.0.0.0"
+  PORT: "8000"
+  WORKERS: "4"
+  
+  # Security
+  CORS_ORIGINS: '["https://nalytiq.gov.rw","https://api.nalytiq.gov.rw"]'
+  SESSION_COOKIE_SECURE: "true"
+  
+  # Monitoring
+  LOG_LEVEL: "INFO"
+  LOG_FORMAT: "json"
+  ENABLE_METRICS: "true"
+  
+  # Feature Flags
+  ENABLE_DOCS: "true"
+  ENABLE_WEBSOCKETS: "true"
+  ENABLE_XROAD: "true"
+  ENABLE_ML_TRAINING: "true"

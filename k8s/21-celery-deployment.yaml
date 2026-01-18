@@ -1,0 +1,99 @@
+# ============================================
+# CELERY WORKER DEPLOYMENT
+# ============================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celery-worker
+  namespace: nalytiq
+  labels:
+    app.kubernetes.io/name: celery-worker
+    app.kubernetes.io/component: worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: celery-worker
+  template:
+    metadata:
+      labels:
+        app: celery-worker
+        app.kubernetes.io/name: celery-worker
+    spec:
+      serviceAccountName: nalytiq-sa
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: worker
+          image: ghcr.io/chrismazi/nalytiq-data-platfrom-api:latest
+          command: ["celery", "-A", "celery_app", "worker", "--loglevel=info", "--concurrency=4"]
+          envFrom:
+            - configMapRef:
+                name: nalytiq-config
+            - secretRef:
+                name: nalytiq-secrets
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "4Gi"
+              cpu: "2000m"
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+            - name: uploads
+              mountPath: /app/uploads
+            - name: models
+              mountPath: /app/models
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: nalytiq-data-pvc
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: nalytiq-uploads-pvc
+        - name: models
+          persistentVolumeClaim:
+            claimName: nalytiq-models-pvc
+---
+# ============================================
+# CELERY BEAT (SCHEDULER) DEPLOYMENT
+# ============================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celery-beat
+  namespace: nalytiq
+  labels:
+    app.kubernetes.io/name: celery-beat
+    app.kubernetes.io/component: scheduler
+spec:
+  replicas: 1  # Only one beat instance
+  selector:
+    matchLabels:
+      app: celery-beat
+  template:
+    metadata:
+      labels:
+        app: celery-beat
+        app.kubernetes.io/name: celery-beat
+    spec:
+      serviceAccountName: nalytiq-sa
+      containers:
+        - name: beat
+          image: ghcr.io/chrismazi/nalytiq-data-platfrom-api:latest
+          command: ["celery", "-A", "celery_app", "beat", "--loglevel=info"]
+          envFrom:
+            - configMapRef:
+                name: nalytiq-config
+            - secretRef:
+                name: nalytiq-secrets
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"

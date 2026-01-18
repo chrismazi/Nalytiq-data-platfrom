@@ -1,0 +1,11 @@
+# ============================================
+# NALYTIQ DATA PLATFORM - KUBERNETES NAMESPACE
+# ============================================
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nalytiq
+  labels:
+    app.kubernetes.io/name: nalytiq
+    app.kubernetes.io/instance: nalytiq-production
+    environment: production
