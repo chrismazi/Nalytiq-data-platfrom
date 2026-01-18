@@ -106,7 +106,7 @@ export default function DataUploadPage() {
       setUploadResult(result)
       
       toast({
-        title: "✅ Upload Successful!",
+        title: " Upload Successful!",
         description: `Dataset processed with quality grade: ${result.quality_score?.grade}`,
       })
       
@@ -115,7 +115,7 @@ export default function DataUploadPage() {
       setError(err.message || "Failed to upload dataset")
       
       toast({
-        title: "❌ Upload Failed",
+        title: " Upload Failed",
         description: err.message || "Please check your file and try again",
         variant: "destructive",
       })
@@ -216,7 +216,7 @@ export default function DataUploadPage() {
       ])
 
       toast({
-        title: "✅ Analysis Complete!",
+        title: " Analysis Complete!",
         description: title,
       })
 
@@ -224,7 +224,7 @@ export default function DataUploadPage() {
       console.error("Analysis failed:", err)
       
       toast({
-        title: "❌ Analysis Failed",
+        title: " Analysis Failed",
         description: err.message || "Please check your configuration",
         variant: "destructive",
       })
@@ -240,12 +240,12 @@ export default function DataUploadPage() {
       await downloadDataset(datasetId, format)
       
       toast({
-        title: "✅ Download Started",
+        title: " Download Started",
         description: `Downloading cleaned dataset as ${format.toUpperCase()}`,
       })
     } catch (err: any) {
       toast({
-        title: "❌ Download Failed",
+        title: " Download Failed",
         description: err.message,
         variant: "destructive",
       })

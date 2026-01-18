@@ -114,7 +114,7 @@ export default function ModelComparisonPage() {
       setResult(response.result)
 
       toast({
-        title: "✅ Comparison Complete!",
+        title: " Comparison Complete!",
         description: `Trained and compared ${selectedAlgorithms.length} models`
       })
 

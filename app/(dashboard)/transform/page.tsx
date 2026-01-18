@@ -124,7 +124,7 @@ export default function TransformPage() {
       setPreview(data.result)
 
       toast({
-        title: "✅ Transformations Applied!",
+        title: " Transformations Applied!",
         description: `${transformations.length} transformation(s) completed successfully`
       })
 
@@ -165,7 +165,7 @@ export default function TransformPage() {
       window.URL.revokeObjectURL(url)
 
       toast({
-        title: "✅ Export Complete!",
+        title: " Export Complete!",
         description: `Dataset exported as ${format.toUpperCase()}`
       })
 
@@ -206,7 +206,7 @@ export default function TransformPage() {
       window.URL.revokeObjectURL(url)
 
       toast({
-        title: "✅ Report Generated!",
+        title: " Report Generated!",
         description: "PDF report downloaded successfully"
       })
 

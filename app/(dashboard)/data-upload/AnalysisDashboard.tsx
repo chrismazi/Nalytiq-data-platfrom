@@ -187,14 +187,14 @@ export default function AnalysisDashboard({ data, onClose }: { data: any; onClos
             {(warnings.length > 0 || highlights.length > 0) && (
               <div className="mb-6 rounded-lg border border-yellow-300 bg-yellow-50 dark:bg-yellow-900/20 p-4">
                 <div className="font-bold text-lg mb-2 flex items-center gap-2">
-                  <span role="img" aria-label="insights">💡</span> Insights & Warnings
+                  <span role="img" aria-label="insights"></span> Insights & Warnings
                 </div>
                 <ul className="space-y-1">
                   {warnings.map((w: string, i: number) => (
-                    <li key={"warn-"+i} className="text-yellow-800 dark:text-yellow-200 flex items-center gap-2"><span role="img" aria-label="warning">⚠️</span> {w}</li>
+                    <li key={"warn-"+i} className="text-yellow-800 dark:text-yellow-200 flex items-center gap-2"><span role="img" aria-label="warning"></span> {w}</li>
                   ))}
                   {highlights.map((h: string, i: number) => (
-                    <li key={"insight-"+i} className="text-green-800 dark:text-green-200 flex items-center gap-2"><span role="img" aria-label="insight">✅</span> {h}</li>
+                    <li key={"insight-"+i} className="text-green-800 dark:text-green-200 flex items-center gap-2"><span role="img" aria-label="insight"></span> {h}</li>
                   ))}
                 </ul>
               </div>

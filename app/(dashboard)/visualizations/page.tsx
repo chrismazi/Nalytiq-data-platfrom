@@ -190,7 +190,7 @@ export default function VisualizationsPage() {
       setChart(data.chart)
 
       toast({
-        title: "✅ Chart Created!",
+        title: " Chart Created!",
         description: `${chartTypes.find(c => c.id === chartType)?.name} generated successfully`
       })
 

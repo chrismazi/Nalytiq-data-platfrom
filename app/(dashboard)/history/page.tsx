@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { 
-  History, Star, Trash2, Eye, Play, GitCompare, 
+import {
+  History, Star, Trash2, Eye, Play, GitCompare,
   Filter, Search, Calendar, Clock, TrendingUp,
   BarChart3, Table as TableIcon, ListFilter, Activity
 } from "lucide-react"
@@ -33,20 +33,26 @@ import {
 
 export default function AnalysisHistoryPage() {
   const { toast } = useToast()
-  
+
   // State
   const [analyses, setAnalyses] = useState<any[]>([])
   const [filteredAnalyses, setFilteredAnalyses] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
   const [stats, setStats] = useState<any>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [filterType, setFilterType] = useState("all")
   const [selectedAnalysis, setSelectedAnalysis] = useState<any>(null)
   const [detailDialogOpen, setDetailDialogOpen] = useState(false)
 
+  // Pagination state
+  const [page, setPage] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
+  const PAGE_SIZE = 20
+
   // Load data
   useEffect(() => {
-    loadHistory()
+    loadHistory(1)
     loadStats()
   }, [])
 
@@ -65,7 +71,7 @@ export default function AnalysisHistoryPage() {
 
     // Search
     if (searchQuery) {
-      filtered = filtered.filter(a => 
+      filtered = filtered.filter(a =>
         a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         a.analysis_type.toLowerCase().includes(searchQuery.toLowerCase())
       )
@@ -74,11 +80,29 @@ export default function AnalysisHistoryPage() {
     setFilteredAnalyses(filtered)
   }, [analyses, filterType, searchQuery])
 
-  const loadHistory = async () => {
+  const loadHistory = async (pageNum: number) => {
     try {
-      setLoading(true)
-      const response = await getAnalysisHistory({ limit: 100 })
-      setAnalyses(response.analyses || [])
+      if (pageNum === 1) setLoading(true)
+      else setLoadingMore(true)
+
+      const response = await getAnalysisHistory({
+        limit: PAGE_SIZE,
+        // @ts-ignore - API updated but type definition might lag
+        page: pageNum,
+        page_size: PAGE_SIZE
+      })
+
+      const newAnalyses = response.analyses || []
+
+      if (pageNum === 1) {
+        setAnalyses(newAnalyses)
+      } else {
+        setAnalyses(prev => [...prev, ...newAnalyses])
+      }
+
+      setHasMore(newAnalyses.length === PAGE_SIZE)
+      setPage(pageNum)
+
     } catch (error: any) {
       toast({
         title: "Failed to load history",
@@ -87,6 +111,13 @@ export default function AnalysisHistoryPage() {
       })
     } finally {
       setLoading(false)
+      setLoadingMore(false)
+    }
+  }
+
+  const handleLoadMore = () => {
+    if (!loadingMore && hasMore) {
+      loadHistory(page + 1)
     }
   }
 
@@ -116,12 +147,12 @@ export default function AnalysisHistoryPage() {
   const handleToggleFavorite = async (analysisId: number) => {
     try {
       await toggleAnalysisFavorite(analysisId)
-      
+
       // Update local state
-      setAnalyses(prev => prev.map(a => 
+      setAnalyses(prev => prev.map(a =>
         a.id === analysisId ? { ...a, is_favorite: !a.is_favorite } : a
       ))
-      
+
       toast({
         title: "Success",
         description: "Favorite status updated"
@@ -140,10 +171,10 @@ export default function AnalysisHistoryPage() {
 
     try {
       await deleteAnalysis(analysisId)
-      
+
       // Remove from local state
       setAnalyses(prev => prev.filter(a => a.id !== analysisId))
-      
+
       toast({
         title: "Success",
         description: "Analysis deleted"
@@ -184,7 +215,7 @@ export default function AnalysisHistoryPage() {
     const now = new Date()
     const diff = now.getTime() - date.getTime()
     const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-    
+
     if (days === 0) return "Today"
     if (days === 1) return "Yesterday"
     if (days < 7) return `${days} days ago`
@@ -212,7 +243,7 @@ export default function AnalysisHistoryPage() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
@@ -224,7 +255,7 @@ export default function AnalysisHistoryPage() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
@@ -236,7 +267,7 @@ export default function AnalysisHistoryPage() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
@@ -268,7 +299,7 @@ export default function AnalysisHistoryPage() {
                 />
               </div>
             </div>
-            
+
             <Select value={filterType} onValueChange={setFilterType}>
               <SelectTrigger className="w-full md:w-[200px]">
                 <SelectValue placeholder="Filter by type" />
@@ -306,7 +337,7 @@ export default function AnalysisHistoryPage() {
               <History className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
               <p className="text-lg font-medium mb-2">No analyses found</p>
               <p className="text-muted-foreground">
-                {searchQuery || filterType !== "all" 
+                {searchQuery || filterType !== "all"
                   ? "Try adjusting your filters"
                   : "Start by uploading data and running analyses"
                 }
@@ -331,11 +362,11 @@ export default function AnalysisHistoryPage() {
                           <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                         )}
                       </div>
-                      
+
                       <h3 className="font-semibold text-lg mb-1 truncate">
                         {analysis.title}
                       </h3>
-                      
+
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <Calendar className="h-4 w-4" />
@@ -349,7 +380,7 @@ export default function AnalysisHistoryPage() {
                         )}
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-2">
                       <Button
                         variant="outline"
@@ -359,7 +390,7 @@ export default function AnalysisHistoryPage() {
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
-                      
+
                       <Button
                         variant="outline"
                         size="icon"
@@ -368,7 +399,7 @@ export default function AnalysisHistoryPage() {
                       >
                         <Star className={`h-4 w-4 ${analysis.is_favorite ? 'fill-yellow-400 text-yellow-400' : ''}`} />
                       </Button>
-                      
+
                       <Button
                         variant="outline"
                         size="icon"
@@ -381,6 +412,26 @@ export default function AnalysisHistoryPage() {
                   </div>
                 </motion.div>
               ))}
+
+              {hasMore && !searchQuery && filterType === "all" && (
+                <div className="flex justify-center pt-4">
+                  <Button
+                    variant="outline"
+                    onClick={handleLoadMore}
+                    disabled={loadingMore}
+                    className="w-full md:w-auto"
+                  >
+                    {loadingMore ? (
+                      <>
+                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+                        Loading more...
+                      </>
+                    ) : (
+                      "Load More Analyses"
+                    )}
+                  </Button>
+                </div>
+              )}
             </div>
           )}
         </CardContent>

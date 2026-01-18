@@ -2,7 +2,7 @@
 Configuration management for the application
 """
 import os
-from typing import List
+from typing import List, Optional
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
@@ -22,20 +22,30 @@ class Settings(BaseSettings):
     PORT: int = int(os.getenv("PORT", "8000"))
     RELOAD: bool = os.getenv("RELOAD", "true").lower() == "true"
     
-    # Ollama
+    # AI/LLM - Gemini
+    GEMINI_API_KEY: Optional[str] = os.getenv("GEMINI_API_KEY", None)
+    GOOGLE_API_KEY: Optional[str] = os.getenv("GOOGLE_API_KEY", None)
+    
+    # Ollama (fallback)
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
     OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "gemma:2b")
     
     # File Upload
     MAX_FILE_SIZE_MB: int = int(os.getenv("MAX_FILE_SIZE_MB", "500"))
     ALLOWED_EXTENSIONS: List[str] = os.getenv("ALLOWED_EXTENSIONS", "csv,xlsx,xls,dta").split(",")
+    UPLOAD_DIR: str = os.getenv("UPLOAD_DIR", "./uploads")
     
     # Logging
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
     LOG_FILE: str = os.getenv("LOG_FILE", "app.log")
     
+    # Redis (optional)
+    REDIS_URL: Optional[str] = os.getenv("REDIS_URL", None)
+    
     class Config:
         env_file = ".env"
         case_sensitive = False
+        extra = "ignore"  # Ignore extra fields in .env file
 
 settings = Settings()
+

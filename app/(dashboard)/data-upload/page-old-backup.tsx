@@ -384,7 +384,7 @@ export default function DataUploadPage() {
                   {cleanedData && cleanedData.columns && cleanedData.head && cleanedData.columns.length > 0 && cleanedData.head.length > 0 ? (
                     <>
                       <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="outline">✅ Cleaned</Badge>
+                        <Badge variant="outline"> Cleaned</Badge>
                         <span className="text-muted-foreground text-xs">Data is now ready for analysis</span>
                       </div>
                       <DataPreviewTable

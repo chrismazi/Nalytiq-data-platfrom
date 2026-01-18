@@ -30,7 +30,10 @@ export default function RegisterPage() {
     setError(null)
     try {
       await registerUser(email, password, role)
-      router.push("/login")
+      // Auto-login after registration
+      const { loginUser } = await import("@/lib/api")
+      await loginUser(email, password)
+      router.push("/dashboard")
     } catch (err) {
       setError("Registration failed. Email may already be registered.")
     } finally {

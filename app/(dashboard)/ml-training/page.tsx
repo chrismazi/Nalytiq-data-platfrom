@@ -155,7 +155,7 @@ export default function MLTrainingPage() {
       setStep(4)
 
       toast({
-        title: "✅ Model Trained Successfully!",
+        title: " Model Trained Successfully!",
         description: `${algorithm === 'xgboost' ? 'XGBoost' : 'Neural Network'} model trained in ${response.result.execution_time_ms}ms`
       })
 
@@ -363,10 +363,10 @@ export default function MLTrainingPage() {
                       </div>
                     </div>
                     <ul className="text-sm space-y-1 text-muted-foreground">
-                      <li>✓ Excellent for tabular data</li>
-                      <li>✓ Fast training speed</li>
-                      <li>✓ High accuracy</li>
-                      <li>✓ Feature importance</li>
+                      <li> Excellent for tabular data</li>
+                      <li> Fast training speed</li>
+                      <li> High accuracy</li>
+                      <li> Feature importance</li>
                     </ul>
                   </CardContent>
                 </Card>
@@ -388,10 +388,10 @@ export default function MLTrainingPage() {
                       </div>
                     </div>
                     <ul className="text-sm space-y-1 text-muted-foreground">
-                      <li>✓ Captures complex patterns</li>
-                      <li>✓ Flexible architecture</li>
-                      <li>✓ State-of-the-art performance</li>
-                      <li>✓ Works with any data type</li>
+                      <li> Captures complex patterns</li>
+                      <li> Flexible architecture</li>
+                      <li> State-of-the-art performance</li>
+                      <li> Works with any data type</li>
                     </ul>
                   </CardContent>
                 </Card>
