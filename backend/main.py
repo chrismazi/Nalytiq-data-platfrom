@@ -89,6 +89,18 @@ app.include_router(viz_router, tags=["Visualizations"])
 from export_transform_endpoints import router as export_transform_router
 app.include_router(export_transform_router, tags=["Export & Transformation"])
 
+# Include X-Road endpoints for national data exchange
+from xroad_endpoints import router as xroad_router
+app.include_router(xroad_router, tags=["X-Road Data Exchange"])
+
+# Include API Gateway endpoints
+from gateway_endpoints import router as gateway_router
+app.include_router(gateway_router, tags=["API Gateway"])
+
+# Include Federation endpoints for data sharing
+from federation_endpoints import router as federation_router
+app.include_router(federation_router, tags=["Data Federation"])
+
 @app.get("/", tags=["Health"])
 async def root():
     """API health check endpoint"""
@@ -235,9 +247,9 @@ async def profile_file(file: UploadFile = File(...)):
                 <h2>Automated Insights & Warnings</h2>
                 <ul>"""
         for w in insights.get("warnings", []):
-            html_content += f'<li style="color:red">⚠️ {w}</li>'
+            html_content += f'<li style="color:red"> {w}</li>'
         for i in insights.get("insights", []):
-            html_content += f'<li style="color:green">💡 {i}</li>'
+            html_content += f'<li style="color:green"> {i}</li>'
         html_content += """</ul>
             </div>
             <div class="section">
