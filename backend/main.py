@@ -101,6 +101,10 @@ app.include_router(gateway_router, tags=["API Gateway"])
 from federation_endpoints import router as federation_router
 app.include_router(federation_router, tags=["Data Federation"])
 
+# Include Security & Compliance endpoints
+from security_endpoints import router as security_router
+app.include_router(security_router, tags=["Security & Compliance"])
+
 @app.get("/", tags=["Health"])
 async def root():
     """API health check endpoint"""
