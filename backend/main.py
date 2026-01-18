@@ -121,6 +121,10 @@ app.include_router(ai_router, tags=["AI Assistant"])
 from analytics_endpoints import router as analytics_router
 app.include_router(analytics_router, tags=["Analytics"])
 
+# Include Intelligence Engine endpoints (SDG, Insights, Workflows)
+from intelligence_endpoints import router as intelligence_router
+app.include_router(intelligence_router, tags=["Intelligence Engine"])
+
 @app.get("/", tags=["Health"])
 async def root():
     """API health check endpoint"""
