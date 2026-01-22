@@ -103,6 +103,94 @@ body {
     padding-right: 1rem !important;
     box-sizing: border-box !important;
   }
+
+  .landing-container {
+    width: 100%;
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    box-sizing: border-box;
+  }
+
+  .landing-theme .fw-surface {
+    border-radius: 24px !important;
+    background: rgba(255, 255, 255, 0.78) !important;
+    border: 1px solid rgba(16, 185, 129, 0.14) !important;
+    box-shadow: inset 0px 1px 10px rgba(255, 255, 255, 0.28), 0px 16px 40px rgba(15, 23, 42, 0.08) !important;
+    backdrop-filter: blur(12px) !important;
+  }
+
+  .dark .landing-theme .fw-surface {
+    background: rgba(2, 10, 8, 0.55) !important;
+    border: 1px solid rgba(52, 211, 153, 0.16) !important;
+    box-shadow: inset 0px 1px 10px rgba(255, 255, 255, 0.05), 0px 18px 55px rgba(0, 0, 0, 0.55) !important;
+  }
+
+  .landing-theme .fw-surface-inverse {
+    border-radius: 24px !important;
+    background: rgba(255, 255, 255, 0.10) !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    box-shadow: inset 0px 1px 10px rgba(255, 255, 255, 0.10), 0px 16px 44px rgba(0, 0, 0, 0.18) !important;
+    backdrop-filter: blur(10px) !important;
+  }
+
+  .landing-theme .fw-pill {
+    border-radius: 9999px !important;
+    background: rgba(255, 255, 255, 0.78) !important;
+    border: 1px solid rgba(16, 185, 129, 0.12) !important;
+    box-shadow: inset 0px 1px 8px rgba(255, 255, 255, 0.28), 0px 10px 26px rgba(15, 23, 42, 0.06) !important;
+    backdrop-filter: blur(10px) !important;
+  }
+
+  .dark .landing-theme .fw-pill {
+    background: rgba(2, 10, 8, 0.45) !important;
+    border: 1px solid rgba(52, 211, 153, 0.14) !important;
+    box-shadow: inset 0px 1px 8px rgba(255, 255, 255, 0.04), 0px 14px 40px rgba(0, 0, 0, 0.45) !important;
+  }
+}
+
+@layer base {
+  .landing-theme {
+    --background: 0 0% 100%;
+    --foreground: 222 22% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 22% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 22% 10%;
+    --primary: 152 55% 35%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 151 34% 95%;
+    --secondary-foreground: 160 55% 18%;
+    --muted: 150 25% 96%;
+    --muted-foreground: 215 14% 36%;
+    --accent: 151 35% 92%;
+    --accent-foreground: 160 55% 18%;
+    --border: 150 20% 88%;
+    --input: 150 20% 88%;
+    --ring: 152 55% 35%;
+  }
+
+  .dark .landing-theme {
+    --background: 160 20% 6%;
+    --foreground: 0 0% 98%;
+    --card: 160 20% 7%;
+    --card-foreground: 0 0% 98%;
+    --popover: 160 20% 7%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 152 55% 45%;
+    --primary-foreground: 160 20% 7%;
+    --secondary: 160 18% 12%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 160 18% 12%;
+    --muted-foreground: 215 18% 70%;
+    --accent: 160 18% 12%;
+    --accent-foreground: 0 0% 98%;
+    --border: 160 18% 16%;
+    --input: 160 18% 16%;
+    --ring: 152 55% 45%;
+  }
 }
 
 .animate-in {
