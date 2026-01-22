@@ -184,12 +184,12 @@ export default function LandingPage() {
   ]
 
   return (
-    <div className="flex min-h-[100dvh] flex-col">
+    <div className="landing-theme flex min-h-[100dvh] flex-col bg-[linear-gradient(180deg,rgba(236,255,245,1)_0%,rgba(252,255,253,1)_10%,rgba(252,255,253,1)_90%,rgba(236,255,245,1)_100%)] dark:bg-[linear-gradient(180deg,rgba(2,10,8,1)_0%,rgba(4,9,8,1)_10%,rgba(4,9,8,1)_90%,rgba(2,10,8,1)_100%)]">
       {/* Header */}
       <header
-        className={`sticky top-0 z-50 w-full backdrop-blur-lg transition-all duration-300 ${isScrolled ? "bg-background/80 shadow-sm" : "bg-transparent"}`}
+        className={`sticky top-0 z-50 w-full backdrop-blur-xl transition-all duration-300 ${isScrolled ? "bg-background/75 shadow-sm border-b border-border/60" : "bg-transparent"}`}
       >
-        <div className="container flex h-16 items-center justify-between">
+        <div className="landing-container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2 font-bold">
             <div className="size-8 rounded-lg bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground">
               N
@@ -216,7 +216,7 @@ export default function LandingPage() {
               Sign In
             </Link>
             <Link href="/register">
-              <Button className="rounded-full">
+              <Button className="rounded-full bg-gradient-to-r from-primary via-emerald-600 to-emerald-700 text-primary-foreground shadow-sm hover:opacity-95">
                 Get Started
                 <ChevronRight className="ml-1 size-4" />
               </Button>
@@ -238,9 +238,9 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="md:hidden absolute top-16 inset-x-0 bg-background/95 backdrop-blur-lg border-b"
+            className="md:hidden absolute top-16 inset-x-0 bg-background/90 backdrop-blur-xl border-b"
           >
-            <div className="container py-4 flex flex-col gap-4">
+            <div className="landing-container py-4 flex flex-col gap-4">
               <Link href="#features" className="py-2 text-sm font-medium" onClick={() => setMobileMenuOpen(false)}>
                 Features
               </Link>
@@ -268,8 +268,9 @@ export default function LandingPage() {
       <main className="flex-1">
         {/* Hero Section */}
         <section className="w-full py-20 md:py-32 lg:py-40 overflow-hidden">
-          <div className="container px-4 md:px-6 relative">
-            <div className="absolute inset-0 -z-10 h-full w-full bg-white dark:bg-black bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#1f1f1f_1px,transparent_1px),linear-gradient(to_bottom,#1f1f1f_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div>
+          <div className="landing-container px-4 md:px-6 relative">
+            <div className="absolute inset-0 -z-10 h-full w-full bg-[linear-gradient(to_right,rgba(209,250,229,0.7)_1px,transparent_1px),linear-gradient(to_bottom,rgba(209,250,229,0.7)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(6,78,59,0.5)_1px,transparent_1px),linear-gradient(to_bottom,rgba(6,78,59,0.5)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_72%,transparent_110%)]"></div>
+            <div className="absolute -top-40 left-1/2 -translate-x-1/2 -z-10 h-[560px] w-[560px] rounded-full bg-gradient-to-br from-emerald-300/28 via-emerald-100/18 to-transparent blur-3xl"></div>
             <motion.div
               variants={heroVariant}
               initial="hidden"
@@ -277,10 +278,10 @@ export default function LandingPage() {
               viewport={{ once: true, amount: 0.7 }}
               className="text-center max-w-3xl mx-auto mb-12"
             >
-              <Badge className="mb-4 rounded-full px-4 py-1.5 text-sm font-medium" variant="secondary">
+              <Badge className="fw-pill mb-4 rounded-full px-4 py-1.5 text-sm font-medium" variant="secondary">
                 Nalytiq Rwanda's Official Data Platform
               </Badge>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-emerald-800 via-primary to-foreground dark:from-emerald-200 dark:via-emerald-100 dark:to-foreground">
                 Empowering Africa with AI-Powered Data Insights
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
@@ -288,13 +289,13 @@ export default function LandingPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/register">
-                  <Button size="lg" className="rounded-full h-12 px-8 text-base">
+                  <Button size="lg" className="rounded-full h-12 px-8 text-base bg-gradient-to-r from-primary via-emerald-600 to-emerald-700 text-primary-foreground shadow-md shadow-emerald-900/10 hover:opacity-95">
                     Get Started
                     <ArrowRight className="ml-2 size-4" />
                   </Button>
                 </Link>
                 <Link href="/login">
-                  <Button size="lg" variant="outline" className="rounded-full h-12 px-8 text-base">
+                  <Button size="lg" variant="outline" className="rounded-full h-12 px-8 text-base bg-white/60 dark:bg-black/10 backdrop-blur border-border/70 hover:bg-white/75 dark:hover:bg-black/20">
                     Sign In
                   </Button>
                 </Link>
@@ -321,7 +322,7 @@ export default function LandingPage() {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="relative mx-auto max-w-5xl"
             >
-              <div className="rounded-xl overflow-hidden shadow-2xl border border-border/40 bg-gradient-to-b from-background to-muted/20">
+              <div className="fw-surface overflow-hidden">
                 <Image
                   src="/hero.png"
                   width={1280}
@@ -332,14 +333,14 @@ export default function LandingPage() {
                 />
                 <div className="absolute inset-0 rounded-xl ring-1 ring-inset ring-black/10 dark:ring-white/10"></div>
               </div>
-              <div className="absolute -bottom-6 -right-6 -z-10 h-[300px] w-[300px] rounded-full bg-gradient-to-br from-primary/30 to-secondary/30 blur-3xl opacity-70"></div>
-              <div className="absolute -top-6 -left-6 -z-10 h-[300px] w-[300px] rounded-full bg-gradient-to-br from-secondary/30 to-primary/30 blur-3xl opacity-70"></div>
+              <div className="absolute -bottom-10 -right-10 -z-10 h-[320px] w-[320px] rounded-full bg-gradient-to-br from-emerald-400/18 to-emerald-200/12 blur-3xl opacity-70"></div>
+              <div className="absolute -top-10 -left-10 -z-10 h-[320px] w-[320px] rounded-full bg-gradient-to-br from-emerald-200/14 to-primary/14 blur-3xl opacity-70"></div>
             </motion.div>
         </div>
       </section>
         {/* Features Section */}
         <section id="features" className="w-full py-20 md:py-32">
-        <div className="container px-4 md:px-6">
+        <div className="landing-container px-4 md:px-6">
             <motion.div
               variants={featuresVariant}
               initial="hidden"
@@ -347,7 +348,7 @@ export default function LandingPage() {
               viewport={{ once: true, amount: 0.3 }}
               className="flex flex-col items-center justify-center space-y-4 text-center mb-12"
             >
-              <Badge className="rounded-full px-4 py-1.5 text-sm font-medium" variant="secondary">
+              <Badge className="fw-pill rounded-full px-4 py-1.5 text-sm font-medium" variant="secondary">
                 Features
               </Badge>
               <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Powerful Tools for Data-Driven Africa</h2>
@@ -364,7 +365,7 @@ export default function LandingPage() {
             >
               {features.map((feature, i) => (
                 <motion.div key={i} variants={item}>
-                  <Card className="h-full overflow-hidden border-border/40 bg-gradient-to-b from-background to-muted/10 backdrop-blur transition-all hover:shadow-md">
+                  <Card className="fw-surface h-full overflow-hidden transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-emerald-900/10">
                     <CardContent className="p-6 flex flex-col h-full">
                       <div className="size-10 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary mb-4">
                         {feature.icon}
@@ -379,9 +380,9 @@ export default function LandingPage() {
           </div>
         </section>
         {/* How It Works Section */}
-        <section id="how-it-works" className="w-full py-20 md:py-32 bg-muted/30 relative overflow-hidden">
-          <div className="absolute inset-0 -z-10 h-full w-full bg-white dark:bg-black bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#1f1f1f_1px,transparent_1px),linear-gradient(to_bottom,#1f1f1f_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_40%,transparent_100%)]"></div>
-          <div className="container px-4 md:px-6 relative">
+        <section id="how-it-works" className="w-full py-20 md:py-32 bg-emerald-50/35 dark:bg-emerald-950/10 relative overflow-hidden">
+          <div className="absolute inset-0 -z-10 h-full w-full bg-[linear-gradient(to_right,#d1fae5_1px,transparent_1px),linear-gradient(to_bottom,#d1fae5_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#064e3b_1px,transparent_1px),linear-gradient(to_bottom,#064e3b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_42%,transparent_100%)]"></div>
+          <div className="landing-container px-4 md:px-6 relative">
             <motion.div
               variants={howItWorksVariant}
               initial="hidden"
@@ -389,7 +390,7 @@ export default function LandingPage() {
               viewport={{ once: true, amount: 0.3 }}
               className="flex flex-col items-center justify-center space-y-4 text-center mb-16"
             >
-              <Badge className="rounded-full px-4 py-1.5 text-sm font-medium" variant="secondary">
+              <Badge className="fw-pill rounded-full px-4 py-1.5 text-sm font-medium" variant="secondary">
                 How It Works
               </Badge>
               <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Simple, Powerful Workflow</h2>
@@ -414,7 +415,7 @@ export default function LandingPage() {
                   transition={{ duration: 0.5, delay: i * 0.1 }}
                   className="relative z-10 flex flex-col items-center text-center space-y-4"
                 >
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/70 text-primary-foreground text-xl font-bold shadow-lg">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary via-emerald-600 to-emerald-700 text-primary-foreground text-xl font-bold shadow-lg shadow-emerald-900/10">
                     {step.step}
                   </div>
                   <h3 className="text-xl font-bold">{step.title}</h3>
@@ -426,7 +427,7 @@ export default function LandingPage() {
         </section>
         {/* FAQ Section */}
         <section id="faq" className="w-full py-20 md:py-32">
-          <div className="container px-4 md:px-6">
+          <div className="landing-container px-4 md:px-6">
             <motion.div
               variants={faqVariant}
               initial="hidden"
@@ -434,7 +435,7 @@ export default function LandingPage() {
               viewport={{ once: true, amount: 0.3 }}
               className="flex flex-col items-center justify-center space-y-4 text-center mb-12"
             >
-              <Badge className="rounded-full px-4 py-1.5 text-sm font-medium" variant="secondary">
+              <Badge className="fw-pill rounded-full px-4 py-1.5 text-sm font-medium" variant="secondary">
                 FAQ
               </Badge>
               <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Frequently Asked Questions</h2>
@@ -471,17 +472,17 @@ export default function LandingPage() {
         </div>
       </section>
       {/* CTA Section */}
-        <section className="w-full py-20 md:py-32 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground relative overflow-hidden">
+        <section className="w-full py-20 md:py-32 bg-gradient-to-br from-primary via-emerald-600 to-emerald-800 text-primary-foreground relative overflow-hidden">
           <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#ffffff10_1px,transparent_1px),linear-gradient(to_bottom,#ffffff10_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
           <div className="absolute -top-24 -left-24 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
           <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
-          <div className="container px-4 md:px-6 relative">
+          <div className="landing-container px-4 md:px-6 relative">
             <motion.div
               variants={ctaVariant}
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, amount: 0.3 }}
-              className="flex flex-col items-center justify-center space-y-6 text-center"
+              className="fw-surface-inverse flex flex-col items-center justify-center space-y-6 text-center p-10 md:p-12"
             >
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
                 Ready to Transform Your Data?
@@ -514,7 +515,7 @@ export default function LandingPage() {
       </section>
       </main>
       <footer className="w-full border-t bg-background/95 backdrop-blur-sm">
-        <div className="container flex flex-col gap-8 px-4 py-10 md:px-6 lg:py-16">
+        <div className="landing-container flex flex-col gap-8 px-4 py-10 md:px-6 lg:py-16">
           <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
             <div className="space-y-4">
               <div className="flex items-center gap-2 font-bold">
