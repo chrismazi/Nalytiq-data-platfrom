@@ -26,6 +26,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# design references
+/factweavers.ai/
+
 # python
 __pycache__/
 *.py[cod]
